@@ -9,7 +9,7 @@
   <!-- 1. EncodingFilter (Runs First, ONLY on REQUEST) -->
   <filter>
     <filter-name>EncodingFilter</filter-name>
-    <filter-class>Filters.EncodingFilter</filter-class>
+    <filter-class>filter.EncodingFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>EncodingFilter</filter-name>
@@ -20,7 +20,7 @@
   <!-- 2. AuthFilter (Runs Second, ONLY on REQUEST) -->
   <filter>
     <filter-name>AuthFilter</filter-name>
-    <filter-class>Filters.AuthFilter</filter-class>
+    <filter-class>filter.AuthFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>AuthFilter</filter-name>

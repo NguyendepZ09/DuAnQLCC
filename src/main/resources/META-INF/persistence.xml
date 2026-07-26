@@ -9,16 +9,14 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- Registered JPA Entities -->
-        <class>Entities.TaiKhoan</class>
-        <class>Entities.CuDan</class>
-        <class>Entities.NhanVien</class>
-        <class>Entities.CanHo</class>
-        <class>Entities.HoaDon</class>
-        <class>Entities.PhanAnhSuCo</class>
-        <class>Entities.LichSuXuLySuCo</class>
-        <class>Entities.ThongBao</class>
-        <class>Entities.BinhChon</class>
-        <class>Entities.PhuongAnBinhChon</class>
+        <class>entity.TaiKhoan</class>
+        <class>entity.CuDan</class>
+        <class>entity.NhanVien</class>
+        <class>entity.CanHo</class>
+        <class>entity.HoaDon</class>
+        <class>entity.ThongBao</class>
+        <class>entity.BinhChon</class>
+        <class>entity.PhuongAnBinhChon</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
