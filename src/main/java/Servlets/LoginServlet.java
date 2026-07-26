@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
 
         String tenDangNhap = request.getParameter("tenDangNhap");
         String matKhau = request.getParameter("matKhau");
-        String clientRole = request.getParameter("vaiTro"); // 'cudan' | 'nhanvien' | 'banquanly' ...
+        String clientRole = request.getParameter("vaiTro");
 
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
             matKhau == null || matKhau.trim().isEmpty()) {
@@ -94,7 +94,7 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("boPhanCode", tk.getBoPhanCode());
         session.setAttribute("hoTen", hoTen);
 
-        // 7. Xac dinh trang dich theo Bang dieu phoi (Dispatch Table)
+        // 7. Xac dinh trang dich theo Bang dieu phoi
         String contextPath = request.getContextPath();
         String redirectUrl = calculateRedirectUrl(contextPath, tk.getVaiTro(), tk.getBoPhanCode());
 
@@ -102,9 +102,6 @@ public class LoginServlet extends HttpServlet {
         out.print(buildJson(true, "Đăng nhập thành công!", redirectUrl, hoTen));
     }
 
-    /**
-     * Map vaiTro tu UI sang vaiTro trong DB
-     */
     private String mapClientRoleToDb(String clientRole) {
         if (clientRole == null) return null;
         switch (clientRole.toLowerCase()) {
@@ -126,39 +123,33 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Tinh toan redirectUrl theo Bang Dieu Phoi
-     */
     private String calculateRedirectUrl(String contextPath, String vaiTro, String boPhanCode) {
         if ("CD".equalsIgnoreCase(vaiTro)) {
-            return contextPath + "/cudan/dashboard.jsp";
+            return contextPath + "/cudan/dashboard";
         }
         if ("BQL".equalsIgnoreCase(vaiTro)) {
-            return contextPath + "/banquanly/dashboard.jsp";
+            return contextPath + "/banquanly/dashboard";
         }
         if ("NV".equalsIgnoreCase(vaiTro)) {
             if (boPhanCode != null) {
                 switch (boPhanCode.toUpperCase()) {
                     case "LT":
-                        return contextPath + "/nhanvien/letan/dashboard.jsp";
+                        return contextPath + "/nhanvien/letan/dashboard";
                     case "KT":
-                        return contextPath + "/nhanvien/ketoan/dashboard.jsp";
+                        return contextPath + "/nhanvien/ketoan/dashboard";
                     case "NVKT":
-                        return contextPath + "/nhanvien/kythuat/dashboard.jsp";
+                        return contextPath + "/nhanvien/kythuat/dashboard";
                     case "BV":
-                        return contextPath + "/nhanvien/baove/dashboard.jsp";
+                        return contextPath + "/nhanvien/baove/dashboard";
                     case "MAIN":
-                        return contextPath + "/banquanly/dashboard.jsp";
+                        return contextPath + "/banquanly/dashboard";
                 }
             }
-            return contextPath + "/nhanvien/dashboard.jsp";
+            return contextPath + "/nhanvien/dashboard";
         }
         return contextPath + "/index.jsp";
     }
 
-    /**
-     * Helper dung chuoi JSON khong can thu vien ngoai
-     */
     private String buildJson(boolean success, String message, String redirectUrl, String hoTen) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");

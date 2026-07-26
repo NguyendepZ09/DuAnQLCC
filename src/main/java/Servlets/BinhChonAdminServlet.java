@@ -27,7 +27,7 @@ public class BinhChonAdminServlet extends HttpServlet {
         List<BinhChon> danhSachBinhChon = binhChonDAO.findAll();
         request.setAttribute("danhSachBinhChon", danhSachBinhChon);
 
-        request.getRequestDispatcher("/banquanly/binh-chon.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/banquanly/binh-chon.jsp").forward(request, response);
     }
 
     @Override

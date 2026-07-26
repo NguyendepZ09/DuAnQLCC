@@ -26,7 +26,7 @@ public class ThongBaoAdminServlet extends HttpServlet {
         List<ThongBao> danhSachThongBao = thongBaoDAO.findAll();
         request.setAttribute("danhSachThongBao", danhSachThongBao);
         
-        request.getRequestDispatcher("/banquanly/thong-bao.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/banquanly/thong-bao.jsp").forward(request, response);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class ThongKeServlet extends HttpServlet {
 
         request.setAttribute("topNhanVien", topNhanVien);
 
-        // Forward sang dashboard.jsp
-        request.getRequestDispatcher("/banquanly/dashboard.jsp").forward(request, response);
+        // Forward sang WEB-INF/views/banquanly/dashboard.jsp
+        request.getRequestDispatcher("/WEB-INF/views/banquanly/dashboard.jsp").forward(request, response);
     }
 }

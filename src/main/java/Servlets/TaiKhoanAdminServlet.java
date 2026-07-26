@@ -40,7 +40,7 @@ public class TaiKhoanAdminServlet extends HttpServlet {
         request.setAttribute("danhSachCuDanChuaCoTK", danhSachCuDanChuaCoTK);
         request.setAttribute("danhSachNhanVienChuaCoTK", danhSachNhanVienChuaCoTK);
 
-        request.getRequestDispatcher("/banquanly/quan-ly-tai-khoan.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/banquanly/quan-ly-tai-khoan.jsp").forward(request, response);
     }
 
     @Override
@@ -125,10 +125,6 @@ public class TaiKhoanAdminServlet extends HttpServlet {
             String finalVaiTro = vaiTro.trim();
             String finalBoPhanCode = null;
 
-            // Enforce SQL Server Constraint CK_taiKhoan_boPhan_theoVaiTro:
-            // If CD -> boPhanCode MUST be null
-            // If BQL -> boPhanCode MUST be 'MAIN'
-            // If NV -> boPhanCode MUST be one of ('LT', 'KT', 'NVKT', 'BV')
             if ("CD".equalsIgnoreCase(finalVaiTro)) {
                 finalBoPhanCode = null;
             } else if ("BQL".equalsIgnoreCase(finalVaiTro)) {
@@ -137,14 +133,14 @@ public class TaiKhoanAdminServlet extends HttpServlet {
                 if (boPhanCode != null && !boPhanCode.trim().isEmpty()) {
                     finalBoPhanCode = boPhanCode.trim();
                 } else {
-                    finalBoPhanCode = "LT"; // Default staff department
+                    finalBoPhanCode = "LT";
                 }
             }
 
             TaiKhoan tk = new TaiKhoan();
             tk.setMaTaiKhoan("TK" + (System.currentTimeMillis() % 100000));
             tk.setTenDangNhap(tenDangNhap.trim());
-            tk.setMatKhau(PasswordUtil.hash(matKhau.trim())); // Hash BCrypt
+            tk.setMatKhau(PasswordUtil.hash(matKhau.trim()));
             tk.setVaiTro(finalVaiTro);
             tk.setBoPhanCode(finalBoPhanCode);
             tk.setTrangThaiHoatDong("HoatDong");

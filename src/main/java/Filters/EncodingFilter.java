@@ -1,13 +1,11 @@
 package Filters;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import java.io.IOException;
 
 /**
- * Filter set UTF-8 encoding cho tat ca Request va Response
+ * Filter set UTF-8 encoding cho tat ca Request va Response (Dang ky duy nhat trong web.xml)
  */
-@WebFilter("/*")
 public class EncodingFilter implements Filter {
 
     @Override

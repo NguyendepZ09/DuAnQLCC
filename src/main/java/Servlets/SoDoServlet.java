@@ -26,6 +26,6 @@ public class SoDoServlet extends HttpServlet {
         Map<Integer, List<CanHo>> mapTangCanHo = canHoDAO.findAllMappedByTang();
         request.setAttribute("mapTangCanHo", mapTangCanHo);
         
-        request.getRequestDispatcher("/banquanly/so-do-can-ho.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/banquanly/so-do-can-ho.jsp").forward(request, response);
     }
 }
