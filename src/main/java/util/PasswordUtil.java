@@ -3,7 +3,7 @@ package util;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 /**
- * Utility ma hoa va kiem tra mat khau su dung BCrypt (at.favre.lib:bcrypt)
+ * Utility ma hoa va kiem tra mat khau su dung duy nhat BCrypt (at.favre.lib:bcrypt)
  */
 public class PasswordUtil {
 
@@ -18,21 +18,19 @@ public class PasswordUtil {
         if (plainTextPassword == null || hashedPassword == null || hashedPassword.isEmpty()) {
             return false;
         }
+
+        // Dam bao chuoi hash phai thuoc dinh dang BCrypt hop le ($2a$, $2b$, $2y$)
+        if (!hashedPassword.startsWith("$2a$") && !hashedPassword.startsWith("$2b$") && !hashedPassword.startsWith("$2y$")) {
+            System.err.println("CANH BAO BAO MAT: Mat khau trong DB khong phai dinh dang BCrypt hash hop le! Tu choi xac thuc.");
+            return false;
+        }
+
         try {
-            if (hashedPassword.startsWith("$2a$") || hashedPassword.startsWith("$2b$") || hashedPassword.startsWith("$2y$")) {
-                BCrypt.Result result = BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword);
-                if (result.verified) {
-                    return true;
-                }
-                try {
-                    return org.mindrot.jbcrypt.BCrypt.checkpw(plainTextPassword, hashedPassword);
-                } catch (Exception ignored) {
-                    return false;
-                }
-            }
-            return plainTextPassword.equals(hashedPassword);
+            BCrypt.Result result = BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword);
+            return result.verified;
         } catch (Exception e) {
-            return plainTextPassword.equals(hashedPassword);
+            System.err.println("Loi khi xac thuc BCrypt: " + e.getMessage());
+            return false;
         }
     }
 }

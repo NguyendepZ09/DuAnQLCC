@@ -18,6 +18,20 @@
         <class>entity.BinhChon</class>
         <class>entity.PhuongAnBinhChon</class>
 
+        <!-- Newly Registered Entities -->
+        <class>entity.PhanAnhSuCo</class>
+        <class>entity.LichSuXuLySuCo</class>
+        <class>entity.PhieuBau</class>
+        <class>entity.ThongBaoDaDoc</class>
+        <class>entity.ChiTietHoaDon</class>
+        <class>entity.ChiSoTieuThu</class>
+        <class>entity.ChamCong</class>
+        <class>entity.NhatKyCaTruc</class>
+        <class>entity.DanhMucTienIch</class>
+        <class>entity.DatLichTienIch</class>
+        <class>entity.DanhMucBoPhan</class>
+        <class>entity.DanhMucVaiTro</class>
+
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=QLCCNew2;encrypt=false;trustServerCertificate=true;sendStringParametersAsUnicode=true"/>

@@ -38,8 +38,8 @@ public class BinhChonDAO {
             
             if (bc.getNgayBatDau() == null) bc.setNgayBatDau(new Date());
             if (bc.getHanChot() == null) bc.setHanChot(new Date(System.currentTimeMillis() + 7L * 24L * 3600L * 1000L));
-            if (bc.getTrangThai() == null) bc.setTrangThai("Mở");
-            if (bc.getTyLeTucSo() == null) bc.setTyLeTucSo(0.0);
+            if (bc.getTrangThai() == null) bc.setTrangThai("DangMo");
+            if (bc.getTyLeTucSo() == null) bc.setTyLeTucSo(50.0);
 
             em.persist(bc);
             em.flush();

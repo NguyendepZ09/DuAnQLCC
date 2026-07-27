@@ -117,8 +117,13 @@
                                             <td><strong>${bc.cauHoi}</strong></td>
                                             <td><span class="badge bg-info text-dark">${bc.tyLeTucSo}% cư dân tham gia</span></td>
                                             <td>
-                                                <span class="badge ${bc.trangThai == 'Mở' || bc.trangThai == 'DangMo' ? 'bg-success' : 'bg-secondary'}">
-                                                    ${bc.trangThai}
+                                                <span class="badge ${bc.trangThai == 'DangMo' || bc.trangThai == 'Mở' ? 'bg-success' : 'bg-secondary'}">
+                                                    <c:choose>
+                                                        <c:when test="${bc.trangThai == 'DangMo' || bc.trangThai == 'Mở'}">Mở</c:when>
+                                                        <c:when test="${bc.trangThai == 'DaDong'}">Đã đóng</c:when>
+                                                        <c:when test="${bc.trangThai == 'KhongDuTucSo'}">Không đủ túc số</c:when>
+                                                        <c:otherwise>${bc.trangThai}</c:otherwise>
+                                                    </c:choose>
                                                 </span>
                                             </td>
                                         </tr>

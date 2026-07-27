@@ -1,10 +1,6 @@
 package servlet;
 
-import dao.CuDanDAO;
-import dao.NhanVienDAO;
 import dao.TaiKhoanDAO;
-import entity.CuDan;
-import entity.NhanVien;
 import entity.TaiKhoan;
 import util.PasswordUtil;
 
@@ -18,14 +14,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Servlet xu ly dang nhap, kiem tra phan quyen & tra JSON dieu phoi trang (Tomcat 11 / Jakarta EE)
+ * Servlet dang nhap he thong va tinh toan dieu huong theo Role / Bo phan
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     private TaiKhoanDAO taiKhoanDAO = new TaiKhoanDAO();
-    private CuDanDAO cuDanDAO = new CuDanDAO();
-    private NhanVienDAO nhanVienDAO = new NhanVienDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -37,81 +31,47 @@ public class LoginServlet extends HttpServlet {
 
         String tenDangNhap = request.getParameter("tenDangNhap");
         String matKhau = request.getParameter("matKhau");
-        String clientRole = request.getParameter("vaiTro");
 
-        if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
-            matKhau == null || matKhau.trim().isEmpty()) {
+        if (tenDangNhap == null || tenDangNhap.trim().isEmpty() || matKhau == null || matKhau.trim().isEmpty()) {
             out.print(buildJson(false, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", null, null));
             return;
         }
 
-        TaiKhoan tk = taiKhoanDAO.findByTenDangNhap(tenDangNhap.trim());
-        if (tk == null) {
-            out.print(buildJson(false, "Tên đăng nhập không tồn tại trong hệ thống.", null, null));
-            return;
-        }
+        tenDangNhap = tenDangNhap.trim();
 
-        if (!PasswordUtil.verify(matKhau, tk.getMatKhau())) {
-            out.print(buildJson(false, "Mật khẩu không chính xác.", null, null));
-            return;
-        }
+        try {
+            TaiKhoan tk = taiKhoanDAO.findByTenDangNhap(tenDangNhap);
 
-        if (tk.getTrangThaiHoatDong() == null || !"HoatDong".equalsIgnoreCase(tk.getTrangThaiHoatDong())) {
-            out.print(buildJson(false, "Tài khoản của bạn đã bị khóa hoặc tạm ngưng hoạt động.", null, null));
-            return;
-        }
-
-        String expectedDbRole = mapClientRoleToDb(clientRole);
-        if (expectedDbRole != null && !expectedDbRole.equalsIgnoreCase(tk.getVaiTro())) {
-            out.print(buildJson(false, "Tài khoản không đúng vai trò bạn đang chọn đăng nhập.", null, null));
-            return;
-        }
-
-        String hoTen = tk.getTenDangNhap();
-        String vaiTroDb = tk.getVaiTro();
-        if ("CD".equalsIgnoreCase(vaiTroDb)) {
-            CuDan cd = cuDanDAO.findByMaTaiKhoan(tk.getId());
-            if (cd != null && cd.getHoTen() != null) {
-                hoTen = cd.getHoTen();
+            if (tk == null) {
+                out.print(buildJson(false, "Tên đăng nhập không tồn tại.", null, null));
+                return;
             }
-        } else {
-            NhanVien nv = nhanVienDAO.findByMaTaiKhoan(tk.getId());
-            if (nv != null && nv.getHoTen() != null) {
-                hoTen = nv.getHoTen();
+
+            if ("Khoa".equalsIgnoreCase(tk.getTrangThaiHoatDong())) {
+                out.print(buildJson(false, "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Ban quản lý.", null, null));
+                return;
             }
-        }
 
-        HttpSession session = request.getSession();
-        session.setAttribute("idTaiKhoan", tk.getId());
-        session.setAttribute("tenDangNhap", tk.getTenDangNhap());
-        session.setAttribute("vaiTro", tk.getVaiTro());
-        session.setAttribute("boPhanCode", tk.getBoPhanCode());
-        session.setAttribute("hoTen", hoTen);
+            if (!PasswordUtil.verify(matKhau, tk.getMatKhau())) {
+                out.print(buildJson(false, "Mật khẩu không chính xác.", null, null));
+                return;
+            }
 
-        String contextPath = request.getContextPath();
-        String redirectUrl = calculateRedirectUrl(contextPath, tk.getVaiTro(), tk.getBoPhanCode());
+            // Dang nhap thanh cong -> Tao Session
+            HttpSession session = request.getSession(true);
+            session.setAttribute("idTaiKhoan", tk.getId());
+            session.setAttribute("tenDangNhap", tk.getTenDangNhap());
+            session.setAttribute("vaiTro", tk.getVaiTro());
+            session.setAttribute("boPhanCode", tk.getBoPhanCode());
+            session.setAttribute("hoTen", tk.getTenDangNhap());
 
-        out.print(buildJson(true, "Đăng nhập thành công!", redirectUrl, hoTen));
-    }
+            String redirectUrl = calculateRedirectUrl(request.getContextPath(), tk.getVaiTro(), tk.getBoPhanCode());
+            out.print(buildJson(true, "Đăng nhập thành công!", redirectUrl, tk.getTenDangNhap()));
 
-    private String mapClientRoleToDb(String clientRole) {
-        if (clientRole == null) return null;
-        switch (clientRole.toLowerCase()) {
-            case "cudan":
-            case "cd":
-                return "CD";
-            case "banquanly":
-            case "bql":
-                return "BQL";
-            case "nhanvien":
-            case "nv":
-            case "letan":
-            case "ketoan":
-            case "kythuat":
-            case "baove":
-                return "NV";
-            default:
-                return null;
+        } catch (Exception e) {
+            System.err.println("Lỗi trong LoginServlet: " + e.getMessage());
+            e.printStackTrace();
+            out.print(buildJson(false, "Lỗi hệ thống: " + e.getMessage(), null, null));
         }
     }
 
@@ -124,20 +84,25 @@ public class LoginServlet extends HttpServlet {
         }
         if ("NV".equalsIgnoreCase(vaiTro)) {
             if (boPhanCode != null) {
-                switch (boPhanCode.toUpperCase()) {
+                switch (boPhanCode) {
+                    case "LeTan":
                     case "LT":
                         return contextPath + "/nhanvien/letan/dashboard";
+                    case "KeToan":
                     case "KT":
                         return contextPath + "/nhanvien/ketoan/dashboard";
+                    case "KyThuat":
                     case "NVKT":
                         return contextPath + "/nhanvien/kythuat/dashboard";
+                    case "BaoVe":
                     case "BV":
                         return contextPath + "/nhanvien/baove/dashboard";
+                    case "BanQuanLy":
                     case "MAIN":
                         return contextPath + "/banquanly/dashboard";
                 }
             }
-            return contextPath + "/nhanvien/dashboard";
+            return contextPath + "/nhanvien/dang-phat-trien";
         }
         return contextPath + "/index.jsp";
     }
@@ -161,10 +126,7 @@ public class LoginServlet extends HttpServlet {
         if (input == null) return "";
         return input.replace("\\", "\\\\")
                     .replace("\"", "\\\"")
-                    .replace("\b", "\\b")
-                    .replace("\f", "\\f")
                     .replace("\n", "\\n")
-                    .replace("\r", "\\r")
-                    .replace("\t", "\\t");
+                    .replace("\r", "\\r");
     }
 }

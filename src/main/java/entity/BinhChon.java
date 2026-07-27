@@ -16,7 +16,7 @@ public class BinhChon {
     private Integer id;
 
     @Column(name = "maThongBao", nullable = false)
-    private Integer maThongBao = 1;
+    private Integer maThongBao;
 
     @Column(name = "cauHoi", length = 500, nullable = false)
     private String cauHoi;
@@ -30,10 +30,10 @@ public class BinhChon {
     private Date hanChot = new Date(System.currentTimeMillis() + 7L * 24L * 3600L * 1000L);
 
     @Column(name = "trangThai", length = 20, nullable = false)
-    private String trangThai = "Mở";
+    private String trangThai = "DangMo";
 
     @Column(name = "tyLeTucSo", nullable = false)
-    private Double tyLeTucSo = 0.0;
+    private Double tyLeTucSo = 50.0;
 
     @Column(name = "ketQua", length = 200)
     private String ketQua;

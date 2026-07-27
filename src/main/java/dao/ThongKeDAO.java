@@ -45,13 +45,25 @@ public class ThongKeDAO {
         try {
             String jpql = "SELECT p.trangThai, COUNT(p.id) FROM PhanAnhSuCo p GROUP BY p.trangThai";
             List<Object[]> list = em.createQuery(jpql, Object[].class).getResultList();
+            long cho = 0, dang = 0, xong = 0;
             for (Object[] row : list) {
                 String status = (String) row[0];
                 Number count = (Number) row[1];
                 if (status != null && count != null) {
-                    resultMap.put(status.trim(), count.longValue());
+                    String st = status.trim();
+                    long val = count.longValue();
+                    if ("MoiTiepNhan".equalsIgnoreCase(st) || "DaTiepNhan".equalsIgnoreCase(st) || "ChuaXuLy".equalsIgnoreCase(st)) {
+                        cho += val;
+                    } else if ("DangXuLy".equalsIgnoreCase(st)) {
+                        dang += val;
+                    } else if ("HoanThanh".equalsIgnoreCase(st) || "HoanTat".equalsIgnoreCase(st)) {
+                        xong += val;
+                    }
                 }
             }
+            resultMap.put("Chờ tiếp nhận", cho);
+            resultMap.put("Đang xử lý", dang);
+            resultMap.put("Đã hoàn thành", xong);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -63,7 +75,7 @@ public class ThongKeDAO {
     public String getTopNhanVienXuatSac() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            String jpql = "SELECT n.hoTen, COUNT(l.id) FROM LichSuXuLySuCo l JOIN NhanVien n ON l.maNhanVien = n.id GROUP BY n.hoTen ORDER BY COUNT(l.id) DESC";
+            String jpql = "SELECT n.hoTen, COUNT(l.id) FROM LichSuXuLySuCo l, NhanVien n WHERE l.maNhanVien = n.id GROUP BY n.hoTen ORDER BY COUNT(l.id) DESC";
             List<Object[]> list = em.createQuery(jpql, Object[].class).setMaxResults(1).getResultList();
             if (!list.isEmpty()) {
                 Object[] top = list.get(0);

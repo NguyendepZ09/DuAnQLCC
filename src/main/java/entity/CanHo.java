@@ -3,7 +3,7 @@ package entity;
 import jakarta.persistence.*;
 
 /**
- * Entity CanHo map 1-1 voi bang [canHo] (soTang, soPhong, trangThai)
+ * Entity CanHo map 1-1 voi bang [canHo] (soTang, soPhong, trangThai, dienTich)
  */
 @Entity
 @Table(name = "canHo")
@@ -23,8 +23,8 @@ public class CanHo {
     @Column(name = "trangThai", length = 255)
     private String trangThai;
 
-    @Transient
-    private Double dienTich = 75.0;
+    @Column(name = "dienTich")
+    private Double dienTich;
 
     public CanHo() {}
 
