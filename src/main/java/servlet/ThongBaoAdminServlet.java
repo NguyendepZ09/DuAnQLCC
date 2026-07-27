@@ -58,6 +58,7 @@ public class ThongBaoAdminServlet extends HttpServlet {
         String tieuDe = request.getParameter("tieuDe");
         String noiDung = request.getParameter("noiDung");
         String loaiThongBao = request.getParameter("loaiThongBao");
+        String doiTuong = request.getParameter("doiTuong");
 
         try {
             if (tieuDe == null || tieuDe.trim().isEmpty() || noiDung == null || noiDung.trim().isEmpty()) {
@@ -69,7 +70,8 @@ public class ThongBaoAdminServlet extends HttpServlet {
             ThongBao tb = new ThongBao();
             tb.setTieuDe(tieuDe.trim());
             tb.setNoiDung(noiDung.trim());
-            tb.setLoaiThongBao(loaiThongBao != null ? loaiThongBao : "Thông thường");
+            tb.setLoaiThongBao(loaiThongBao != null ? loaiThongBao : "ThongThuong");
+            tb.setDoiTuong(doiTuong != null ? doiTuong : "TatCa");
             tb.setNgayTao(new Date());
 
             boolean saved = thongBaoDAO.save(tb);

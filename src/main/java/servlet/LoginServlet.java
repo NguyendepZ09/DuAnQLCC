@@ -1,6 +1,8 @@
 package servlet;
 
+import dao.CuDanDAO;
 import dao.TaiKhoanDAO;
+import entity.CuDan;
 import entity.TaiKhoan;
 import util.PasswordUtil;
 
@@ -20,6 +22,7 @@ import java.io.PrintWriter;
 public class LoginServlet extends HttpServlet {
 
     private TaiKhoanDAO taiKhoanDAO = new TaiKhoanDAO();
+    private CuDanDAO cuDanDAO = new CuDanDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -57,16 +60,36 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
+            // Neu la CD -> Kiem tra phai co ban ghi cuDan va maCanHo
+            Integer maCuDan = null;
+            Integer maCanHo = null;
+            String userHoTen = tk.getTenDangNhap();
+
+            if ("CD".equalsIgnoreCase(tk.getVaiTro())) {
+                CuDan cd = cuDanDAO.findByMaTaiKhoan(tk.getId());
+                if (cd == null || cd.getMaCanHo() == null) {
+                    out.print(buildJson(false, "Tài khoản cư dân chưa được gán với căn hộ nào. Vui lòng liên hệ Ban quản lý!", null, null));
+                    return;
+                }
+                maCuDan = cd.getId();
+                maCanHo = cd.getMaCanHo();
+                if (cd.getHoTen() != null && !cd.getHoTen().trim().isEmpty()) {
+                    userHoTen = cd.getHoTen().trim();
+                }
+            }
+
             // Dang nhap thanh cong -> Tao Session
             HttpSession session = request.getSession(true);
             session.setAttribute("idTaiKhoan", tk.getId());
             session.setAttribute("tenDangNhap", tk.getTenDangNhap());
             session.setAttribute("vaiTro", tk.getVaiTro());
             session.setAttribute("boPhanCode", tk.getBoPhanCode());
-            session.setAttribute("hoTen", tk.getTenDangNhap());
+            session.setAttribute("hoTen", userHoTen);
+            if (maCuDan != null) session.setAttribute("maCuDan", maCuDan);
+            if (maCanHo != null) session.setAttribute("maCanHo", maCanHo);
 
             String redirectUrl = calculateRedirectUrl(request.getContextPath(), tk.getVaiTro(), tk.getBoPhanCode());
-            out.print(buildJson(true, "Đăng nhập thành công!", redirectUrl, tk.getTenDangNhap()));
+            out.print(buildJson(true, "Đăng nhập thành công!", redirectUrl, userHoTen));
 
         } catch (Exception e) {
             System.err.println("Lỗi trong LoginServlet: " + e.getMessage());

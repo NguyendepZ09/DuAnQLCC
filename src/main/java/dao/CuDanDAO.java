@@ -1,11 +1,14 @@
 package dao;
 
+import entity.CanHo;
 import entity.CuDan;
 import util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * DAO quan ly truy van du lieu bang cuDan (Jakarta Persistence)
@@ -28,5 +31,26 @@ public class CuDanDAO {
         } finally {
             em.close();
         }
+    }
+
+    public Map<String, Object> findDetailWithCanHoByMaTaiKhoan(Integer maTaiKhoan) {
+        if (maTaiKhoan == null) return Map.of();
+        EntityManager em = JPAUtil.getEntityManager();
+        Map<String, Object> map = new HashMap<>();
+        try {
+            CuDan cd = findByMaTaiKhoan(maTaiKhoan);
+            if (cd != null) {
+                map.put("cuDan", cd);
+                if (cd.getMaCanHo() != null) {
+                    CanHo ch = em.find(CanHo.class, cd.getMaCanHo());
+                    map.put("canHo", ch);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return map;
     }
 }

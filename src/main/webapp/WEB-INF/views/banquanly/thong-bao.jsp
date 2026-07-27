@@ -67,10 +67,17 @@
                             <div class="mb-3">
                                 <label class="form-label font-semibold">Loại Thông Báo</label>
                                 <select name="loaiThongBao" class="form-select" required>
-                                    <option value="Bảo trì">🔧 Bảo trì / Sửa chữa</option>
-                                    <option value="Sự kiện">🎉 Sự kiện / Hoạt động</option>
-                                    <option value="Khẩn cấp">🚨 Khẩn cấp / Báo động</option>
-                                    <option value="Thông thường" selected>ℹ️ Thông tin chung</option>
+                                    <option value="ThongThuong" selected>ℹ️ Thông tin chung</option>
+                                    <option value="BaoTri">🔧 Bảo trì / Sửa chữa</option>
+                                    <option value="KhanCap">🚨 Khẩn cấp / Báo động</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label font-semibold">Đối Tượng Nhận Thông Báo</label>
+                                <select name="doiTuong" class="form-select" required>
+                                    <option value="TatCa" selected>🌐 Toàn bộ (Cư dân & Nhân viên)</option>
+                                    <option value="CuDan">🏠 Chỉ gửi Cư dân</option>
+                                    <option value="NhanVien">👷 Chỉ gửi Nhân viên</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -93,6 +100,7 @@
                                         <th>ID</th>
                                         <th>Tiêu Đề</th>
                                         <th>Loại</th>
+                                        <th>Đối Tượng</th>
                                         <th>Ngày Đăng</th>
                                     </tr>
                                 </thead>
@@ -101,7 +109,16 @@
                                         <tr>
                                             <td>${tb.id}</td>
                                             <td><strong>${tb.tieuDe}</strong></td>
-                                            <td><span class="badge bg-secondary">${tb.loaiThongBao}</span></td>
+                                            <td>
+                                                <span class="badge ${tb.loaiThongBao == 'KhanCap' ? 'bg-danger' : (tb.loaiThongBao == 'BaoTri' ? 'bg-warning text-dark' : 'bg-secondary')}">
+                                                    ${tb.loaiThongBao == 'KhanCap' ? 'Khẩn cấp' : (tb.loaiThongBao == 'BaoTri' ? 'Bảo trì' : 'Thông thường')}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info text-dark">
+                                                    ${tb.doiTuong == 'CuDan' ? 'Cư dân' : (tb.doiTuong == 'NhanVien' ? 'Nhân viên' : 'Toàn bộ')}
+                                                </span>
+                                            </td>
                                             <td class="text-muted small">${tb.ngayTao}</td>
                                         </tr>
                                     </c:forEach>

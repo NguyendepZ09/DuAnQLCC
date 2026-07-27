@@ -25,17 +25,14 @@ public class ThongBao {
     private String noiDung;
 
     @Column(name = "loaiThongBao", length = 255)
-    private String loaiThongBao;
+    private String loaiThongBao = "ThongThuong";
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ngayTao")
-    private Date ngayTao;
+    private Date ngayTao = new Date();
 
     @Column(name = "doiTuong", length = 255)
     private String doiTuong = "TatCa";
-
-    @Column(name = "loai", length = 255)
-    private String loai = "Chung";
 
     public ThongBao() {}
 
@@ -59,7 +56,4 @@ public class ThongBao {
 
     public String getDoiTuong() { return doiTuong; }
     public void setDoiTuong(String doiTuong) { this.doiTuong = doiTuong; }
-
-    public String getLoai() { return loai; }
-    public void setLoai(String loai) { this.loai = loai; }
 }
