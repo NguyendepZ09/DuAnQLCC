@@ -27,7 +27,6 @@
         .top-header .sub { font-size: 0.82rem; color: #6C757D; }
         .content-body { padding: 32px; }
         .card-custom { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #DCE6E0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .form-switch .form-check-input { width: 3em; height: 1.5em; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -40,19 +39,17 @@
 
         <div class="content-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="text-dark fw-bold m-0">👥 Quản Lý Tài Khoản Cư Dân & Nhân Viên</h4>
-                <button type="button" class="btn btn-warning text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#createAccountModal">
+                <h4 class="text-dark fw-bold m-0">👥 Quản Lý Tài Khoản Hệ Thống</h4>
+                <button class="btn btn-warning fw-bold px-3 py-2 text-dark" data-bs-toggle="modal" data-bs-target="#createAccountModal">
                     ➕ Cấp Tài Khoản Mới
                 </button>
             </div>
 
-            <!-- Table Accounts List -->
             <div class="card-custom">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
                                 <th>Mã TK</th>
                                 <th>Tên Đăng Nhập</th>
                                 <th>Vai Trò</th>
@@ -64,28 +61,22 @@
                         <tbody>
                             <c:forEach var="tk" items="${danhSachTaiKhoan}">
                                 <tr>
-                                    <td>${tk.id}</td>
                                     <td><code>${tk.maTaiKhoan}</code></td>
                                     <td><strong>${tk.tenDangNhap}</strong></td>
                                     <td>
-                                        <span class="badge ${tk.vaiTro == 'BQL' ? 'bg-danger' : (tk.vaiTro == 'NV' ? 'bg-primary' : 'bg-success')}">
-                                            ${tk.vaiTro == 'BQL' ? 'Ban Quản Lý' : (tk.vaiTro == 'NV' ? 'Nhân Viên' : 'Cư Dân')}
+                                        <span class="badge ${tk.vaiTro == 'BQL' ? 'bg-danger' : (tk.vaiTro == 'NV' ? 'bg-info text-dark' : 'bg-primary')}">
+                                            ${tk.vaiTro}
                                         </span>
                                     </td>
+                                    <td>${not empty tk.boPhanCode ? tk.boPhanCode : '—'}</td>
                                     <td>
-                                        <span class="badge bg-secondary">
-                                            ${tk.boPhanCode != null ? tk.boPhanCode : 'N/A'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <!-- AJAX Toggle Switch -->
-                                        <div class="form-check form-switch d-inline-block">
+                                        <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" role="switch" 
                                                    id="switch_${tk.tenDangNhap}"
-                                                   ${tk.trangThaiHoatDong == 'HoatDong' ? 'checked' : ''}
-                                                   onchange="toggleStatus('${tk.tenDangNhap}')">
-                                            <label class="form-check-label text-muted small ms-1" id="lbl_${tk.tenDangNhap}">
-                                                ${tk.trangThaiHoatDong == 'HoatDong' ? 'Hoạt động' : 'Đã khóa'}
+                                                   ${tk.trangThaiHoatDong == 'HoatDong' ? 'checked' : ''} 
+                                                   onchange="toggleAccountStatus('${tk.tenDangNhap}', this)">
+                                            <label class="form-check-label small" id="lbl_${tk.tenDangNhap}">
+                                                ${tk.trangThaiHoatDong == 'HoatDong' ? 'Hoạt động' : 'Khoá'}
                                             </label>
                                         </div>
                                     </td>
@@ -116,7 +107,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label font-semibold">Tên Đăng Nhập</label>
-                        <input type="text" name="tenDangNhap" id="newTenDangNhap" class="form-control" placeholder="vd: cudan.p102 hoặc nv.letan02" required>
+                        <input type="text" name="tenDangNhap" id="newTenDangNhap" class="form-control" placeholder="vd: cudan.p102 hoặc letan.nam" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label font-semibold">Mật Khẩu</label>
@@ -130,146 +121,159 @@
                             <option value="BQL">Ban Quản Lý (BQL)</option>
                         </select>
                     </div>
-                    <div class="mb-3" id="boPhanGroup" style="display:none;">
-                        <label class="form-label font-semibold">Bộ Phận Làm Việc</label>
-                        <select name="boPhanCode" id="newBoPhanCode" class="form-select">
-                            <option value="LT">Lễ Tân (LT)</option>
-                            <option value="KT">Kế Toán (KT)</option>
-                            <option value="NVKT">Kỹ Thuật (NVKT)</option>
-                            <option value="BV">Bảo Vệ (BV)</option>
-                            <option value="MAIN">BQL Trung Tâm (MAIN)</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Unassigned Resident Dropdown -->
-                    <div class="mb-3" id="cuDanGroup">
-                        <label class="form-label font-semibold">Chọn Cư Dân Chưa Có Tài Khoản</label>
-                        <select name="maCuDan" id="newMaCuDan" class="form-select">
-                            <option value="">-- Không gán / Chọn sau --</option>
-                            <c:forEach var="cd" items="${danhSachCuDanChuaCoTK}">
-                                <option value="${cd.id}">${cd.hoTen} (SDT: ${cd.soDienThoai})</option>
-                            </c:forEach>
-                        </select>
+
+                    <!-- Fields for Resident CD -->
+                    <div id="residentFields">
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Căn Hộ Gán Cư Dân</label>
+                            <select name="maCanHo" id="newMaCanHo" class="form-select">
+                                <option value="">-- Chọn Căn Hộ --</option>
+                                <c:forEach var="ch" items="${danhSachCanHo}">
+                                    <option value="${ch.id}">[Tầng ${ch.soTang}] Phòng ${ch.soPhong} (${ch.trangThai})</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Loại Cư Dân</label>
+                            <select name="loaiCuDan" id="newLoaiCuDan" class="form-select">
+                                <option value="ChuHo">Chủ Hộ</option>
+                                <option value="KhachThue">Khách Thụe / Thành Viên</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <!-- Unassigned Staff Dropdown -->
-                    <div class="mb-3" id="nhanVienGroup" style="display:none;">
-                        <label class="form-label font-semibold">Chọn Nhân Viên Chưa Có Tài Khoản</label>
-                        <select name="maNhanVien" id="newMaNhanVien" class="form-select">
-                            <option value="">-- Không gán / Chọn sau --</option>
-                            <c:forEach var="nv" items="${danhSachNhanVienChuaCoTK}">
-                                <option value="${nv.id}">${nv.hoTen} (Bộ phận: ${nv.boPhan})</option>
-                            </c:forEach>
-                        </select>
+                    <!-- Fields for Staff NV / BQL -->
+                    <div id="boPhanGroup" style="display:none;">
+                        <div class="mb-3">
+                            <label class="form-label font-semibold">Bộ Phận Làm Việc</label>
+                            <select name="boPhanCode" id="newBoPhanCode" class="form-select">
+                                <option value="LeTan">Lễ Tân (LeTan)</option>
+                                <option value="KeToan">Kế Toán (KeToan)</option>
+                                <option value="KyThuat">Kỹ Thuật (KyThuat)</option>
+                                <option value="BaoVe">Bảo Vệ (BaoVe)</option>
+                                <option value="BanQuanLy">Ban Quản Lý (BanQuanLy)</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <!-- Common Personal Details -->
+                    <div class="mb-3">
+                        <label class="form-label font-semibold">Họ và Tên</label>
+                        <input type="text" name="hoTen" id="newHoTen" class="form-control" placeholder="vd: Nguyễn Văn A" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label font-semibold">Số Điện Thoại</label>
+                        <input type="text" name="soDienThoai" id="newSoDienThoai" class="form-control" placeholder="vd: 0901234567">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label font-semibold">Email Liên Hệ</label>
+                        <input type="email" name="email" id="newEmail" class="form-control" placeholder="vd: nguyenvana@gmail.com">
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-warning fw-bold">Xác Nhận Tạo</button>
+                    <button type="submit" class="btn btn-warning fw-bold text-dark">🚀 Xác Nhận Tạo Tài Khoản</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function onRoleChange(role) {
+        const residentFields = document.getElementById('residentFields');
         const boPhanGroup = document.getElementById('boPhanGroup');
-        const cuDanGroup = document.getElementById('cuDanGroup');
-        const nhanVienGroup = document.getElementById('nhanVienGroup');
-        const boPhanSelect = document.getElementById('newBoPhanCode');
 
-        if (role === 'NV') {
-            boPhanGroup.style.display = 'block';
-            boPhanSelect.disabled = false;
-            cuDanGroup.style.display = 'none';
-            nhanVienGroup.style.display = 'block';
-        } else if (role === 'BQL') {
-            boPhanGroup.style.display = 'block';
-            boPhanSelect.value = 'MAIN';
-            boPhanSelect.disabled = true; // Auto MAIN for BQL
-            cuDanGroup.style.display = 'none';
-            nhanVienGroup.style.display = 'block';
-        } else {
-            // CD
+        if (role === 'CD') {
+            residentFields.style.display = 'block';
             boPhanGroup.style.display = 'none';
-            boPhanSelect.disabled = true; // Clear for CD
-            cuDanGroup.style.display = 'block';
-            nhanVienGroup.style.display = 'none';
+        } else {
+            residentFields.style.display = 'none';
+            boPhanGroup.style.display = 'block';
         }
     }
 
-    function toggleStatus(username) {
-        const params = new URLSearchParams();
-        params.append('action', 'toggle');
-        params.append('tenDangNhap', username);
+    function toggleAccountStatus(tenDangNhap, checkbox) {
+        const label = document.getElementById('lbl_' + tenDangNhap);
+        const originalState = !checkbox.checked;
 
-        fetch('tai-khoan', {
+        fetch('${pageContext.request.contextPath}/banquanly/tai-khoan', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            body: params.toString()
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: new URLSearchParams({
+                'action': 'toggle',
+                'tenDangNhap': tenDangNhap
+            })
         })
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
-            if (!data.success) {
-                alert(data.message);
-                const chk = document.getElementById('switch_' + username);
-                if (chk) chk.checked = !chk.checked;
+            if (data.success) {
+                label.innerText = checkbox.checked ? 'Hoạt động' : 'Khoá';
             } else {
-                const lbl = document.getElementById('lbl_' + username);
-                const chk = document.getElementById('switch_' + username);
-                if (lbl && chk) {
-                    lbl.textContent = chk.checked ? 'Hoạt động' : 'Đã khóa';
-                }
+                alert('⚠️ ' + data.message);
+                checkbox.checked = originalState;
             }
         })
         .catch(err => {
-            console.error(err);
-            alert('Lỗi khi đổi trạng thái tài khoản.');
+            alert('⚠️ Lỗi kết nối máy chủ!');
+            checkbox.checked = originalState;
         });
     }
 
-    function resetPassword(username) {
-        if (!confirm('Bạn có chắc chắn muốn reset mật khẩu cho tài khoản "' + username + '" về 123456 không?')) return;
+    function resetPassword(tenDangNhap) {
+        if (!confirm('Bạn có chắc chắn muốn Reset mật khẩu tài khoản ' + tenDangNhap + ' về mặc định "123456"?')) {
+            return;
+        }
 
-        const params = new URLSearchParams();
-        params.append('action', 'resetPassword');
-        params.append('tenDangNhap', username);
-        params.append('newPassword', '123456');
-
-        fetch('tai-khoan', {
+        fetch('${pageContext.request.contextPath}/banquanly/tai-khoan', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            body: params.toString()
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: new URLSearchParams({
+                'action': 'resetPassword',
+                'tenDangNhap': tenDangNhap,
+                'newPassword': '123456'
+            })
         })
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
-            alert(data.message);
-        })
-        .catch(err => console.error(err));
-    }
-
-    function submitCreateAccount(e) {
-        e.preventDefault();
-        const form = e.target;
-        const params = new URLSearchParams(new FormData(form));
-        params.append('action', 'create');
-
-        fetch('tai-khoan', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            body: params.toString()
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
             if (data.success) {
-                location.reload();
+                alert('✅ ' + data.message);
+            } else {
+                alert('⚠️ ' + data.message);
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => alert('⚠️ Lỗi kết nối máy chủ!'));
+    }
+
+    function submitCreateAccount(event) {
+        event.preventDefault();
+        const form = document.getElementById('createAccountForm');
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        params.append('action', 'create');
+
+        for (const [key, value] of formData.entries()) {
+            params.append(key, value);
+        }
+
+        fetch('${pageContext.request.contextPath}/banquanly/tai-khoan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: params
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ ' + data.message);
+                location.reload();
+            } else {
+                alert('⚠️ ' + data.message);
+            }
+        })
+        .catch(err => alert('⚠️ Lỗi kết nối máy chủ!'));
     }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

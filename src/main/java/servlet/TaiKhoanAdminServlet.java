@@ -1,12 +1,13 @@
 package servlet;
 
+import dao.CanHoDAO;
 import dao.CuDanDAO;
 import dao.NhanVienDAO;
 import dao.TaiKhoanDAO;
+import entity.CanHo;
 import entity.CuDan;
 import entity.NhanVien;
 import entity.TaiKhoan;
-import util.PasswordUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,6 +26,7 @@ import java.util.List;
 public class TaiKhoanAdminServlet extends HttpServlet {
 
     private TaiKhoanDAO taiKhoanDAO = new TaiKhoanDAO();
+    private CanHoDAO canHoDAO = new CanHoDAO();
     private CuDanDAO cuDanDAO = new CuDanDAO();
     private NhanVienDAO nhanVienDAO = new NhanVienDAO();
 
@@ -33,10 +35,12 @@ public class TaiKhoanAdminServlet extends HttpServlet {
             throws ServletException, IOException {
         
         List<TaiKhoan> danhSachTaiKhoan = taiKhoanDAO.getAllAccounts();
+        List<CanHo> danhSachCanHo = canHoDAO.findAll();
         List<CuDan> danhSachCuDanChuaCoTK = taiKhoanDAO.getUnassignedCuDan();
         List<NhanVien> danhSachNhanVienChuaCoTK = taiKhoanDAO.getUnassignedNhanVien();
 
         request.setAttribute("danhSachTaiKhoan", danhSachTaiKhoan);
+        request.setAttribute("danhSachCanHo", danhSachCanHo);
         request.setAttribute("danhSachCuDanChuaCoTK", danhSachCuDanChuaCoTK);
         request.setAttribute("danhSachNhanVienChuaCoTK", danhSachNhanVienChuaCoTK);
 
@@ -90,7 +94,7 @@ public class TaiKhoanAdminServlet extends HttpServlet {
 
             boolean res = taiKhoanDAO.resetPassword(tenDangNhap.trim(), newPass.trim());
             if (res) {
-                out.print("{\"success\":true, \"message\":\"Đã reset mật khẩu tài khoản '" + escapeJson(tenDangNhap) + "' về '" + escapeJson(newPass) + "' thành công.\"}");
+                out.print("{\"success\":true, \"message\":\"Đã reset mật khẩu tài khoản '" + escapeJson(tenDangNhap) + "' về '" + escapeJson(newPass) + "' (BCrypt hashed) thành công.\"}");
             } else {
                 out.print("{\"success\":false, \"message\":\"Reset mật khẩu thất bại.\"}");
             }
@@ -103,8 +107,11 @@ public class TaiKhoanAdminServlet extends HttpServlet {
             String vaiTro = request.getParameter("vaiTro");
             String boPhanCode = request.getParameter("boPhanCode");
             
-            String maCuDanStr = request.getParameter("maCuDan");
-            String maNhanVienStr = request.getParameter("maNhanVien");
+            String maCanHoStr = request.getParameter("maCanHo");
+            String hoTen = request.getParameter("hoTen");
+            String soDienThoai = request.getParameter("soDienThoai");
+            String email = request.getParameter("email");
+            String loaiCuDan = request.getParameter("loaiCuDan");
 
             if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
                 matKhau == null || matKhau.trim().isEmpty() ||
@@ -124,36 +131,29 @@ public class TaiKhoanAdminServlet extends HttpServlet {
             if ("CD".equalsIgnoreCase(finalVaiTro)) {
                 finalBoPhanCode = null;
             } else if ("BQL".equalsIgnoreCase(finalVaiTro)) {
-                finalBoPhanCode = "MAIN";
+                finalBoPhanCode = "BanQuanLy";
             } else if ("NV".equalsIgnoreCase(finalVaiTro)) {
                 if (boPhanCode != null && !boPhanCode.trim().isEmpty()) {
                     finalBoPhanCode = boPhanCode.trim();
                 } else {
-                    finalBoPhanCode = "LT";
+                    finalBoPhanCode = "LeTan";
                 }
             }
 
             TaiKhoan tk = new TaiKhoan();
-            tk.setMaTaiKhoan("TK" + (System.currentTimeMillis() % 100000));
             tk.setTenDangNhap(tenDangNhap.trim());
-            tk.setMatKhau(PasswordUtil.hash(matKhau.trim()));
             tk.setVaiTro(finalVaiTro);
             tk.setBoPhanCode(finalBoPhanCode);
             tk.setTrangThaiHoatDong("HoatDong");
 
-            Integer maCuDan = null;
-            if ("CD".equalsIgnoreCase(finalVaiTro) && maCuDanStr != null && !maCuDanStr.trim().isEmpty()) {
-                try { maCuDan = Integer.parseInt(maCuDanStr.trim()); } catch (NumberFormatException ignored) {}
-            }
-
-            Integer maNhanVien = null;
-            if (!"CD".equalsIgnoreCase(finalVaiTro) && maNhanVienStr != null && !maNhanVienStr.trim().isEmpty()) {
-                try { maNhanVien = Integer.parseInt(maNhanVienStr.trim()); } catch (NumberFormatException ignored) {}
+            Integer maCanHo = null;
+            if ("CD".equalsIgnoreCase(finalVaiTro) && maCanHoStr != null && !maCanHoStr.trim().isEmpty()) {
+                try { maCanHo = Integer.parseInt(maCanHoStr.trim()); } catch (NumberFormatException ignored) {}
             }
 
             try {
-                taiKhoanDAO.createAccount(tk, maCuDan, maNhanVien);
-                out.print("{\"success\":true, \"message\":\"Tạo tài khoản mới thành công!\"}");
+                taiKhoanDAO.createAccountFull(tk, maCanHo, hoTen, soDienThoai, email, loaiCuDan, matKhau.trim());
+                out.print("{\"success\":true, \"message\":\"Tạo tài khoản và hồ sơ thông tin thành công!\"}");
             } catch (Exception e) {
                 e.printStackTrace();
                 String rootMsg = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();

@@ -1,6 +1,7 @@
 package dao;
 
 import entity.CuDan;
+import entity.CanHo;
 import entity.NhanVien;
 import entity.TaiKhoan;
 import util.JPAUtil;
@@ -75,6 +76,7 @@ public class TaiKhoanDAO {
             tx.begin();
             TaiKhoan tk = findByTenDangNhapEm(em, tenDangNhap);
             if (tk != null) {
+                // Generates a new BCrypt hash with random salt dynamically
                 tk.setMatKhau(PasswordUtil.hash(newPlainPassword));
                 em.merge(tk);
                 tx.commit();
@@ -90,42 +92,98 @@ public class TaiKhoanDAO {
         }
     }
 
-    public void createAccount(TaiKhoan tk, Integer maCuDan, Integer maNhanVien) throws Exception {
+    /**
+     * Tao tai khoan moi + tu dong sinh cuDan/nhanVien & cap nhat trangThai canHo trong cung transaction
+     */
+    public void createAccountFull(TaiKhoan tk, Integer maCanHo, String hoTen, String soDienThoai, String email, String loaiCuDan, String rawPassword) throws Exception {
         EntityManager em = JPAUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
 
-            if (tk.getMaTaiKhoan() == null || tk.getMaTaiKhoan().isEmpty()) {
-                tk.setMaTaiKhoan("TK" + (System.currentTimeMillis() % 100000));
+            String vaiTro = tk.getVaiTro();
+            String boPhanCode = tk.getBoPhanCode();
+
+            // 1. Generate maTaiKhoan structured (cd_01, cd_02... for CD; nv_letan01, nv_bql01... for NV/BQL)
+            String prefix;
+            if ("CD".equalsIgnoreCase(vaiTro)) {
+                prefix = "cd_";
+            } else if ("BQL".equalsIgnoreCase(vaiTro)) {
+                prefix = "nv_bql";
+            } else {
+                prefix = "nv_" + (boPhanCode != null ? boPhanCode.toLowerCase() : "lt");
             }
+
+            Long countRole = em.createQuery("SELECT COUNT(t) FROM TaiKhoan t WHERE t.vaiTro = :vr", Long.class)
+                               .setParameter("vr", vaiTro)
+                               .getSingleResult();
+            long nextSeq = countRole + 1;
+            String candidateCode = prefix + String.format("%02d", nextSeq);
+
+            // Ensure uniqueness of maTaiKhoan in DB
+            while (em.createQuery("SELECT COUNT(t) FROM TaiKhoan t WHERE t.maTaiKhoan = :mc", Long.class)
+                     .setParameter("mc", candidateCode)
+                     .getSingleResult() > 0) {
+                nextSeq++;
+                candidateCode = prefix + String.format("%02d", nextSeq);
+            }
+
+            tk.setMaTaiKhoan(candidateCode);
+
             if (tk.getTrangThaiHoatDong() == null || tk.getTrangThaiHoatDong().isEmpty()) {
                 tk.setTrangThaiHoatDong("HoatDong");
             }
 
+            // Always dynamically hash password with BCrypt (fresh salt)
+            String passToHash = (rawPassword != null && !rawPassword.trim().isEmpty()) ? rawPassword.trim() : tk.getMatKhau();
+            tk.setMatKhau(PasswordUtil.hash(passToHash));
+
+            // Persist TaiKhoan
             em.persist(tk);
             em.flush();
 
-            if (maCuDan != null && maCuDan > 0) {
-                CuDan cd = em.find(CuDan.class, maCuDan);
-                if (cd != null) {
-                    cd.setMaTaiKhoan(tk.getId());
-                    em.merge(cd);
-                }
-            }
+            // 2. Persist CuDan if role CD
+            if ("CD".equalsIgnoreCase(vaiTro)) {
+                if (maCanHo != null && maCanHo > 0) {
+                    Long countChuHo = em.createQuery("SELECT COUNT(c) FROM CuDan c WHERE c.maCanHo = :mch AND c.loaiCuDan = 'ChuHo'", Long.class)
+                                        .setParameter("mch", maCanHo)
+                                        .getSingleResult();
+                    String finalLoaiCuDan = (countChuHo > 0 && "ChuHo".equalsIgnoreCase(loaiCuDan)) ? "KhachThue" : (loaiCuDan != null ? loaiCuDan : "ChuHo");
 
-            if (maNhanVien != null && maNhanVien > 0) {
-                NhanVien nv = em.find(NhanVien.class, maNhanVien);
-                if (nv != null) {
-                    nv.setMaTaiKhoan(tk.getId());
-                    em.merge(nv);
+                    CuDan cd = new CuDan();
+                    cd.setMaCanHo(maCanHo);
+                    cd.setMaTaiKhoan(tk.getId());
+                    cd.setHoTen(hoTen != null && !hoTen.trim().isEmpty() ? hoTen.trim() : "Cư dân " + tk.getTenDangNhap());
+                    cd.setSoDienThoai(soDienThoai != null ? soDienThoai.trim() : null);
+                    cd.setEmail(email != null ? email.trim() : null);
+                    cd.setLoaiCuDan(finalLoaiCuDan);
+                    cd.setTrangThai("DangO");
+
+                    em.persist(cd);
+
+                    // Update CanHo status to DangO
+                    CanHo ch = em.find(CanHo.class, maCanHo);
+                    if (ch != null) {
+                        ch.setTrangThai("DangO");
+                        em.merge(ch);
+                    }
                 }
+            } else {
+                // Persist NhanVien if role NV / BQL
+                NhanVien nv = new NhanVien();
+                nv.setMaTaiKhoan(tk.getId());
+                nv.setHoTen(hoTen != null && !hoTen.trim().isEmpty() ? hoTen.trim() : tk.getTenDangNhap());
+                nv.setSoDienThoai(soDienThoai != null ? soDienThoai.trim() : null);
+                nv.setEmail(email != null ? email.trim() : null);
+                nv.setBoPhan(boPhanCode != null ? boPhanCode : "BanQuanLy");
+
+                em.persist(nv);
             }
 
             tx.commit();
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
-            System.err.println("Loi createAccount trong TaiKhoanDAO: " + e.getMessage());
+            System.err.println("Loi createAccountFull trong TaiKhoanDAO: " + e.getMessage());
             e.printStackTrace();
             throw e;
         } finally {
