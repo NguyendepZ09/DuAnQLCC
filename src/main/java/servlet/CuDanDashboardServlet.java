@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Servlet trang chu / dashboard danh cho role Cu Dan
+ * Servlet trang chu / dashboard danh cho role Cu Dan (Dieu huong sang /cudan/thong-bao)
  */
 @WebServlet("/cudan/dashboard")
 public class CuDanDashboardServlet extends HttpServlet {
@@ -32,17 +32,12 @@ public class CuDanDashboardServlet extends HttpServlet {
             CuDan cd = (CuDan) detailMap.get("cuDan");
             CanHo ch = (CanHo) detailMap.get("canHo");
 
-            if (cd != null && ch != null) {
-                request.setAttribute("cuDanInfo", cd);
-                request.setAttribute("canHoInfo", ch);
-                if (session != null) {
-                    session.setAttribute("maCuDan", cd.getId());
-                    session.setAttribute("maCanHo", cd.getMaCanHo());
-                }
+            if (cd != null && ch != null && session != null) {
+                session.setAttribute("maCuDan", cd.getId());
+                session.setAttribute("maCanHo", cd.getMaCanHo());
             }
         }
 
-        request.setAttribute("activeMenu", "thong-bao");
-        request.getRequestDispatcher("/WEB-INF/views/cudan/dashboard.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/cudan/thong-bao");
     }
 }

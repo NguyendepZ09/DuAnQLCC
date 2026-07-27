@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -27,13 +28,13 @@ public class BinhChon {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "hanChot", nullable = false)
-    private Date hanChot = new Date(System.currentTimeMillis() + 7L * 24L * 3600L * 1000L);
+    private Date hanChot; // REQUIRED — caller (BinhChonAdminServlet) phai set truoc khi persist
 
     @Column(name = "trangThai", length = 20, nullable = false)
-    private String trangThai = "DangMo";
+    private String trangThai; // REQUIRED — luon set la 'DangMo' khi tao moi
 
     @Column(name = "tyLeTucSo", nullable = false)
-    private Double tyLeTucSo = 50.0;
+    private Double tyLeTucSo; // REQUIRED — caller phai set
 
     @Column(name = "ketQua", length = 200)
     private String ketQua;
@@ -52,8 +53,18 @@ public class BinhChon {
     public Date getNgayBatDau() { return ngayBatDau; }
     public void setNgayBatDau(Date ngayBatDau) { this.ngayBatDau = ngayBatDau; }
 
+    public String getNgayBatDauFormatted() {
+        if (ngayBatDau == null) return "";
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(ngayBatDau);
+    }
+
     public Date getHanChot() { return hanChot; }
     public void setHanChot(Date hanChot) { this.hanChot = hanChot; }
+
+    public String getHanChotFormatted() {
+        if (hanChot == null) return "";
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(hanChot);
+    }
 
     public String getTrangThai() { return trangThai; }
     public void setTrangThai(String trangThai) { this.trangThai = trangThai; }

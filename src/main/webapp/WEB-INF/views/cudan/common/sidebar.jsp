@@ -16,7 +16,7 @@
     </div>
 
     <nav class="sidebar-nav">
-        <a href="${pageContext.request.contextPath}/cudan/dashboard" class="nav-item ${activeMenu == 'thong-bao' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/cudan/thong-bao" class="nav-item ${activeMenu == 'thong-bao' ? 'active' : ''}">
             📢 <span>Thông báo & Bình chọn</span>
             <c:if test="${not empty unreadCount && unreadCount > 0}">
                 <span class="badge bg-danger rounded-pill ms-auto">${unreadCount}</span>

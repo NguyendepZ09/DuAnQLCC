@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -53,6 +54,11 @@ public class ThongBao {
 
     public Date getNgayTao() { return ngayTao; }
     public void setNgayTao(Date ngayTao) { this.ngayTao = ngayTao; }
+
+    public String getNgayTaoFormatted() {
+        if (ngayTao == null) return "";
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(ngayTao);
+    }
 
     public String getDoiTuong() { return doiTuong; }
     public void setDoiTuong(String doiTuong) { this.doiTuong = doiTuong; }
