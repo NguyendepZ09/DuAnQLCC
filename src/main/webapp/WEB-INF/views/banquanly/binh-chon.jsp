@@ -40,6 +40,20 @@
         <div class="content-body">
             <h4 class="text-dark fw-bold mb-4">🗳️ Quản Lý Bình Chọn & Khảo Sát Ý Kiến Cư Dân</h4>
 
+            <!-- Alert messages -->
+            <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <strong>⚠️ Lỗi:</strong> ${errorMessage}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+            <c:if test="${not empty successMessage}">
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <strong>✅ Thành công:</strong> ${successMessage}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
             <div class="row g-4">
                 <!-- Create Poll Form -->
                 <div class="col-md-5">
@@ -51,8 +65,19 @@
                                 <input type="text" name="cauHoi" class="form-control" placeholder="vd: Bạn đồng ý mở rộng sân Pickleball không?" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label font-semibold">Mã Thông Báo Liên Quan</label>
-                                <input type="number" name="maThongBao" class="form-control" placeholder="vd: 1" value="1">
+                                <label class="form-label font-semibold">Thông Báo Đính Kèm (Liên Quan)</label>
+                                <select name="maThongBao" class="form-select" required>
+                                    <c:choose>
+                                        <c:when test="${not empty danhSachThongBao}">
+                                            <c:forEach var="tb" items="${danhSachThongBao}">
+                                                <option value="${tb.id}">[TB-${tb.id}] ${tb.tieuDe}</option>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="">-- Chưa có thông báo trong hệ thống --</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </select>
                             </div>
                             
                             <div class="mb-3">

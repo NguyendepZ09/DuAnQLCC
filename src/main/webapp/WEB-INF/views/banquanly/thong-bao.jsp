@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -41,6 +40,20 @@
         <div class="content-body">
             <h4 class="text-dark fw-bold mb-4">📢 Phát Hành Thông Báo Toàn Tòa Nhà</h4>
 
+            <!-- Alert messages -->
+            <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <strong>⚠️ Lỗi:</strong> ${errorMessage}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+            <c:if test="${not empty successMessage}">
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <strong>✅ Thành công:</strong> ${successMessage}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
             <div class="row g-4">
                 <!-- Create Notice Form -->
                 <div class="col-md-5">
@@ -62,7 +75,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label font-semibold">Nội Dung Chi Tiết</label>
-                                <textarea name="noiDung" class="form-control" rows="5" placeholder="Nhập nội dung chi tiết thông báo..." required></textarea>
+                                <textarea name="noiDung" class="form-control" rows="4" placeholder="Nhập nội dung chi tiết thông báo..." required></textarea>
                             </div>
                             <button type="submit" class="btn btn-warning w-100 fw-bold py-2 text-dark">🚀 Phát Hành Ngay</button>
                         </form>
@@ -72,7 +85,7 @@
                 <!-- Existing Notices List -->
                 <div class="col-md-7">
                     <div class="card-custom">
-                        <h5 class="fw-bold mb-3 text-dark">📋 Danh Sách Thông Báo Đã Gửi</h5>
+                        <h5 class="fw-bold mb-3 text-dark">📜 Danh Sách Thông Báo Đã Đăng</h5>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-light">
@@ -80,23 +93,16 @@
                                         <th>ID</th>
                                         <th>Tiêu Đề</th>
                                         <th>Loại</th>
-                                        <th>Ngày Tạo</th>
+                                        <th>Ngày Đăng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach var="tb" items="${danhSachThongBao}">
                                         <tr>
                                             <td>${tb.id}</td>
-                                            <td>
-                                                <strong>${tb.tieuDe}</strong>
-                                                <div class="text-muted small">${tb.noiDung}</div>
-                                            </td>
-                                            <td>
-                                                <span class="badge ${tb.loaiThongBao == 'Khẩn cấp' ? 'bg-danger' : (tb.loaiThongBao == 'Bảo trì' ? 'bg-warning text-dark' : 'bg-info text-dark')}">
-                                                    ${tb.loaiThongBao}
-                                                </span>
-                                            </td>
-                                            <td><small class="text-muted"><fmt:formatDate value="${tb.ngayTao}" pattern="dd/MM/yyyy HH:mm"/></small></td>
+                                            <td><strong>${tb.tieuDe}</strong></td>
+                                            <td><span class="badge bg-secondary">${tb.loaiThongBao}</span></td>
+                                            <td class="text-muted small">${tb.ngayTao}</td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

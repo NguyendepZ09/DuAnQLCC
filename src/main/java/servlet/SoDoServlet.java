@@ -23,9 +23,15 @@ public class SoDoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        Map<Integer, List<CanHo>> mapTangCanHo = canHoDAO.findAllMappedByTang();
-        request.setAttribute("mapTangCanHo", mapTangCanHo);
-        
+        try {
+            Map<Integer, List<CanHo>> mapTangCanHo = canHoDAO.findAllMappedByTang();
+            request.setAttribute("mapTangCanHo", mapTangCanHo);
+        } catch (Exception e) {
+            System.err.println("Lỗi trong SoDoServlet (doGet): " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Lỗi khi tải sơ đồ căn hộ: " + e.getMessage());
+        }
+
         request.getRequestDispatcher("/WEB-INF/views/banquanly/so-do-can-ho.jsp").forward(request, response);
     }
 }
