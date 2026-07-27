@@ -1,9 +1,9 @@
 package util;
 
-import org.mindrot.jbcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 /**
- * Utility ma hoa va kiem tra mat khau su dung jBCrypt
+ * Utility ma hoa va kiem tra mat khau su dung BCrypt (at.favre.lib:bcrypt)
  */
 public class PasswordUtil {
 
@@ -11,7 +11,7 @@ public class PasswordUtil {
         if (plainTextPassword == null || plainTextPassword.isEmpty()) {
             return null;
         }
-        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt(12));
+        return BCrypt.withDefaults().hashToString(12, plainTextPassword.toCharArray());
     }
 
     public static boolean verify(String plainTextPassword, String hashedPassword) {
@@ -20,7 +20,15 @@ public class PasswordUtil {
         }
         try {
             if (hashedPassword.startsWith("$2a$") || hashedPassword.startsWith("$2b$") || hashedPassword.startsWith("$2y$")) {
-                return BCrypt.checkpw(plainTextPassword, hashedPassword);
+                BCrypt.Result result = BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword);
+                if (result.verified) {
+                    return true;
+                }
+                try {
+                    return org.mindrot.jbcrypt.BCrypt.checkpw(plainTextPassword, hashedPassword);
+                } catch (Exception ignored) {
+                    return false;
+                }
             }
             return plainTextPassword.equals(hashedPassword);
         } catch (Exception e) {
