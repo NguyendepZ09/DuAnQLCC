@@ -34,6 +34,7 @@ public class LoginServlet extends HttpServlet {
 
         String tenDangNhap = request.getParameter("tenDangNhap");
         String matKhau = request.getParameter("matKhau");
+        String roleChon = request.getParameter("vaiTro");
 
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty() || matKhau == null || matKhau.trim().isEmpty()) {
             out.print(buildJson(false, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.", null, null));
@@ -57,6 +58,14 @@ public class LoginServlet extends HttpServlet {
 
             if (!PasswordUtil.verify(matKhau, tk.getMatKhau())) {
                 out.print(buildJson(false, "Mật khẩu không chính xác.", null, null));
+                return;
+            }
+
+            // Kiem tra role chon tu tab dang nhap phai khop voi VaiTro / BoPhan trong DB
+            if (!khopVaiTro(roleChon, tk.getVaiTro(), tk.getBoPhanCode())) {
+                System.err.println("[LoginServlet] Role mismatch for user '" + tenDangNhap + "': selected role='" + roleChon 
+                        + "', DB vaiTro='" + tk.getVaiTro() + "', DB boPhanCode='" + tk.getBoPhanCode() + "'");
+                out.print(buildJson(false, "Tên đăng nhập hoặc mật khẩu không đúng!", null, null));
                 return;
             }
 
@@ -121,6 +130,35 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
+    private boolean khopVaiTro(String roleChon, String vaiTroDB, String boPhanDB) {
+        if (roleChon == null || roleChon.trim().isEmpty()) {
+            return true; // Khong truyen vaiTro -> bo qua kiem tra (dam bao backward compatibility)
+        }
+        String role = roleChon.trim();
+        String vDB = (vaiTroDB != null) ? vaiTroDB.trim() : "";
+        String bDB = (boPhanDB != null) ? boPhanDB.trim() : "";
+
+        if ("cudan".equalsIgnoreCase(role)) {
+            return "CD".equalsIgnoreCase(vDB);
+        }
+        if ("banquanly".equalsIgnoreCase(role)) {
+            return "BQL".equalsIgnoreCase(vDB);
+        }
+        if ("letan".equalsIgnoreCase(role)) {
+            return "NV".equalsIgnoreCase(vDB) && ("LeTan".equalsIgnoreCase(bDB) || "LT".equalsIgnoreCase(bDB));
+        }
+        if ("kythuat".equalsIgnoreCase(role)) {
+            return "NV".equalsIgnoreCase(vDB) && ("KyThuat".equalsIgnoreCase(bDB) || "NVKT".equalsIgnoreCase(bDB));
+        }
+        if ("ketoan".equalsIgnoreCase(role)) {
+            return "NV".equalsIgnoreCase(vDB) && ("KeToan".equalsIgnoreCase(bDB) || "KT".equalsIgnoreCase(bDB));
+        }
+        if ("baove".equalsIgnoreCase(role)) {
+            return "NV".equalsIgnoreCase(vDB) && ("BaoVe".equalsIgnoreCase(bDB) || "BV".equalsIgnoreCase(bDB));
+        }
+        return false;
+    }
+
     private String calculateRedirectUrl(String contextPath, String vaiTro, String boPhanCode) {
         if ("CD".equalsIgnoreCase(vaiTro)) {
             return contextPath + "/cudan/thong-bao";
@@ -140,7 +178,7 @@ public class LoginServlet extends HttpServlet {
                         return contextPath + "/kythuat/cong-viec";
                     case "KeToan":
                     case "KT":
-                        return contextPath + "/ketoan/dang-phat-trien";
+                        return contextPath + "/ketoan/chi-so";
                     case "BaoVe":
                     case "BV":
                         return contextPath + "/baove/dang-phat-trien";

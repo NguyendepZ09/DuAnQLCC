@@ -31,6 +31,8 @@
         <class>entity.DatLichTienIch</class>
         <class>entity.DanhMucBoPhan</class>
         <class>entity.DanhMucVaiTro</class>
+        <class>entity.BieuGiaDichVu</class>
+        <class>entity.GiaoDichThanhToan</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>

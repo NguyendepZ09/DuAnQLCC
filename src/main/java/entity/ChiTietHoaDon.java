@@ -23,8 +23,20 @@ public class ChiTietHoaDon {
     @Column(name = "chiSoMoi")
     private Double chiSoMoi;
 
+    @Column(name = "soLuong")
+    private BigDecimal soLuong;
+
+    @Column(name = "donViTinh")
+    private String donViTinh;
+
+    @Column(name = "donGia")
+    private BigDecimal donGia;
+
     @Column(name = "thanhTien")
     private BigDecimal thanhTien;
+
+    @Column(name = "dienGiai")
+    private String dienGiai;
 
     public ChiTietHoaDon() {}
 
@@ -43,6 +55,18 @@ public class ChiTietHoaDon {
     public Double getChiSoMoi() { return chiSoMoi; }
     public void setChiSoMoi(Double chiSoMoi) { this.chiSoMoi = chiSoMoi; }
 
+    public BigDecimal getSoLuong() { return soLuong; }
+    public void setSoLuong(BigDecimal soLuong) { this.soLuong = soLuong; }
+
+    public String getDonViTinh() { return donViTinh; }
+    public void setDonViTinh(String donViTinh) { this.donViTinh = donViTinh; }
+
+    public BigDecimal getDonGia() { return donGia; }
+    public void setDonGia(BigDecimal donGia) { this.donGia = donGia; }
+
     public BigDecimal getThanhTien() { return thanhTien; }
     public void setThanhTien(BigDecimal thanhTien) { this.thanhTien = thanhTien; }
+
+    public String getDienGiai() { return dienGiai; }
+    public void setDienGiai(String dienGiai) { this.dienGiai = dienGiai; }
 }
