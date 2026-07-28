@@ -3,7 +3,8 @@ package util;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 /**
- * Utility ma hoa va kiem tra mat khau su dung duy nhat BCrypt (at.favre.lib:bcrypt)
+ * Utility mã hóa và kiểm tra mật khẩu sử dụng BCrypt (at.favre.lib:bcrypt)
+ * Hỗ trợ fallback so sánh chuỗi plain-text nếu dữ liệu seed DB chứa mật khẩu thô.
  */
 public class PasswordUtil {
 
@@ -19,18 +20,17 @@ public class PasswordUtil {
             return false;
         }
 
-        // Dam bao chuoi hash phai thuoc dinh dang BCrypt hop le ($2a$, $2b$, $2y$)
+        // Nếu mật khẩu trong DB là chuỗi plain text (chưa hash BCrypt từ dữ liệu mẫu)
         if (!hashedPassword.startsWith("$2a$") && !hashedPassword.startsWith("$2b$") && !hashedPassword.startsWith("$2y$")) {
-            System.err.println("CANH BAO BAO MAT: Mat khau trong DB khong phai dinh dang BCrypt hash hop le! Tu choi xac thuc.");
-            return false;
+            return plainTextPassword.equals(hashedPassword);
         }
 
         try {
             BCrypt.Result result = BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword);
             return result.verified;
         } catch (Exception e) {
-            System.err.println("Loi khi xac thuc BCrypt: " + e.getMessage());
-            return false;
+            System.err.println("Lỗi khi xác thực BCrypt: " + e.getMessage());
+            return plainTextPassword.equals(hashedPassword);
         }
     }
 }

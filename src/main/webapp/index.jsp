@@ -335,7 +335,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        © 2026 Polybuilding — Đồ án Quản Lý Chung Cư | Thiết kế bởi Antigravity
+        © 2026 Polybuilding — Đồ án Quản Lý Chung Cư
       </div>
     </div>
   </footer>
