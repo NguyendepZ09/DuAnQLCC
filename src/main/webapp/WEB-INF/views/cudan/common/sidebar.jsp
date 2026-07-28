@@ -25,10 +25,10 @@
         <a href="${pageContext.request.contextPath}/cudan/phan-anh" class="nav-item ${activeMenu == 'phan-anh' ? 'active' : ''}">
             🛠️ <span>Phản ánh sự cố</span>
         </a>
-        <a href="${pageContext.request.contextPath}/nhanvien/dang-phat-trien" class="nav-item">
+        <a href="${pageContext.request.contextPath}/cudan/hoa-don" class="nav-item ${activeMenu == 'hoa-don' ? 'active' : ''}">
             🧾 <span>Hóa đơn & Công nợ</span>
         </a>
-        <a href="${pageContext.request.contextPath}/nhanvien/dang-phat-trien" class="nav-item">
+        <a href="${pageContext.request.contextPath}/cudan/tien-ich" class="nav-item ${activeMenu == 'tien-ich' ? 'active' : ''}">
             🏊 <span>Đặt dịch vụ & Tiện ích</span>
         </a>
         

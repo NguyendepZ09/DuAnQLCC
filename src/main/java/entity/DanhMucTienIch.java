@@ -2,6 +2,7 @@ package entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Time;
 
 @Entity
 @Table(name = "danhMucTienIch")
@@ -19,6 +20,12 @@ public class DanhMucTienIch {
 
     @Column(name = "sucChua")
     private Integer sucChua;
+
+    @Column(name = "gioMoCua")
+    private Time gioMoCua;
+
+    @Column(name = "gioDongCua")
+    private Time gioDongCua;
 
     @Column(name = "giaThueMacDinh")
     private BigDecimal giaThueMacDinh;
@@ -42,6 +49,12 @@ public class DanhMucTienIch {
 
     public Integer getSucChua() { return sucChua; }
     public void setSucChua(Integer sucChua) { this.sucChua = sucChua; }
+
+    public Time getGioMoCua() { return gioMoCua; }
+    public void setGioMoCua(Time gioMoCua) { this.gioMoCua = gioMoCua; }
+
+    public Time getGioDongCua() { return gioDongCua; }
+    public void setGioDongCua(Time gioDongCua) { this.gioDongCua = gioDongCua; }
 
     public BigDecimal getGiaThueMacDinh() { return giaThueMacDinh; }
     public void setGiaThueMacDinh(BigDecimal giaThueMacDinh) { this.giaThueMacDinh = giaThueMacDinh; }

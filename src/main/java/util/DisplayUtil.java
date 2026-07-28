@@ -77,6 +77,11 @@ public class DisplayUtil {
         return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
     }
 
+    public static String formatDateOnly(Date date) {
+        if (date == null) return "";
+        return new SimpleDateFormat("dd/MM/yyyy").format(date);
+    }
+
     // --- BỔ SUNG CÁC HÀM CHO ROLE KẾ TOÁN ---
 
     public static String getLoaiDichVuText(String code) {
@@ -166,6 +171,40 @@ public class DisplayUtil {
         }
     }
 
+    // --- BỔ SUNG CÁC HÀM CHO ROLE CƯ DÂN (ĐẶT TIỆN ÍCH) ---
+
+    public static String getTrangThaiDatLichText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "ChoDuyet": return "Chờ duyệt";
+            case "DaDuyet": return "Đã duyệt";
+            case "HoanThanh": return "Hoàn thành";
+            case "DaHuy": return "Đã hủy";
+            default: return code;
+        }
+    }
+
+    public static String getTrangThaiDatLichBadgeClass(String code) {
+        if (code == null) return "bg-secondary";
+        switch (code) {
+            case "ChoDuyet": return "bg-warning text-dark";
+            case "DaDuyet": return "bg-success";
+            case "HoanThanh": return "bg-secondary";
+            case "DaHuy": return "bg-danger bg-opacity-75";
+            default: return "bg-secondary";
+        }
+    }
+
+    public static String getTrangThaiTienIchText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "HoatDong": return "Đang hoạt động";
+            case "TamNgung": return "Tạm ngưng";
+            case "BaoTri": return "Đang bảo trì";
+            default: return code;
+        }
+    }
+
     public static String formatTien(BigDecimal tien) {
         if (tien == null) return "0đ";
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("vi", "VN"));
@@ -173,5 +212,10 @@ public class DisplayUtil {
         symbols.setDecimalSeparator(',');
         DecimalFormat df = new DecimalFormat("#,##0", symbols);
         return df.format(tien) + "đ";
+    }
+
+    public static String formatTienDouble(Double tien) {
+        if (tien == null) return "0đ";
+        return formatTien(BigDecimal.valueOf(tien));
     }
 }

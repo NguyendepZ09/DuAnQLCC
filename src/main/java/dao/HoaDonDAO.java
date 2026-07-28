@@ -166,6 +166,84 @@ public class HoaDonDAO {
         }
     }
 
+    // --- BỔ SUNG METHOD DÀNH CHO ROLE CƯ DÂN ---
+
+    public List<Object[]> findHoaDonTheoCanHo(int maCanHo) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String sql = "SELECT " +
+                "  h.id AS hoaDonId, " +
+                "  h.thang, " +
+                "  h.nam, " +
+                "  h.tongTien, " +
+                "  h.trangThaiThanhToan, " +
+                "  ISNULL(SUM(CASE WHEN gd.trangThai = 'ThanhCong' THEN gd.soTien ELSE 0 END), 0) AS daThu, " +
+                "  (h.tongTien - ISNULL(SUM(CASE WHEN gd.trangThai = 'ThanhCong' THEN gd.soTien ELSE 0 END), 0)) AS conNo " +
+                "FROM dbo.hoaDon h " +
+                "LEFT JOIN dbo.giaoDichThanhToan gd ON gd.maHoaDon = h.id " +
+                "WHERE h.maCanHo = :maCanHo " +
+                "GROUP BY h.id, h.thang, h.nam, h.tongTien, h.trangThaiThanhToan " +
+                "ORDER BY h.nam DESC, h.thang DESC";
+
+            return em.createNativeQuery(sql)
+                    .setParameter("maCanHo", maCanHo)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
+    public boolean hoaDonThuocCanHo(int maHoaDon, int maCanHo) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            Long count = em.createQuery(
+                "SELECT COUNT(h) FROM HoaDon h WHERE h.id = :maHoaDon AND h.maCanHo = :maCanHo", Long.class)
+                    .setParameter("maHoaDon", maHoaDon)
+                    .setParameter("maCanHo", maCanHo)
+                    .getSingleResult();
+            return count != null && count > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Map<String, Object> findChiTietChoCuDan(int maHoaDon) {
+        Map<String, Object> result = findChiTietHoaDon(maHoaDon);
+        if (result == null) return null;
+
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String gdSql = "SELECT " +
+                "  gd.id, " +
+                "  gd.soTien, " +
+                "  gd.phuongThuc, " +
+                "  gd.trangThai, " +
+                "  gd.thoiGianTao, " +
+                "  gd.maGiaoDichNganHang " +
+                "FROM dbo.giaoDichThanhToan gd " +
+                "WHERE gd.maHoaDon = :maHoaDon " +
+                "ORDER BY gd.thoiGianTao DESC";
+
+            List<Object[]> giaoDichList = em.createNativeQuery(gdSql)
+                    .setParameter("maHoaDon", maHoaDon)
+                    .getResultList();
+
+            result.put("giaoDichList", giaoDichList);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+
     private String extractRootMessage(Throwable e) {
         Throwable cause = e;
         while (cause.getCause() != null) {
