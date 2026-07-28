@@ -4,7 +4,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chức Năng Đang Phát Triển — Hệ Thống Nhân Viên</title>
+    <title>Chức Năng Đang Phát Triển — Kế Toán</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
@@ -15,10 +15,10 @@
 <body>
 
 <div class="container-box">
-    <div class="display-1 mb-3">🛠️</div>
-    <h3 class="fw-bold text-dark mb-2">Chức Năng Đang Trong Quá Trình Phát Triển</h3>
+    <div class="display-1 mb-3">💵</div>
+    <h3 class="fw-bold text-dark mb-2">Phân Hệ Kế Toán Đang Phát Triển</h3>
     <p class="text-muted mb-4">
-        Phân hệ dành cho bộ phận <strong>${sessionScope.boPhanCode}</strong> đang được đội ngũ kỹ thuật xây dựng và sẽ sẵn sàng trong phiên bản tiếp theo.
+        Các tính năng quản lý thu phí, hóa đơn dịch vụ dành cho Bộ Phận Kế Toán sẽ ra mắt trong phiên bản tới.
     </p>
     <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-danger px-4 fw-bold">
         🚪 Đăng Xuất Hệ Thống

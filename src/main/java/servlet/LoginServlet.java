@@ -130,23 +130,26 @@ public class LoginServlet extends HttpServlet {
         }
         if ("NV".equalsIgnoreCase(vaiTro)) {
             if (boPhanCode != null) {
-                switch (boPhanCode) {
+                String code = boPhanCode.trim();
+                switch (code) {
                     case "LeTan":
                     case "LT":
                         return contextPath + "/letan/su-co";
-                    case "KeToan":
-                    case "KT":
                     case "KyThuat":
                     case "NVKT":
+                        return contextPath + "/kythuat/cong-viec";
+                    case "KeToan":
+                    case "KT":
+                        return contextPath + "/ketoan/dang-phat-trien";
                     case "BaoVe":
                     case "BV":
-                        return contextPath + "/letan/dang-phat-trien";
+                        return contextPath + "/baove/dang-phat-trien";
                     case "BanQuanLy":
                     case "MAIN":
                         return contextPath + "/banquanly/binh-chon";
                 }
             }
-            return contextPath + "/letan/dang-phat-trien";
+            return contextPath + "/dang-nhap.jsp";
         }
         return contextPath + "/index.jsp";
     }
