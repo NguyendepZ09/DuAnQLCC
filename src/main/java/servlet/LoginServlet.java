@@ -63,6 +63,7 @@ public class LoginServlet extends HttpServlet {
             // Neu la CD -> Kiem tra phai co ban ghi cuDan va maCanHo
             Integer maCuDan = null;
             Integer maCanHo = null;
+            Integer maNhanVien = null;
             String userHoTen = tk.getTenDangNhap();
 
             if ("CD".equalsIgnoreCase(tk.getVaiTro())) {
@@ -76,6 +77,27 @@ public class LoginServlet extends HttpServlet {
                 if (cd.getHoTen() != null && !cd.getHoTen().trim().isEmpty()) {
                     userHoTen = cd.getHoTen().trim();
                 }
+            } else if ("NV".equalsIgnoreCase(tk.getVaiTro()) || "BQL".equalsIgnoreCase(tk.getVaiTro())) {
+                // Kiem tra phai co ho so nhanVien trong DB
+                jakarta.persistence.EntityManager em = util.JPAUtil.getEntityManager();
+                try {
+                    java.util.List<Object[]> nvRows = em.createNativeQuery("SELECT id, hoTen FROM nhanVien WHERE maTaiKhoan = ?")
+                            .setParameter(1, tk.getId())
+                            .getResultList();
+                    if (nvRows.isEmpty() && "NV".equalsIgnoreCase(tk.getVaiTro())) {
+                        out.print(buildJson(false, "Tài khoản nhân viên chưa được gán thông tin Hồ sơ Nhân viên. Vui lòng liên hệ Ban quản lý!", null, null));
+                        return;
+                    }
+                    if (!nvRows.isEmpty()) {
+                        Object[] row = nvRows.get(0);
+                        maNhanVien = ((Number) row[0]).intValue();
+                        if (row[1] != null && !row[1].toString().trim().isEmpty()) {
+                            userHoTen = row[1].toString().trim();
+                        }
+                    }
+                } finally {
+                    em.close();
+                }
             }
 
             // Dang nhap thanh cong -> Tao Session
@@ -87,6 +109,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("hoTen", userHoTen);
             if (maCuDan != null) session.setAttribute("maCuDan", maCuDan);
             if (maCanHo != null) session.setAttribute("maCanHo", maCanHo);
+            if (maNhanVien != null) session.setAttribute("maNhanVien", maNhanVien);
 
             String redirectUrl = calculateRedirectUrl(request.getContextPath(), tk.getVaiTro(), tk.getBoPhanCode());
             out.print(buildJson(true, "Đăng nhập thành công!", redirectUrl, userHoTen));
@@ -100,32 +123,30 @@ public class LoginServlet extends HttpServlet {
 
     private String calculateRedirectUrl(String contextPath, String vaiTro, String boPhanCode) {
         if ("CD".equalsIgnoreCase(vaiTro)) {
-            return contextPath + "/cudan/dashboard";
+            return contextPath + "/cudan/thong-bao";
         }
         if ("BQL".equalsIgnoreCase(vaiTro)) {
-            return contextPath + "/banquanly/dashboard";
+            return contextPath + "/banquanly/binh-chon";
         }
         if ("NV".equalsIgnoreCase(vaiTro)) {
             if (boPhanCode != null) {
                 switch (boPhanCode) {
                     case "LeTan":
                     case "LT":
-                        return contextPath + "/nhanvien/letan/dashboard";
+                        return contextPath + "/letan/su-co";
                     case "KeToan":
                     case "KT":
-                        return contextPath + "/nhanvien/ketoan/dashboard";
                     case "KyThuat":
                     case "NVKT":
-                        return contextPath + "/nhanvien/kythuat/dashboard";
                     case "BaoVe":
                     case "BV":
-                        return contextPath + "/nhanvien/baove/dashboard";
+                        return contextPath + "/letan/dang-phat-trien";
                     case "BanQuanLy":
                     case "MAIN":
-                        return contextPath + "/banquanly/dashboard";
+                        return contextPath + "/banquanly/binh-chon";
                 }
             }
-            return contextPath + "/nhanvien/dang-phat-trien";
+            return contextPath + "/letan/dang-phat-trien";
         }
         return contextPath + "/index.jsp";
     }

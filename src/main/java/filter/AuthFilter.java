@@ -87,6 +87,14 @@ public class AuthFilter implements Filter {
                 return;
             }
         }
+        else if (path.startsWith("/letan/")) {
+            String boPhanCode = (session != null) ? (String) session.getAttribute("boPhanCode") : null;
+            if (!"NV".equalsIgnoreCase(vaiTro) || !"LeTan".equalsIgnoreCase(boPhanCode)) {
+                res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                req.getRequestDispatcher("/WEB-INF/views/403.jsp").forward(req, res);
+                return;
+            }
+        }
         else if (path.startsWith("/nhanvien/")) {
             if (!"NV".equalsIgnoreCase(vaiTro) && !"BQL".equalsIgnoreCase(vaiTro)) {
                 res.setStatus(HttpServletResponse.SC_FORBIDDEN);
