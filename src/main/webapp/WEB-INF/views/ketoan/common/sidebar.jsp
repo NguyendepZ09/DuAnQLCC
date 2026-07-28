@@ -22,10 +22,10 @@
         <a href="${pageContext.request.contextPath}/ketoan/hoa-don" class="nav-item ${activeMenu == 'hoa-don' ? 'active' : ''}">
             🧾 <span>Hóa đơn</span>
         </a>
-        <a href="${pageContext.request.contextPath}/ketoan/dang-phat-trien" class="nav-item ${activeMenu == 'bieu-gia' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/ketoan/bieu-gia" class="nav-item ${activeMenu == 'bieu-gia' ? 'active' : ''}">
             🏷️ <span>Biểu giá dịch vụ</span>
         </a>
-        <a href="${pageContext.request.contextPath}/ketoan/dang-phat-trien" class="nav-item ${activeMenu == 'xac-nhan' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/ketoan/thanh-toan" class="nav-item ${activeMenu == 'xac-nhan' ? 'active' : ''}">
             💳 <span>Xác nhận thanh toán</span>
         </a>
         

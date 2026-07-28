@@ -92,6 +92,18 @@ public class DisplayUtil {
         }
     }
 
+    public static String getDonViGiaText(String loaiDichVu) {
+        if (loaiDichVu == null) return "";
+        switch (loaiDichVu) {
+            case "Dien": return "đ/kWh";
+            case "Nuoc": return "đ/m³";
+            case "PhiQuanLy": return "đ/m²/tháng";
+            case "GuiXeOTo":
+            case "GuiXeMay": return "đ/xe/tháng";
+            default: return "";
+        }
+    }
+
     public static String getTrangThaiThanhToanText(String code) {
         if (code == null) return "";
         switch (code) {
@@ -121,6 +133,36 @@ public class DisplayUtil {
             case "xe": return "xe";
             case "luot": return "lượt";
             default: return code;
+        }
+    }
+
+    public static String getPhuongThucText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "TienMat": return "Tiền mặt";
+            case "ChuyenKhoan": return "Chuyển khoản";
+            case "QR": return "Quét mã QR";
+            default: return code;
+        }
+    }
+
+    public static String getTrangThaiGiaoDichText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "ChoXacNhan": return "Chờ xác nhận";
+            case "ThanhCong": return "Thành công";
+            case "ThatBai": return "Thất bại";
+            default: return code;
+        }
+    }
+
+    public static String getTrangThaiGiaoDichBadgeClass(String code) {
+        if (code == null) return "bg-secondary";
+        switch (code) {
+            case "ChoXacNhan": return "bg-warning text-dark";
+            case "ThanhCong": return "bg-success";
+            case "ThatBai": return "bg-danger";
+            default: return "bg-secondary";
         }
     }
 
