@@ -22,7 +22,7 @@
                 <span class="badge bg-danger rounded-pill ms-auto">${unreadCount}</span>
             </c:if>
         </a>
-        <a href="${pageContext.request.contextPath}/nhanvien/dang-phat-trien" class="nav-item">
+        <a href="${pageContext.request.contextPath}/cudan/phan-anh" class="nav-item ${activeMenu == 'phan-anh' ? 'active' : ''}">
             🛠️ <span>Phản ánh sự cố</span>
         </a>
         <a href="${pageContext.request.contextPath}/nhanvien/dang-phat-trien" class="nav-item">
