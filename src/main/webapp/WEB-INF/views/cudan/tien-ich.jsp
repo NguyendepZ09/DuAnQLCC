@@ -247,6 +247,10 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="alert alert-info border-start border-4 border-info mt-3 mb-0 small">
+                        💡 <strong>Lưu ý:</strong> Lượt đặt cần được Lễ tân duyệt trước khi sử dụng. Phí sẽ được cộng vào hóa đơn tháng tương ứng.
+                    </div>
                 </c:catch>
                 <c:if test="${not empty loiKhoiB}">
                     <div class="alert alert-danger">Không tải được danh sách lịch đã đặt.</div>

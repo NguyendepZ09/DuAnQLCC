@@ -242,4 +242,216 @@ public class DatLichTienIchDAO {
         if (msg == null) msg = e.getClass().getSimpleName();
         return msg.length() > 500 ? msg.substring(0, 500) + "..." : msg;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Object[]> findTatCaLuotDat(String trangThai, LocalDate tuNgay, LocalDate denNgay) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            StringBuilder sql = new StringBuilder(
+                "SELECT " +
+                "  d.id, " +
+                "  ti.tenTienIch, " +
+                "  c.soPhong, " +
+                "  ISNULL(cd.hoTen, N'Cư dân phòng ' + c.soPhong) AS tenCuDan, " +
+                "  d.ngayDat, " +
+                "  d.khungGio, " +
+                "  d.giaTien, " +
+                "  d.trangThai, " +
+                "  ti.id AS maTienIch " +
+                "FROM dbo.datLichTienIch d " +
+                "JOIN dbo.danhMucTienIch ti ON ti.id = d.maTienIch " +
+                "JOIN dbo.canHo c ON c.id = d.maCanHo " +
+                "LEFT JOIN dbo.cuDan cd ON cd.id = d.maCuDan " +
+                "WHERE 1=1 "
+            );
+
+            if (trangThai != null && !trangThai.isBlank() && !"ALL".equalsIgnoreCase(trangThai)) {
+                sql.append(" AND d.trangThai = :trangThai ");
+            }
+            if (tuNgay != null) {
+                sql.append(" AND d.ngayDat >= :tuNgay ");
+            }
+            if (denNgay != null) {
+                sql.append(" AND d.ngayDat <= :denNgay ");
+            }
+
+            sql.append(" ORDER BY CASE WHEN d.trangThai = 'ChoDuyet' THEN 0 ELSE 1 END, d.ngayDat DESC, d.id DESC ");
+
+            var query = em.createNativeQuery(sql.toString());
+
+            if (trangThai != null && !trangThai.isBlank() && !"ALL".equalsIgnoreCase(trangThai)) {
+                query.setParameter("trangThai", trangThai.trim());
+            }
+            if (tuNgay != null) {
+                query.setParameter("tuNgay", java.sql.Date.valueOf(tuNgay));
+            }
+            if (denNgay != null) {
+                query.setParameter("denNgay", java.sql.Date.valueOf(denNgay));
+            }
+
+            List<Object[]> rawList = query.getResultList();
+            List<Object[]> result = new ArrayList<>();
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            for (Object[] row : rawList) {
+                Object[] newRow = new Object[12];
+                System.arraycopy(row, 0, newRow, 0, Math.min(row.length, 8));
+
+                Object rawNgayDat = row[4];
+                LocalDate dt = null;
+                if (rawNgayDat instanceof java.sql.Date) {
+                    dt = ((java.sql.Date) rawNgayDat).toLocalDate();
+                } else if (rawNgayDat instanceof java.util.Date) {
+                    dt = new java.sql.Date(((java.util.Date) rawNgayDat).getTime()).toLocalDate();
+                } else if (rawNgayDat != null) {
+                    try { dt = LocalDate.parse(rawNgayDat.toString().substring(0, 10)); } catch (Exception ignored) {}
+                }
+
+                String st = row[7] != null ? row[7].toString() : "";
+                String ngayDatFormatted = (dt != null) ? dt.format(fmt) : (rawNgayDat != null ? rawNgayDat.toString() : "");
+
+                boolean coTheDuyet = "ChoDuyet".equalsIgnoreCase(st);
+                boolean coTheTuChoi = "ChoDuyet".equalsIgnoreCase(st);
+                boolean coTheHoanThanh = "DaDuyet".equalsIgnoreCase(st) && (dt != null && !dt.isAfter(today));
+
+                newRow[4] = ngayDatFormatted;   // Formatted string
+                newRow[8] = coTheDuyet;          // boolean flag
+                newRow[9] = coTheTuChoi;         // boolean flag
+                newRow[10] = coTheHoanThanh;     // boolean flag
+                newRow[11] = dt;                 // LocalDate raw
+
+                result.add(newRow);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
+    public String duyetLuotDat(int id, int maNhanVien) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            DatLichTienIch d = em.find(DatLichTienIch.class, id);
+            if (d == null) {
+                tx.rollback();
+                return "Không tìm thấy lượt đặt tiện ích.";
+            }
+
+            if (!"ChoDuyet".equalsIgnoreCase(d.getTrangThai())) {
+                tx.rollback();
+                return "Lượt đặt này đã được xử lý.";
+            }
+
+            // KIỂM TRA LẠI TRÙNG KHUNG GIỜ TRƯỚC KHI DUYỆT
+            String checkSql = "SELECT c.soPhong FROM dbo.datLichTienIch d2 " +
+                              "JOIN dbo.canHo c ON c.id = d2.maCanHo " +
+                              "WHERE d2.maTienIch = :maTienIch AND d2.ngayDat = :ngayDat AND d2.khungGio = :khungGio " +
+                              "AND d2.trangThai IN ('DaDuyet', 'HoanThanh') AND d2.id <> :id";
+
+            List<String> conflictedRooms = em.createNativeQuery(checkSql, String.class)
+                    .setParameter("maTienIch", d.getMaTienIch())
+                    .setParameter("ngayDat", d.getNgayDat())
+                    .setParameter("khungGio", d.getKhungGio())
+                    .setParameter("id", id)
+                    .getResultList();
+
+            if (!conflictedRooms.isEmpty()) {
+                tx.rollback();
+                return "TỪ CHỐI DUYỆT: Khung giờ này đã được duyệt trước đó cho phòng " + conflictedRooms.get(0) + "!";
+            }
+
+            d.setTrangThai("DaDuyet");
+            em.merge(d);
+
+            tx.commit();
+            return null;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            String msg = extractRootMessage(e);
+            System.err.println("[DatLichTienIchDAO] duyetLuotDat FAILED: " + msg);
+            e.printStackTrace();
+            return msg;
+        } finally {
+            em.close();
+        }
+    }
+
+    public String tuChoiLuotDat(int id, int maNhanVien) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            DatLichTienIch d = em.find(DatLichTienIch.class, id);
+            if (d == null) {
+                tx.rollback();
+                return "Không tìm thấy lượt đặt tiện ích.";
+            }
+
+            if (!"ChoDuyet".equalsIgnoreCase(d.getTrangThai())) {
+                tx.rollback();
+                return "Lượt đặt này đã được xử lý.";
+            }
+
+            d.setTrangThai("DaHuy");
+            em.merge(d);
+
+            tx.commit();
+            return null;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            String msg = extractRootMessage(e);
+            System.err.println("[DatLichTienIchDAO] tuChoiLuotDat FAILED: " + msg);
+            e.printStackTrace();
+            return msg;
+        } finally {
+            em.close();
+        }
+    }
+
+    public String hoanThanhLuotDat(int id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            DatLichTienIch d = em.find(DatLichTienIch.class, id);
+            if (d == null) {
+                tx.rollback();
+                return "Không tìm thấy lượt đặt tiện ích.";
+            }
+
+            if (!"DaDuyet".equalsIgnoreCase(d.getTrangThai())) {
+                tx.rollback();
+                return "Chỉ có thể xác nhận hoàn thành lượt đặt đã được duyệt.";
+            }
+
+            java.sql.Date today = java.sql.Date.valueOf(LocalDate.now());
+            if (d.getNgayDat().after(today)) {
+                tx.rollback();
+                return "Chưa tới ngày sử dụng.";
+            }
+
+            d.setTrangThai("HoanThanh");
+            em.merge(d);
+
+            tx.commit();
+            return null;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            String msg = extractRootMessage(e);
+            System.err.println("[DatLichTienIchDAO] hoanThanhLuotDat FAILED: " + msg);
+            e.printStackTrace();
+            return msg;
+        } finally {
+            em.close();
+        }
+    }
 }

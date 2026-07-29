@@ -28,6 +28,9 @@
         <a href="${pageContext.request.contextPath}/letan/cu-dan" class="nav-item ${activeMenu == 'cu-dan' ? 'active' : ''}">
             👥 <span>Quản lý cư dân & Khách thuê</span>
         </a>
+        <a href="${pageContext.request.contextPath}/letan/duyet-tien-ich" class="nav-item ${activeMenu == 'duyet-tien-ich' ? 'active' : ''}">
+            🏊 <span>Duyệt đặt tiện ích</span>
+        </a>
         <a href="${pageContext.request.contextPath}/letan/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
             ⏱️ <span>Chấm công của tôi</span>
         </a>
