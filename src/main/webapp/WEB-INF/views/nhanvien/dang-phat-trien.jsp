@@ -8,8 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
-        body { background-color: #F8FAFC; font-family: 'Be Vietnam Pro', sans-serif; }
-        .container-box { max-width: 600px; margin: 80px auto; background: #FFF; border-radius: 12px; padding: 48px; border: 1px solid #E2E8F0; box-shadow: 0 4px 12px rgba(0,0,0,0.04); text-align: center; }
+        body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container-box { max-width: 600px; margin: 80px auto; background: #FFF; border-radius: 12px; padding: 48px; border: 1px solid #EAE3D2; box-shadow: 0 4px 12px rgba(0,0,0,0.04); text-align: center; }
     </style>
 </head>
 <body>

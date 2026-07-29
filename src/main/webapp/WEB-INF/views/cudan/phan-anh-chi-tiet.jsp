@@ -9,9 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-cudan.css">
     <style>
-        .timeline { border-left: 3px solid #2563EB; padding-left: 20px; margin-left: 10px; }
+        .timeline { border-left: 3px solid #B98A46; padding-left: 20px; margin-left: 10px; }
         .timeline-item { position: relative; margin-bottom: 20px; }
-        .timeline-item::before { content: ''; position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; background: #2563EB; border-radius: 50%; }
+        .timeline-item::before { content: ''; position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; background: #B98A46; border-radius: 50%; }
     </style>
 </head>
 <body>

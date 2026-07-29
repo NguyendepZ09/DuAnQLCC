@@ -68,6 +68,9 @@ public class KeToanThanhToanServlet extends HttpServlet {
             if (err == null) {
                 String msg = URLEncoder.encode("Ghi nhận giao dịch thanh toán thành công!", StandardCharsets.UTF_8);
                 resp.sendRedirect(req.getContextPath() + "/ketoan/thanh-toan?msg=" + msg);
+            } else if (err.startsWith("⚠️")) {
+                String msg = URLEncoder.encode("Ghi nhận giao dịch thành công! " + err, StandardCharsets.UTF_8);
+                resp.sendRedirect(req.getContextPath() + "/ketoan/thanh-toan?msg=" + msg);
             } else {
                 String errMsg = URLEncoder.encode(err, StandardCharsets.UTF_8);
                 resp.sendRedirect(req.getContextPath() + "/ketoan/thanh-toan?error=" + errMsg);

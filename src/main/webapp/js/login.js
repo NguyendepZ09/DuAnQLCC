@@ -21,7 +21,7 @@ const roleConfig = {
     formLede: "Xem thông báo, gửi phản ánh sự cố, xem/thanh toán hóa đơn & đặt tiện ích công cộng.",
     placeholder: "cudan.p101",
     demoUser: "cudan.p101",
-    demoPass: "CuDan@12345",
+    demoPass: "123456",
     helpNote: 'Chưa có tài khoản? <b>Liên hệ Ban quản lý</b> tại quầy lễ tân để được cấp tài khoản.'
   },
   letan: {
@@ -29,9 +29,9 @@ const roleConfig = {
     subText: "Lễ tân tiếp nhận phản ánh, phân loại mức ưu tiên, giao việc kỹ thuật và quản lý hồ sơ cư dân / thẻ từ.",
     formTitle: "Đăng nhập Lễ tân",
     formLede: "Dành cho nhân viên lễ tân tiếp nhận & phân loại yêu cầu cư dân.",
-    placeholder: "letan.poly",
-    demoUser: "letan.poly",
-    demoPass: "LeTan@12345",
+    placeholder: "letan.thi",
+    demoUser: "letan.thi",
+    demoPass: "123456",
     helpNote: 'Quên tài khoản làm việc? <b>Liên hệ Ban quản lý</b> để khôi phục.'
   },
   kythuat: {
@@ -39,9 +39,9 @@ const roleConfig = {
     subText: "Kỹ thuật viên nhận nhiệm vụ điều phối, cập nhật trạng thái sửa chữa kèm hình ảnh đối chiếu trước/sau.",
     formTitle: "Đăng nhập Kỹ thuật",
     formLede: "Dành cho đội ngũ kỹ thuật viên quản lý ca sửa chữa sự cố tòa nhà.",
-    placeholder: "kythuat.truong",
-    demoUser: "kythuat.truong",
-    demoPass: "KyThuat@12345",
+    placeholder: "kythuat.nam",
+    demoUser: "kythuat.nam",
+    demoPass: "123456",
     helpNote: 'Cần cấp lại phân quyền? <b>Liên hệ Quản trị hệ thống</b>.'
   },
   ketoan: {
@@ -49,9 +49,9 @@ const roleConfig = {
     subText: "Nhập chỉ số điện nước, xuất hóa đơn hàng loạt, tạo mã QR thanh toán tự động và kiểm soát dòng tiền.",
     formTitle: "Đăng nhập Kế toán",
     formLede: "Dành cho bộ phận kế toán đối soát công nợ & xuất hóa đơn dịch vụ.",
-    placeholder: "ketoan.hoa",
-    demoUser: "ketoan.hoa",
-    demoPass: "KeToan@12345",
+    placeholder: "ketoan.lan",
+    demoUser: "ketoan.lan",
+    demoPass: "123456",
     helpNote: 'Cần hỗ trợ module tài chính? <b>Liên hệ Trưởng ban quản lý</b>.'
   },
   baove: {
@@ -59,9 +59,9 @@ const roleConfig = {
     subText: "Tra cứu chủ xe qua biển số, quét mã QR các tầng khi tuần tra, báo cáo vi phạm và ghi nhật ký ca trực.",
     formTitle: "Đăng nhập Bảo vệ",
     formLede: "Dành cho nhân viên bảo vệ giám sát an ninh & nhật ký tuần tra.",
-    placeholder: "baove.nam",
-    demoUser: "baove.nam",
-    demoPass: "BaoVe@12345",
+    placeholder: "baove.hung",
+    demoUser: "baove.hung",
+    demoPass: "123456",
     helpNote: 'Gặp sự cố hệ thống thẻ từ? <b>Liên hệ Kỹ thuật viên trực ca</b>.'
   },
   banquanly: {
@@ -69,9 +69,9 @@ const roleConfig = {
     subText: "Thống kê doanh thu, theo dõi hiệu suất vận hành, quản lý sơ đồ 25 tầng x 8 căn hộ và cấp quyền tài khoản.",
     formTitle: "Đăng nhập Ban quản lý",
     formLede: "Dành cho Quản trị viên (Admin) và Ban giám đốc điều hành tòa nhà.",
-    placeholder: "admin.bql",
-    demoUser: "admin.bql",
-    demoPass: "AdminBql@2026",
+    placeholder: "bql.admin",
+    demoUser: "bql.admin",
+    demoPass: "123456",
     helpNote: 'Bảo mật hệ thống: Khóa/mở tài khoản nhanh khi có biến động nhân sự.'
   }
 };

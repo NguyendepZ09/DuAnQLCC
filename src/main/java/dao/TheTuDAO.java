@@ -17,6 +17,80 @@ public class TheTuDAO {
     ));
 
     @SuppressWarnings("unchecked")
+    public List<Object[]> findTheTheoCanHo(int maCanHo) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String sql = "SELECT t.soThe, t.ngayCap, t.ngayHetHan, t.trangThai, " +
+                         "       (SELECT STRING_AGG(tc.chucNang, ',') FROM dbo.theTu_ChucNang tc WHERE tc.maThe = t.id) AS dsChucNang " +
+                         "FROM dbo.theTu t " +
+                         "WHERE t.maCanHo = :mch " +
+                         "ORDER BY t.id DESC";
+
+            List<Object[]> rawList = em.createNativeQuery(sql)
+                    .setParameter("mch", maCanHo)
+                    .getResultList();
+
+            List<Object[]> result = new ArrayList<>();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate today = LocalDate.now();
+
+            for (Object[] r : rawList) {
+                Object[] row = new Object[6];
+                row[0] = r[0]; // soThe
+
+                // ngayCapText
+                LocalDate ngayCap = null;
+                if (r[1] instanceof java.sql.Date) ngayCap = ((java.sql.Date) r[1]).toLocalDate();
+                else if (r[1] instanceof LocalDate) ngayCap = (LocalDate) r[1];
+                row[1] = ngayCap != null ? ngayCap.format(dtf) : "—";
+
+                // ngayHetHanText & daHetHan
+                LocalDate ngayHetHan = null;
+                if (r[2] instanceof java.sql.Date) ngayHetHan = ((java.sql.Date) r[2]).toLocalDate();
+                else if (r[2] instanceof LocalDate) ngayHetHan = (LocalDate) r[2];
+
+                String ngayHetHanText = "Không thời hạn";
+                boolean daHetHan = false;
+                if (ngayHetHan != null) {
+                    ngayHetHanText = ngayHetHan.format(dtf);
+                    if (ngayHetHan.isBefore(today)) {
+                        daHetHan = true;
+                    }
+                }
+                row[2] = ngayHetHanText;
+                row[3] = r[3]; // trangThai
+                row[4] = r[4]; // chuoiChucNang
+                row[5] = daHetHan; // boolean
+
+                result.add(row);
+            }
+
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Object[]> findXeTheoCanHo(int maCanHo) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String sql = "SELECT x.bienSoXe, x.loaiXe, t.soThe " +
+                         "FROM dbo.quanLyXe x " +
+                         "JOIN dbo.canHo c ON c.id = x.maCanHo " +
+                         "LEFT JOIN dbo.theTu t ON t.id = x.maThe " +
+                         "WHERE x.maCanHo = :mch " +
+                         "ORDER BY x.id DESC";
+
+            return em.createNativeQuery(sql)
+                    .setParameter("mch", maCanHo)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Object[]> findAllThe(String tuKhoa, String trangThai) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

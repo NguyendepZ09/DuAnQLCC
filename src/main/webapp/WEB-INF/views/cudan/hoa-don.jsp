@@ -47,7 +47,7 @@
         <!-- 3 Thẻ Tổng Quan -->
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <div class="stat-card" style="background: linear-gradient(135deg, #1B2A4A, #2563EB);">
+                <div class="stat-card" style="background: linear-gradient(135deg, #1E3B34, #2d584e);">
                     <span class="label">📜 Tổng Số Hóa Đơn</span>
                     <span class="number">${tongSoHoaDon}</span>
                 </div>

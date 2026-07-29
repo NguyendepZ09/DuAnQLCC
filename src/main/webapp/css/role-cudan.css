@@ -1,11 +1,13 @@
+@import url('style.css');
+
 :root {
-    --cd-sidebar: #1B2A4A;
-    --cd-accent: #2563EB;
-    --cd-accent-2: #3B82F6;
-    --cd-bg: #F0F4F8;
-    --cd-border: #DCE6E0;
+    --cd-sidebar: #1E3B34;
+    --cd-accent: #B98A46;
+    --cd-accent-2: #B98A46;
+    --cd-bg: #F4EFE4;
+    --cd-border: #EAE3D2;
     --cd-muted: #6C757D;
-    --cd-text-dark: #1E293B;
+    --cd-text-dark: #16302A;
 }
 
 body {
@@ -146,6 +148,6 @@ body {
 }
 
 .btn-cd-primary:hover {
-    background-color: #1d4ed8;
+    background-color: #8F6A33;
     color: white;
 }

@@ -24,11 +24,11 @@
         .nav-item:hover, .nav-item.active { background: #B98A46; color: #FFF; }
         .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; }
         .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-x: hidden; }
-        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #DCE6E0; display: flex; justify-content: space-between; align-items: center; }
+        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #EAE3D2; display: flex; justify-content: space-between; align-items: center; }
         .top-header h2 { font-size: 1.4rem; color: #1E3B34; margin: 0; font-weight: 700; }
         .top-header .sub { font-size: 0.82rem; color: #6C757D; }
         .content-body { padding: 32px; }
-        .stat-card { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #DCE6E0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); height: 100%; }
+        .stat-card { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #EAE3D2; box-shadow: 0 4px 12px rgba(0,0,0,0.03); height: 100%; }
         .stat-card .title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6C757D; margin-bottom: 12px; }
         .stat-card .value { font-size: 1.6rem; color: #1E3B34; font-weight: 700; margin-bottom: 8px; }
         .chart-container { position: relative; height: 260px; width: 100%; }

@@ -22,11 +22,11 @@
         .nav-item:hover, .nav-item.active { background: #B98A46; color: #FFF; }
         .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; }
         .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-x: hidden; }
-        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #DCE6E0; display: flex; justify-content: space-between; align-items: center; }
+        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #EAE3D2; display: flex; justify-content: space-between; align-items: center; }
         .top-header h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; color: #1E3B34; margin: 0; }
         .top-header .sub { font-size: 0.82rem; color: #6C757D; }
         .content-body { padding: 32px; }
-        .card-custom { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #DCE6E0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .card-custom { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #EAE3D2; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
     </style>
 </head>
 <body>

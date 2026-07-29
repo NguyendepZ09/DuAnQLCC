@@ -1,5 +1,5 @@
 /* ==========================================================================
-   POLYBUILDING - INTRO PAGE SCRIPT
+   POLYBUILDING - INTRO PAGE SCRIPT (MVC COMPLIANT - AGGREGATED STATS ONLY)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,20 +25,57 @@ function initNavbarScroll() {
   checkScroll();
 }
 
-/* Floor diagram 25 floors x 8 apartments */
+/* Floor diagram 25 floors x 8 apartments — HIỂN THỊ TỔNG HỢP (KHÔNG LỘ SỐ PHÒNG) */
 function initFloorDiagram() {
   const towerGrid = document.getElementById('towerGrid');
+  if (!towerGrid) return;
+
+  if (window.BUILDING_STATS && typeof window.BUILDING_STATS === 'object') {
+    renderFloorGrid(towerGrid, window.BUILDING_STATS);
+  } else {
+    renderFloorGridFallback(towerGrid);
+  }
+}
+
+function renderFloorGrid(towerGrid, stats) {
   const countOccupiedEl = document.getElementById('countOccupied');
   const countVacantEl = document.getElementById('countVacant');
   const countMaintEl = document.getElementById('countMaint');
 
-  if (!towerGrid) return;
+  const dangO = stats.dangO != null ? stats.dangO : 150;
+  const trong = stats.trong != null ? stats.trong : 40;
+  const baoTri = stats.baoTri != null ? stats.baoTri : 10;
 
-  let occupiedCount = 0;
-  let vacantCount = 0;
-  let maintCount = 0;
+  if (countOccupiedEl) countOccupiedEl.textContent = dangO;
+  if (countVacantEl) countVacantEl.textContent = trong;
+  if (countMaintEl) countMaintEl.textContent = baoTri;
 
-  // Render 25 floors
+  towerGrid.innerHTML = '';
+
+  // Tạo mảng 200 vị trí mô phỏng theo số liệu tổng hợp
+  const totalBoxes = 200;
+  const boxStatuses = new Array(totalBoxes);
+
+  // Phân bổ trạng thái theo tỷ lệ tổng hợp (deterministic seed)
+  let oCount = 0, mCount = 0, vCount = 0;
+
+  for (let i = 0; i < totalBoxes; i++) {
+    // Thuật toán rải đều 3 trạng thái theo chỉ số ô
+    if ((i * 7 + 3) % 20 < (baoTri * 20 / totalBoxes) && mCount < baoTri) {
+      boxStatuses[i] = 'maintenance';
+      mCount++;
+    } else if (oCount < dangO) {
+      boxStatuses[i] = 'occupied';
+      oCount++;
+    } else {
+      boxStatuses[i] = 'vacant';
+      vCount++;
+    }
+  }
+
+  let index = 0;
+
+  // Render từ tầng 25 xuống tầng 1
   for (let floor = 25; floor >= 1; floor--) {
     const floorCol = document.createElement('div');
     floorCol.className = 'floor-column';
@@ -48,54 +85,45 @@ function initFloorDiagram() {
     floorNum.textContent = `T${floor}`;
     floorCol.appendChild(floorNum);
 
-    // 8 apartments per floor
+    // 8 căn mỗi tầng
     for (let aptIndex = 1; aptIndex <= 8; aptIndex++) {
       const aptBox = document.createElement('div');
       aptBox.className = 'apt-box';
 
-      // Determine status pseudo-randomly for realistic view
-      const rand = Math.random();
-      let status = 'occupied';
-      let statusText = 'Đã có chủ ở';
-      let residentName = `Hộ gia đình P.${floor}0${aptIndex}`;
+      const st = boxStatuses[index++] || 'vacant';
+      aptBox.classList.add(st);
 
-      if (rand < 0.22) {
-        status = 'vacant';
-        statusText = 'Căn hộ trống (Sẵn sàng bán/cho thuê)';
-        residentName = 'Đang trống';
-        vacantCount++;
-      } else if (rand < 0.27) {
-        status = 'maintenance';
-        statusText = 'Đang bảo trì / Sửa chữa';
-        residentName = 'Đang sửa chữa';
-        maintCount++;
-      } else {
-        occupiedCount++;
-      }
-
-      aptBox.classList.add(status);
-
-      const aptCode = `P.${floor}${aptIndex < 10 ? '0' + aptIndex : aptIndex}`;
-      const area = 65 + (aptIndex % 4) * 15; // 65m², 80m², 95m², 110m²
+      let statusText = 'Căn hộ trống (Sẵn sàng cho thuê)';
+      if (st === 'occupied') statusText = 'Đã có cư dân ở';
+      else if (st === 'maintenance') statusText = 'Đang bảo trì';
 
       const tooltip = document.createElement('div');
       tooltip.className = 'apt-tooltip';
-      tooltip.innerHTML = `<strong>${aptCode}</strong> (${area}m²)<br>${statusText}`;
+      tooltip.innerHTML = `<strong>Tháp PolyBuilding — Tầng ${floor}</strong><br>${statusText}`;
 
       aptBox.appendChild(tooltip);
       floorCol.appendChild(aptBox);
 
       aptBox.addEventListener('click', () => {
-        showToast(`Căn hộ ${aptCode}: ${statusText} | Diện tích: ${area}m²`);
+        showToast(`Căn hộ Tầng ${floor}: ${statusText}`);
       });
     }
 
     towerGrid.appendChild(floorCol);
   }
+}
 
-  if (countOccupiedEl) countOccupiedEl.textContent = occupiedCount;
-  if (countVacantEl) countVacantEl.textContent = vacantCount;
-  if (countMaintEl) countMaintEl.textContent = maintCount;
+/* Fallback nếu không có BUILDING_STATS */
+function renderFloorGridFallback(towerGrid) {
+  const countOccupiedEl = document.getElementById('countOccupied');
+  const countVacantEl = document.getElementById('countVacant');
+  const countMaintEl = document.getElementById('countMaint');
+
+  if (countOccupiedEl) countOccupiedEl.textContent = '150';
+  if (countVacantEl) countVacantEl.textContent = '40';
+  if (countMaintEl) countMaintEl.textContent = '10';
+
+  renderFloorGrid(towerGrid, { tongCan: 200, dangO: 150, trong: 40, baoTri: 10 });
 }
 
 /* Smooth Scrolling */

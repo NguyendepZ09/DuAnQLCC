@@ -89,7 +89,7 @@
             align-items: center;
             gap: 10px;
             padding: 10px 15px;
-            color: #E2E8F0;
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             border-radius: 8px;
             transition: all 0.2s;
@@ -200,7 +200,7 @@
 
         .row-chuyen-di {
             opacity: 0.6;
-            background-color: #F8FAFC;
+            background-color: #F4EFE4;
         }
     </style>
 </head>

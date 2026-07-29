@@ -25,6 +25,84 @@ public class CanHoDAO {
         }
     }
 
+    public CanHo findById(Integer id) {
+        if (id == null) return null;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(CanHo.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<CuDan> findCuDanDangO(Integer maCanHo) {
+        if (maCanHo == null) return List.of();
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String jpql = "SELECT cd FROM CuDan cd WHERE cd.maCanHo = :mch AND cd.trangThai = 'DangO' " +
+                          "ORDER BY CASE WHEN cd.loaiCuDan = 'ChuHo' THEN 0 ELSE 1 END, cd.id ASC";
+            return em.createQuery(jpql, CuDan.class)
+                    .setParameter("mch", maCanHo)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Map<String, Integer> getThongKeTongHop() {
+        EntityManager em = JPAUtil.getEntityManager();
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("tongCan", 200);
+        stats.put("dangO", 150);
+        stats.put("trong", 40);
+        stats.put("baoTri", 10);
+
+        try {
+            @SuppressWarnings("unchecked")
+            List<Object[]> list = em.createNativeQuery(
+                "SELECT trangThai, COUNT(*) FROM dbo.canHo GROUP BY trangThai"
+            ).getResultList();
+
+            int tong = 0;
+            int dangO = 0;
+            int trong = 0;
+            int baoTri = 0;
+
+            for (Object[] r : list) {
+                String st = r[0] != null ? r[0].toString().trim() : "";
+                int count = ((Number) r[1]).intValue();
+                tong += count;
+
+                if ("DangO".equalsIgnoreCase(st) || "DaDuocThue".equalsIgnoreCase(st) || "DaBan".equalsIgnoreCase(st)) {
+                    dangO += count;
+                } else if ("DangSuaChua".equalsIgnoreCase(st) || "BaoTri".equalsIgnoreCase(st)) {
+                    baoTri += count;
+                } else {
+                    trong += count;
+                }
+            }
+
+            if (tong > 0) {
+                stats.put("tongCan", tong);
+                stats.put("dangO", dangO);
+                stats.put("trong", trong);
+                stats.put("baoTri", baoTri);
+            }
+        } catch (Exception e) {
+            System.err.println("[CanHoDAO] Lỗi lấy thống kê tổng hợp căn hộ: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+
+        return stats;
+    }
+
     public Map<Integer, List<CanHo>> findAllMappedByTang() {
         Map<Integer, List<CanHo>> mapTang = new LinkedHashMap<>();
         

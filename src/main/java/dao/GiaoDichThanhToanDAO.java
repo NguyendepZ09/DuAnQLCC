@@ -44,6 +44,72 @@ public class GiaoDichThanhToanDAO {
         }
     }
 
+    public List<Map<String, Object>> findPendingTransactionsMapped() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String sql = "SELECT " +
+                "  gd.id, " +
+                "  c.soPhong, " +
+                "  cd.hoTen AS tenCuDan, " +
+                "  h.thang, " +
+                "  h.nam, " +
+                "  gd.soTien, " +
+                "  gd.phuongThuc, " +
+                "  gd.maGiaoDichNganHang, " +
+                "  gd.thoiGianTao " +
+                "FROM dbo.giaoDichThanhToan gd " +
+                "JOIN dbo.hoaDon h ON h.id = gd.maHoaDon " +
+                "JOIN dbo.canHo c ON c.id = h.maCanHo " +
+                "LEFT JOIN dbo.cuDan cd ON cd.id = gd.maCuDan " +
+                "WHERE gd.trangThai = 'ChoXacNhan' " +
+                "ORDER BY gd.thoiGianTao DESC";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> rawList = em.createNativeQuery(sql).getResultList();
+            List<Map<String, Object>> result = new ArrayList<>();
+            java.text.NumberFormat currencyFmt = java.text.NumberFormat.getInstance(new java.util.Locale("vi", "VN"));
+            java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            for (Object[] r : rawList) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", r[0]);
+                map.put("soPhong", "P." + (r[1] != null ? r[1].toString().trim() : ""));
+                map.put("tenCuDan", (r[2] != null && !r[2].toString().trim().isEmpty()) ? r[2].toString().trim() : "—");
+                
+                int thang = r[3] != null ? ((Number) r[3]).intValue() : 0;
+                int nam = r[4] != null ? ((Number) r[4]).intValue() : 0;
+                map.put("kyHoaDon", "Tháng " + thang + "/" + nam);
+
+                BigDecimal soTien = (r[5] instanceof BigDecimal) ? (BigDecimal) r[5] : (r[5] != null ? new BigDecimal(r[5].toString()) : BigDecimal.ZERO);
+                map.put("soTien", soTien);
+                map.put("soTienText", currencyFmt.format(soTien) + "đ");
+
+                String pt = r[6] != null ? r[6].toString().trim() : "";
+                map.put("phuongThuc", pt);
+                map.put("phuongThucText", util.DisplayUtil.getPhuongThucText(pt));
+
+                map.put("maGiaoDichNganHang", r[7] != null ? r[7].toString().trim() : "—");
+
+                String tgText = "—";
+                if (r[8] instanceof java.time.LocalDateTime) {
+                    tgText = ((java.time.LocalDateTime) r[8]).format(dtf);
+                } else if (r[8] instanceof java.sql.Timestamp) {
+                    tgText = ((java.sql.Timestamp) r[8]).toLocalDateTime().format(dtf);
+                }
+                map.put("thoiGianTaoText", tgText);
+
+                result.add(map);
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
     public BigDecimal tinhSoConNo(int maHoaDon) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -302,6 +368,41 @@ public class GiaoDichThanhToanDAO {
                 return "Hóa đơn này đã được thanh toán hoàn tất.";
             }
 
+            // Layer 1: Cảnh báo nếu hóa đơn đó ĐÃ CÓ giao dịch 'ChoXacNhan'
+            List<GiaoDichThanhToan> pendingList = em.createQuery(
+                "SELECT g FROM GiaoDichThanhToan g WHERE g.maHoaDon = :mhd AND g.trangThai = 'ChoXacNhan' ORDER BY g.id DESC",
+                GiaoDichThanhToan.class
+            ).setParameter("mhd", maHoaDon).getResultList();
+
+            String warningMsg = null;
+            if (!pendingList.isEmpty()) {
+                GiaoDichThanhToan pGd = pendingList.get(0);
+                int pId = pGd.getId();
+                String pPt = util.DisplayUtil.getPhuongThucText(pGd.getPhuongThuc());
+                BigDecimal pSt = pGd.getSoTien();
+                java.text.NumberFormat curFmt = java.text.NumberFormat.getInstance(new java.util.Locale("vi", "VN"));
+                warningMsg = "⚠️ Cảnh báo: Hóa đơn này đã có giao dịch #" + pId + " (" + pPt + ", " + curFmt.format(pSt) + "đ) đang chờ xác nhận. Kiểm tra lại trước khi tạo thêm.";
+            }
+
+            // Calculate remaining debt
+            List<BigDecimal> listDaThu = em.createQuery(
+                "SELECT SUM(g.soTien) FROM GiaoDichThanhToan g WHERE g.maHoaDon = :mhd AND g.trangThai = 'ThanhCong'", 
+                BigDecimal.class
+            ).setParameter("mhd", h.getId()).getResultList();
+            BigDecimal daThu = (listDaThu != null && !listDaThu.isEmpty() && listDaThu.get(0) != null) ? listDaThu.get(0) : BigDecimal.ZERO;
+            BigDecimal tongTienHn = (h.getTongTien() != null) ? BigDecimal.valueOf(h.getTongTien()) : BigDecimal.ZERO;
+            BigDecimal conNo = tongTienHn.subtract(daThu);
+            if (conNo.compareTo(BigDecimal.ZERO) < 0) conNo = BigDecimal.ZERO;
+
+            // Layer 2: Hard Block check if direct confirmation (TienMat)
+            if ("TienMat".equalsIgnoreCase(phuongThuc)) {
+                if (soTien.compareTo(conNo) > 0) {
+                    tx.rollback();
+                    java.text.NumberFormat curFmt = java.text.NumberFormat.getInstance(new java.util.Locale("vi", "VN"));
+                    return "Không thể xác nhận: hóa đơn còn nợ " + curFmt.format(conNo) + "đ nhưng giao dịch này là " + curFmt.format(soTien) + "đ. Hóa đơn đã được thanh toán đủ hoặc số tiền không khớp.";
+                }
+            }
+
             // Find resident ID (owner ChuHo)
             Integer maCuDan = null;
             List<Integer> cdList = em.createQuery(
@@ -324,6 +425,7 @@ public class GiaoDichThanhToanDAO {
                 gd.setTrangThai("ThanhCong");
                 gd.setThoiGianXacNhan(LocalDateTime.now());
                 em.persist(gd);
+                em.flush();
 
                 // Update invoice status if total paid >= invoice total
                 updateHoaDonStatusIfPaid(em, h);
@@ -331,10 +433,11 @@ public class GiaoDichThanhToanDAO {
                 gd.setTrangThai("ChoXacNhan");
                 gd.setThoiGianXacNhan(null);
                 em.persist(gd);
+                em.flush();
             }
 
             tx.commit();
-            return null;
+            return warningMsg;
         } catch (Exception e) {
             if (tx.isActive()) tx.rollback();
             String msg = extractRootMessage(e);
@@ -364,14 +467,35 @@ public class GiaoDichThanhToanDAO {
                 return "Giao dịch này đã được xử lý.";
             }
 
+            HoaDon h = em.find(HoaDon.class, gd.getMaHoaDon());
+            if (h == null) {
+                tx.rollback();
+                return "Không tìm thấy hóa đơn mã #" + gd.getMaHoaDon();
+            }
+
+            // Layer 2: Hard Block - Tổng đã thu không bao giờ được vượt tongTien
+            List<BigDecimal> listDaThu = em.createQuery(
+                "SELECT SUM(g.soTien) FROM GiaoDichThanhToan g WHERE g.maHoaDon = :mhd AND g.trangThai = 'ThanhCong'", 
+                BigDecimal.class
+            ).setParameter("mhd", h.getId()).getResultList();
+
+            BigDecimal daThu = (listDaThu != null && !listDaThu.isEmpty() && listDaThu.get(0) != null) ? listDaThu.get(0) : BigDecimal.ZERO;
+            BigDecimal tongTienHn = (h.getTongTien() != null) ? BigDecimal.valueOf(h.getTongTien()) : BigDecimal.ZERO;
+            BigDecimal conNo = tongTienHn.subtract(daThu);
+            if (conNo.compareTo(BigDecimal.ZERO) < 0) conNo = BigDecimal.ZERO;
+
+            if (gd.getSoTien() != null && gd.getSoTien().compareTo(conNo) > 0) {
+                tx.rollback();
+                java.text.NumberFormat curFmt = java.text.NumberFormat.getInstance(new java.util.Locale("vi", "VN"));
+                return "Không thể xác nhận: hóa đơn còn nợ " + curFmt.format(conNo) + "đ nhưng giao dịch này là " + curFmt.format(gd.getSoTien()) + "đ. Hóa đơn đã được thanh toán đủ hoặc số tiền không khớp.";
+            }
+
             gd.setTrangThai("ThanhCong");
             gd.setThoiGianXacNhan(LocalDateTime.now());
             em.merge(gd);
+            em.flush();
 
-            HoaDon h = em.find(HoaDon.class, gd.getMaHoaDon());
-            if (h != null) {
-                updateHoaDonStatusIfPaid(em, h);
-            }
+            updateHoaDonStatusIfPaid(em, h);
 
             tx.commit();
             return null;
@@ -407,6 +531,7 @@ public class GiaoDichThanhToanDAO {
             gd.setTrangThai("ThatBai");
             gd.setThoiGianXacNhan(LocalDateTime.now());
             em.merge(gd);
+            em.flush();
 
             tx.commit();
             return null;
@@ -422,6 +547,7 @@ public class GiaoDichThanhToanDAO {
     }
 
     private void updateHoaDonStatusIfPaid(EntityManager em, HoaDon h) {
+        em.flush();
         List<BigDecimal> list = em.createQuery(
             "SELECT SUM(g.soTien) FROM GiaoDichThanhToan g WHERE g.maHoaDon = :maHoaDon AND g.trangThai = 'ThanhCong'", 
             BigDecimal.class
@@ -432,6 +558,13 @@ public class GiaoDichThanhToanDAO {
         if (tongDaTra.compareTo(tongTienHn) >= 0) {
             h.setTrangThaiThanhToan("DaThanhToan");
             em.merge(h);
+            em.flush();
+
+            // Layer 3: Tự động hủy các giao dịch 'ChoXacNhan' còn lại của hóa đơn
+            em.createQuery(
+                "UPDATE GiaoDichThanhToan g SET g.trangThai = 'ThatBai', g.ghiChuDoiSoat = 'Tự động hủy — hóa đơn đã thanh toán đủ' WHERE g.maHoaDon = :mhd AND g.trangThai = 'ChoXacNhan'"
+            ).setParameter("mhd", h.getId()).executeUpdate();
+            em.flush();
         }
     }
 

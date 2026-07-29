@@ -145,24 +145,28 @@
         }
 
         .stat-card {
+            background: #FFFFFF;
+            border: 1px solid #EAE3D2;
             border-radius: 12px;
             padding: 18px;
-            color: white;
+            color: var(--text-dark);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             min-height: 100px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .stat-card .number {
             font-size: 1.6rem;
             font-weight: 700;
+            color: #1E3B34;
         }
 
         .stat-card .label {
             font-size: 0.82rem;
-            opacity: 0.9;
+            color: #6C757D;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -186,25 +190,25 @@
         <!-- 4 Thẻ Thống Kê Chấm Công Cá Nhân -->
         <div class="row g-3 mb-4">
             <div class="col-md-3">
-                <div class="stat-card" style="background: linear-gradient(135deg, #1E3B34, #2d584e);">
+                <div class="stat-card">
                     <span class="label">⏱️ Tổng Ca Làm Việc</span>
                     <span class="number">${thongKe.soNgayCong}</span>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card" style="background: linear-gradient(135deg, #2e7d32, #43a047);">
+                <div class="stat-card">
                     <span class="label">⏳ Tổng Giờ Làm Lũy Kế</span>
                     <span class="number">${thongKe.tongGioLam} giờ</span>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card" style="background: linear-gradient(135deg, #f57c00, #ff9800);">
+                <div class="stat-card">
                     <span class="label">☀️ Ca Sáng / 🌤️ Ca Chiều</span>
                     <span class="number">${thongKe.soCaSang} / ${thongKe.soCaChieu}</span>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card" style="background: linear-gradient(135deg, #4527a0, #5e35b1);">
+                <div class="stat-card">
                     <span class="label">🌙 Ca Đêm (22:00-06:00)</span>
                     <span class="number">${thongKe.soCaDem}</span>
                 </div>

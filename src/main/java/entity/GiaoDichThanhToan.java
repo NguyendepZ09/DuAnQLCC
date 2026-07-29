@@ -36,6 +36,12 @@ public class GiaoDichThanhToan {
     @Column(name = "thoiGianXacNhan")
     private LocalDateTime thoiGianXacNhan;
 
+    @Column(name = "soThamChieuSaoKe")
+    private String soThamChieuSaoKe;
+
+    @Column(name = "ghiChuDoiSoat")
+    private String ghiChuDoiSoat;
+
     public GiaoDichThanhToan() {}
 
     public Integer getId() { return id; }
@@ -64,4 +70,10 @@ public class GiaoDichThanhToan {
 
     public LocalDateTime getThoiGianXacNhan() { return thoiGianXacNhan; }
     public void setThoiGianXacNhan(LocalDateTime thoiGianXacNhan) { this.thoiGianXacNhan = thoiGianXacNhan; }
+
+    public String getSoThamChieuSaoKe() { return soThamChieuSaoKe; }
+    public void setSoThamChieuSaoKe(String soThamChieuSaoKe) { this.soThamChieuSaoKe = soThamChieuSaoKe; }
+
+    public String getGhiChuDoiSoat() { return ghiChuDoiSoat; }
+    public void setGhiChuDoiSoat(String ghiChuDoiSoat) { this.ghiChuDoiSoat = ghiChuDoiSoat; }
 }

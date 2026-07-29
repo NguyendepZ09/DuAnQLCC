@@ -8,6 +8,35 @@
   <meta name="description" content="Cổng đăng nhập hệ thống quản lý chung cư Polybuilding dành cho Cư dân, Lễ tân, Kỹ thuật, Kế toán, Bảo vệ và Ban quản lý.">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+  <style>
+    /* Custom Ultra-Thin & Sleek Scrollbar (Thanh cuộn siêu mỏng 4px) */
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    ::-webkit-scrollbar {
+      width: 4px !important;
+      height: 4px !important;
+    }
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    ::-webkit-scrollbar-thumb {
+      background: rgba(27, 67, 50, 0.35) !important;
+      border-radius: 99px !important;
+    }
+    html::-webkit-scrollbar-thumb:hover,
+    body::-webkit-scrollbar-thumb:hover,
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(27, 67, 50, 0.75) !important;
+    }
+    * {
+      scrollbar-width: thin !important;
+      scrollbar-color: rgba(27, 67, 50, 0.35) transparent !important;
+    }
+  </style>
 </head>
 <body>
 

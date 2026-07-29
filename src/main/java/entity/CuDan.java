@@ -123,4 +123,9 @@ public class CuDan {
     public void setNgayChuyenDen(java.time.LocalDate ngayChuyenDen) {
         this.ngayChuyenDen = ngayChuyenDen;
     }
+
+    public String getNgayChuyenDenText() {
+        if (ngayChuyenDen == null) return "—";
+        return ngayChuyenDen.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
 }

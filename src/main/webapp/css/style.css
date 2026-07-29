@@ -45,6 +45,38 @@ html {
   font-size: 16px;
 }
 
+/* Custom Ultra-Thin & Sleek Scrollbar (Thanh cuộn siêu mỏng 4px tinh tế) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+::-webkit-scrollbar {
+  width: 4px !important;
+  height: 4px !important;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb {
+  background: rgba(27, 67, 50, 0.35) !important;
+  border-radius: 99px !important;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(27, 67, 50, 0.75) !important;
+}
+
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(27, 67, 50, 0.35) transparent !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -199,3 +231,18 @@ button, input, select, textarea {
 .toast.error {
   border-left-color: var(--danger);
 }
+
+/* Thanh cuộn mỏng 4px, đồng bộ toàn hệ thống */
+html::-webkit-scrollbar, body::-webkit-scrollbar, ::-webkit-scrollbar {
+  width: 4px; height: 4px;
+}
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb {
+  background: rgba(30, 59, 52, 0.35); border-radius: 99px;
+}
+html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 59, 52, 0.75);
+}
+* { scrollbar-width: thin; scrollbar-color: rgba(30, 59, 52, 0.35) transparent; }

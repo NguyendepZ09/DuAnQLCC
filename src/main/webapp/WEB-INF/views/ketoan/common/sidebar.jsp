@@ -28,6 +28,9 @@
         <a href="${pageContext.request.contextPath}/ketoan/thanh-toan" class="nav-item ${activeMenu == 'xac-nhan' ? 'active' : ''}">
             💳 <span>Xác nhận thanh toán</span>
         </a>
+        <a href="${pageContext.request.contextPath}/ketoan/doi-soat" class="nav-item ${activeMenu == 'doi-soat' ? 'active' : ''}">
+            📊 <span>Đối soát sao kê</span>
+        </a>
         <a href="${pageContext.request.contextPath}/ketoan/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
             ⏱️ <span>Chấm công của tôi</span>
         </a>

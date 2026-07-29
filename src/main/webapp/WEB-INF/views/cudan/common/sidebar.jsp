@@ -22,6 +22,9 @@
                 <span class="badge bg-danger rounded-pill ms-auto">${unreadCount}</span>
             </c:if>
         </a>
+        <a href="${pageContext.request.contextPath}/cudan/can-ho" class="nav-item ${activeMenu == 'can-ho' ? 'active' : ''}">
+            🏠 <span>Hồ sơ căn hộ</span>
+        </a>
         <a href="${pageContext.request.contextPath}/cudan/phan-anh" class="nav-item ${activeMenu == 'phan-anh' ? 'active' : ''}">
             🛠️ <span>Phản ánh sự cố</span>
         </a>
