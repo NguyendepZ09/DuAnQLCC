@@ -17,8 +17,6 @@
         <class>entity.ThongBao</class>
         <class>entity.BinhChon</class>
         <class>entity.PhuongAnBinhChon</class>
-
-        <!-- Newly Registered Entities -->
         <class>entity.PhanAnhSuCo</class>
         <class>entity.LichSuXuLySuCo</class>
         <class>entity.PhieuBau</class>
@@ -27,6 +25,9 @@
         <class>entity.ChiSoTieuThu</class>
         <class>entity.ChamCong</class>
         <class>entity.NhatKyCaTruc</class>
+        <class>entity.NhatKyTuanTra</class>
+        <class>entity.QuanLyXe</class>
+        <class>entity.TheTu</class>
         <class>entity.DanhMucTienIch</class>
         <class>entity.DatLichTienIch</class>
         <class>entity.DanhMucBoPhan</class>

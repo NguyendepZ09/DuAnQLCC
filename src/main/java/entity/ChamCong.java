@@ -1,7 +1,8 @@
 package entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chamCong")
@@ -14,17 +15,14 @@ public class ChamCong {
     @Column(name = "maNhanVien")
     private Integer maNhanVien;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "ngayLam")
-    private Date ngayLam;
+    private LocalDate ngayLam;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gioVao")
-    private Date gioVao;
+    private LocalDateTime gioVao;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gioRa")
-    private Date gioRa;
+    private LocalDateTime gioRa;
 
     @Column(name = "caLam")
     private String caLam;
@@ -37,14 +35,14 @@ public class ChamCong {
     public Integer getMaNhanVien() { return maNhanVien; }
     public void setMaNhanVien(Integer maNhanVien) { this.maNhanVien = maNhanVien; }
 
-    public Date getNgayLam() { return ngayLam; }
-    public void setNgayLam(Date ngayLam) { this.ngayLam = ngayLam; }
+    public LocalDate getNgayLam() { return ngayLam; }
+    public void setNgayLam(LocalDate ngayLam) { this.ngayLam = ngayLam; }
 
-    public Date getGioVao() { return gioVao; }
-    public void setGioVao(Date gioVao) { this.gioVao = gioVao; }
+    public LocalDateTime getGioVao() { return gioVao; }
+    public void setGioVao(LocalDateTime gioVao) { this.gioVao = gioVao; }
 
-    public Date getGioRa() { return gioRa; }
-    public void setGioRa(Date gioRa) { this.gioRa = gioRa; }
+    public LocalDateTime getGioRa() { return gioRa; }
+    public void setGioRa(LocalDateTime gioRa) { this.gioRa = gioRa; }
 
     public String getCaLam() { return caLam; }
     public void setCaLam(String caLam) { this.caLam = caLam; }

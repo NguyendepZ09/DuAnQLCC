@@ -1,7 +1,8 @@
 package entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "nhatKyCaTruc")
@@ -17,9 +18,8 @@ public class NhatKyCaTruc {
     @Column(name = "caTruc")
     private String caTruc;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "ngayTruc")
-    private Date ngayTruc;
+    private LocalDate ngayTruc;
 
     @Column(name = "noiDung")
     private String noiDung;
@@ -30,9 +30,8 @@ public class NhatKyCaTruc {
     @Column(name = "maNguoiNhanCa")
     private Integer maNguoiNhanCa;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "thoiGianBanGiao")
-    private Date thoiGianBanGiao;
+    private LocalDateTime thoiGianBanGiao;
 
     public NhatKyCaTruc() {}
 
@@ -45,8 +44,8 @@ public class NhatKyCaTruc {
     public String getCaTruc() { return caTruc; }
     public void setCaTruc(String caTruc) { this.caTruc = caTruc; }
 
-    public Date getNgayTruc() { return ngayTruc; }
-    public void setNgayTruc(Date ngayTruc) { this.ngayTruc = ngayTruc; }
+    public LocalDate getNgayTruc() { return ngayTruc; }
+    public void setNgayTruc(LocalDate ngayTruc) { this.ngayTruc = ngayTruc; }
 
     public String getNoiDung() { return noiDung; }
     public void setNoiDung(String noiDung) { this.noiDung = noiDung; }
@@ -57,6 +56,6 @@ public class NhatKyCaTruc {
     public Integer getMaNguoiNhanCa() { return maNguoiNhanCa; }
     public void setMaNguoiNhanCa(Integer maNguoiNhanCa) { this.maNguoiNhanCa = maNguoiNhanCa; }
 
-    public Date getThoiGianBanGiao() { return thoiGianBanGiao; }
-    public void setThoiGianBanGiao(Date thoiGianBanGiao) { this.thoiGianBanGiao = thoiGianBanGiao; }
+    public LocalDateTime getThoiGianBanGiao() { return thoiGianBanGiao; }
+    public void setThoiGianBanGiao(LocalDateTime thoiGianBanGiao) { this.thoiGianBanGiao = thoiGianBanGiao; }
 }

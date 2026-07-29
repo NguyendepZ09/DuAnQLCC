@@ -181,7 +181,7 @@ public class LoginServlet extends HttpServlet {
                         return contextPath + "/ketoan/chi-so";
                     case "BaoVe":
                     case "BV":
-                        return contextPath + "/baove/dang-phat-trien";
+                        return contextPath + "/baove/dashboard";
                     case "BanQuanLy":
                     case "MAIN":
                         return contextPath + "/banquanly/binh-chon";

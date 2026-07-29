@@ -205,6 +205,61 @@ public class DisplayUtil {
         }
     }
 
+    // --- BỔ SUNG CÁC HÀM CHO ROLE BẢO VỆ ---
+
+    public static String getCaTrucText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "Sang": return "Ca sáng (06:00-14:00)";
+            case "Chieu": return "Ca chiều (14:00-22:00)";
+            case "Dem": return "Ca đêm (22:00-06:00)";
+            default: return code;
+        }
+    }
+
+    public static String getCaTrucBadgeClass(String code) {
+        if (code == null) return "bg-secondary";
+        switch (code) {
+            case "Sang": return "bg-warning text-dark";
+            case "Chieu": return "bg-info text-dark";
+            case "Dem": return "bg-dark text-white";
+            default: return "bg-secondary";
+        }
+    }
+
+    public static String getTrangThaiTheText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "DangSuDung": return "Đang sử dụng";
+            case "TamKhoa": return "Tạm khóa";
+            case "DaThuHoi": return "Đã thu hồi";
+            default: return code;
+        }
+    }
+
+    public static String getLoaiXeText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "OTo": return "Ô tô";
+            case "XeMay": return "Xe máy";
+            case "XeDap": return "Xe đạp";
+            default: return code;
+        }
+    }
+
+    public static String getChucNangTheText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "CuaChinh": return "Cửa chính";
+            case "ThangMay": return "Thang máy";
+            case "BaiXeOTo": return "Bãi xe ô tô";
+            case "BaiXeMay": return "Bãi xe máy";
+            case "HoBoi": return "Hồ bơi";
+            case "PhongGym": return "Phòng Gym";
+            default: return code;
+        }
+    }
+
     public static String formatTien(BigDecimal tien) {
         if (tien == null) return "0đ";
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("vi", "VN"));
