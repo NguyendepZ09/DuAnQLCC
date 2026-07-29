@@ -3,8 +3,8 @@ package util;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 /**
- * Utility mã hóa và kiểm tra mật khẩu sử dụng BCrypt (at.favre.lib:bcrypt)
- * Hỗ trợ fallback so sánh chuỗi plain-text nếu dữ liệu seed DB chứa mật khẩu thô.
+ * Utility mã hóa và kiểm tra mật khẩu sử dụng BCrypt (at.favre.lib:bcrypt).
+ * Đảm bảo xác thực nghiêm ngặt BCrypt, không chấp nhận mật khẩu thô trong DB.
  */
 public class PasswordUtil {
 
@@ -20,17 +20,18 @@ public class PasswordUtil {
             return false;
         }
 
-        // Nếu mật khẩu trong DB là chuỗi plain text (chưa hash BCrypt từ dữ liệu mẫu)
+        // Hash phải đúng định dạng BCrypt ($2a$, $2b$, $2y$)
         if (!hashedPassword.startsWith("$2a$") && !hashedPassword.startsWith("$2b$") && !hashedPassword.startsWith("$2y$")) {
-            return plainTextPassword.equals(hashedPassword);
+            System.err.println("[PasswordUtil] WARN: Mật khẩu trong DB không đúng định dạng BCrypt hợp lệ.");
+            return false;
         }
 
         try {
             BCrypt.Result result = BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword);
             return result.verified;
         } catch (Exception e) {
-            System.err.println("Lỗi khi xác thực BCrypt: " + e.getMessage());
-            return plainTextPassword.equals(hashedPassword);
+            System.err.println("[PasswordUtil] ERROR: Lỗi khi xác thực BCrypt: " + e.getMessage());
+            return false;
         }
     }
 }

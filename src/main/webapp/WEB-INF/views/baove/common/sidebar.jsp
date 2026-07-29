@@ -28,6 +28,9 @@
         <a href="${pageContext.request.contextPath}/baove/tra-cuu" class="nav-item ${activeMenu == 'tra-cuu' ? 'active' : ''}">
             🔍 <span>Tra Cứu Xe & Thẻ</span>
         </a>
+        <a href="${pageContext.request.contextPath}/baove/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
+            ⏱️ <span>Chấm Công Của Tôi</span>
+        </a>
         
         <div class="nav-divider"></div>
         <a href="${pageContext.request.contextPath}/logout" class="nav-item text-danger">

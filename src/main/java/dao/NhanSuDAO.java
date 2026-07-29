@@ -203,4 +203,115 @@ public class NhanSuDAO {
             em.close();
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Object[]> findChamCongCuaToi(int maNhanVien, LocalDate tuNgay, LocalDate denNgay) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            StringBuilder sql = new StringBuilder(
+                "SELECT cc.ngayLam, cc.caLam, cc.gioVao, cc.gioRa " +
+                "FROM dbo.chamCong cc " +
+                "WHERE cc.maNhanVien = :mnv "
+            );
+
+            if (tuNgay != null) sql.append(" AND cc.ngayLam >= :tuNgay ");
+            if (denNgay != null) sql.append(" AND cc.ngayLam <= :denNgay ");
+            sql.append(" ORDER BY cc.ngayLam DESC, cc.gioVao DESC ");
+
+            var query = em.createNativeQuery(sql.toString()).setParameter("mnv", maNhanVien);
+            if (tuNgay != null) query.setParameter("tuNgay", tuNgay);
+            if (denNgay != null) query.setParameter("denNgay", denNgay);
+
+            List<Object[]> list = query.getResultList();
+            List<Object[]> result = new ArrayList<>();
+
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+
+            for (Object[] r : list) {
+                Object[] row = new Object[7];
+
+                // 0: ngayLamText
+                LocalDate ngayLam = null;
+                if (r[0] instanceof java.sql.Date) ngayLam = ((java.sql.Date) r[0]).toLocalDate();
+                else if (r[0] instanceof LocalDate) ngayLam = (LocalDate) r[0];
+                row[0] = ngayLam != null ? ngayLam.format(dateFormat) : "—";
+
+                // 1: caLam
+                row[1] = r[1];
+
+                // 2: gioVaoText
+                LocalDateTime gioVao = null;
+                if (r[2] instanceof java.sql.Timestamp) gioVao = ((java.sql.Timestamp) r[2]).toLocalDateTime();
+                else if (r[2] instanceof LocalDateTime) gioVao = (LocalDateTime) r[2];
+                row[2] = gioVao != null ? gioVao.format(timeFormat) : "";
+
+                // 3: gioRaText
+                LocalDateTime gioRa = null;
+                if (r[3] instanceof java.sql.Timestamp) gioRa = ((java.sql.Timestamp) r[3]).toLocalDateTime();
+                else if (r[3] instanceof LocalDateTime) gioRa = (LocalDateTime) r[3];
+                row[3] = gioRa != null ? gioRa.format(timeFormat) : "";
+
+                // 4 & 5 & 6: soGioLamText, trangThaiCa, soGioLamDouble
+                String soGioLamText = null;
+                Double soGioLamDouble = null;
+                String trangThaiCa = "DangTruc";
+
+                if (gioVao != null && gioRa != null) {
+                    long phut = java.time.temporal.ChronoUnit.MINUTES.between(gioVao, gioRa);
+                    if (phut < 0) {
+                        phut += 24 * 60; // ca đêm 22:00-06:00 vắt qua ngày
+                    }
+                    soGioLamDouble = Math.round((phut / 60.0) * 10.0) / 10.0;
+                    soGioLamText = String.format(java.util.Locale.US, "%.1f", soGioLamDouble);
+                    trangThaiCa = "HoanThanh";
+                } else {
+                    soGioLamText = null;
+                    trangThaiCa = "DangTruc";
+                }
+
+                row[4] = soGioLamText;
+                row[5] = trangThaiCa;
+                row[6] = soGioLamDouble;
+
+                result.add(row);
+            }
+
+            return result;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Map<String, Object> thongKeCuaToi(int maNhanVien, LocalDate tuNgay, LocalDate denNgay) {
+        List<Object[]> list = findChamCongCuaToi(maNhanVien, tuNgay, denNgay);
+        Map<String, Object> stats = new HashMap<>();
+
+        int soNgayCong = list.size();
+        double tongGioLam = 0.0;
+        int soCaSang = 0;
+        int soCaChieu = 0;
+        int soCaDem = 0;
+
+        for (Object[] r : list) {
+            String caLam = (String) r[1];
+            Double hours = (Double) r[6];
+
+            if (hours != null) {
+                tongGioLam += hours;
+            }
+
+            if ("Sang".equalsIgnoreCase(caLam)) soCaSang++;
+            else if ("Chieu".equalsIgnoreCase(caLam)) soCaChieu++;
+            else if ("Dem".equalsIgnoreCase(caLam)) soCaDem++;
+        }
+
+        stats.put("soNgayCong", soNgayCong);
+        stats.put("tongGioLam", Math.round(tongGioLam * 10.0) / 10.0);
+        stats.put("soCaSang", soCaSang);
+        stats.put("soCaChieu", soCaChieu);
+        stats.put("soCaDem", soCaDem);
+
+        return stats;
+    }
 }
