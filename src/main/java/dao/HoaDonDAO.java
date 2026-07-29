@@ -178,7 +178,8 @@ public class HoaDonDAO {
                 "  h.tongTien, " +
                 "  h.trangThaiThanhToan, " +
                 "  ISNULL(SUM(CASE WHEN gd.trangThai = 'ThanhCong' THEN gd.soTien ELSE 0 END), 0) AS daThu, " +
-                "  (h.tongTien - ISNULL(SUM(CASE WHEN gd.trangThai = 'ThanhCong' THEN gd.soTien ELSE 0 END), 0)) AS conNo " +
+                "  (h.tongTien - ISNULL(SUM(CASE WHEN gd.trangThai = 'ThanhCong' THEN gd.soTien ELSE 0 END), 0)) AS conNo, " +
+                "  ISNULL(SUM(CASE WHEN gd.phuongThuc = 'QR' AND gd.trangThai = 'ChoXacNhan' THEN 1 ELSE 0 END), 0) AS countPendingQR " +
                 "FROM dbo.hoaDon h " +
                 "LEFT JOIN dbo.giaoDichThanhToan gd ON gd.maHoaDon = h.id " +
                 "WHERE h.maCanHo = :maCanHo " +
@@ -235,6 +236,24 @@ public class HoaDonDAO {
                     .getResultList();
 
             result.put("giaoDichList", giaoDichList);
+
+            // Tính số tiền còn nợ và giao dịch QR đang chờ xác nhận
+            GiaoDichThanhToanDAO gdDAO = new GiaoDichThanhToanDAO();
+            result.put("soConNo", gdDAO.tinhSoConNo(maHoaDon));
+
+            boolean hasPendingQR = false;
+            for (Object[] gdRow : giaoDichList) {
+                String pt = (String) gdRow[2];
+                String tt = (String) gdRow[3];
+                if ("QR".equalsIgnoreCase(pt) && "ChoXacNhan".equalsIgnoreCase(tt)) {
+                    hasPendingQR = true;
+                    result.put("pendingRefCode", gdRow[5]);
+                    result.put("pendingAmount", gdRow[1]);
+                    break;
+                }
+            }
+            result.put("hasPendingQR", hasPendingQR);
+
             return result;
         } catch (Exception e) {
             e.printStackTrace();

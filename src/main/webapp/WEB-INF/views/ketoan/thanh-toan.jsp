@@ -258,13 +258,23 @@
                                         ${DisplayUtil.formatTien(row[4])}
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-info text-dark">
+                                        <c:choose>
+                                            <c:when test="${not empty row[10]}">
+                                                <span class="badge bg-primary mb-1 d-block">📱 Cư dân tạo</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="badge bg-secondary mb-1 d-block">💼 Kế toán ghi nhận</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="badge ${row[5] == 'QR' ? 'bg-warning text-dark' : 'bg-info text-dark'}">
                                             ${DisplayUtil.getPhuongThucText(row[5])}
                                         </span>
                                     </td>
                                     <td>
                                         <c:choose>
-                                            <c:when test="${not empty row[6]}"><code><c:out value="${row[6]}" /></code></c:when>
+                                            <c:when test="${not empty row[6]}">
+                                                <code class="fs-6 fw-bold text-dark"><c:out value="${row[6]}" /></code>
+                                            </c:when>
                                             <c:otherwise><span class="text-muted">—</span></c:otherwise>
                                         </c:choose>
                                     </td>

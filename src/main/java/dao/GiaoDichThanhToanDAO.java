@@ -27,7 +27,8 @@ public class GiaoDichThanhToanDAO {
                 "  gd.maGiaoDichNganHang, " +
                 "  gd.thoiGianTao, " +
                 "  h.id AS maHoaDon, " +
-                "  h.tongTien " +
+                "  h.tongTien, " +
+                "  gd.maCuDan " +
                 "FROM dbo.giaoDichThanhToan gd " +
                 "JOIN dbo.hoaDon h ON h.id = gd.maHoaDon " +
                 "JOIN dbo.canHo c ON c.id = h.maCanHo " +
@@ -38,6 +39,166 @@ public class GiaoDichThanhToanDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
+    public BigDecimal tinhSoConNo(int maHoaDon) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            HoaDon h = em.find(HoaDon.class, maHoaDon);
+            if (h == null) return BigDecimal.ZERO;
+            return tinhSoConNo(em, h);
+        } finally {
+            em.close();
+        }
+    }
+
+    private BigDecimal tinhSoConNo(EntityManager em, HoaDon h) {
+        if (h == null) return BigDecimal.ZERO;
+        List<BigDecimal> list = em.createQuery(
+            "SELECT SUM(g.soTien) FROM GiaoDichThanhToan g WHERE g.maHoaDon = :maHoaDon AND g.trangThai = 'ThanhCong'", 
+            BigDecimal.class
+        ).setParameter("maHoaDon", h.getId()).getResultList();
+
+        BigDecimal tongDaTra = (list != null && !list.isEmpty() && list.get(0) != null) ? list.get(0) : BigDecimal.ZERO;
+        BigDecimal tongTienHn = (h.getTongTien() != null) ? BigDecimal.valueOf(h.getTongTien()) : BigDecimal.ZERO;
+        BigDecimal conNo = tongTienHn.subtract(tongDaTra);
+        return conNo.compareTo(BigDecimal.ZERO) > 0 ? conNo : BigDecimal.ZERO;
+    }
+
+    public Map<String, Object> taoGiaoDichQR(int maHoaDon, int maCanHoSession, int maCuDanSession) {
+        Map<String, Object> res = new HashMap<>();
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            HoaDon h = em.find(HoaDon.class, maHoaDon);
+            if (h == null) {
+                res.put("loi", "Không tìm thấy hóa đơn mã #" + maHoaDon);
+                return res;
+            }
+
+            // CHỐNG IDOR: Kiểm tra hóa đơn thuộc đúng căn hộ cư dân đăng nhập
+            if (h.getMaCanHo() == null || h.getMaCanHo().intValue() != maCanHoSession) {
+                res.put("loi", "Bạn không có quyền thanh toán cho hóa đơn của căn hộ khác.");
+                return res;
+            }
+
+            // Kiểm tra số nợ còn lại
+            BigDecimal soConNo = tinhSoConNo(em, h);
+            if (soConNo.compareTo(BigDecimal.ZERO) <= 0) {
+                res.put("loi", "Hóa đơn này đã được thanh toán xong.");
+                return res;
+            }
+
+            // TÁI SỬ DỤNG GIAO DỊCH ĐANG CHỜ (tránh tạo trùng lặp mỗi lần bấm)
+            List<GiaoDichThanhToan> pendingList = em.createQuery(
+                "SELECT g FROM GiaoDichThanhToan g WHERE g.maHoaDon = :mhd AND g.phuongThuc = 'QR' AND g.trangThai = 'ChoXacNhan' ORDER BY g.id DESC",
+                GiaoDichThanhToan.class
+            ).setParameter("mhd", maHoaDon).getResultList();
+
+            if (!pendingList.isEmpty()) {
+                GiaoDichThanhToan oldGd = pendingList.get(0);
+                String qrUrl = util.QRConfig.buildQRUrl(oldGd.getSoTien(), oldGd.getMaGiaoDichNganHang());
+                res.put("maGiaoDich", oldGd.getId());
+                res.put("soTien", oldGd.getSoTien());
+                res.put("noiDungChuyenKhoan", oldGd.getMaGiaoDichNganHang());
+                res.put("qrUrl", qrUrl);
+                res.put("isOld", true);
+                return res;
+            }
+
+            // TẠO GIAO DỊCH MỚI
+            tx.begin();
+
+            entity.CanHo ch = em.find(entity.CanHo.class, h.getMaCanHo());
+            String soPhongClean = (ch != null && ch.getSoPhong() != null) ? ch.getSoPhong().replaceAll("[^a-zA-Z0-9]", "") : "CH";
+
+            // Kiểm tra FK maCuDan hợp lệ trong DB
+            Integer validMaCuDan = null;
+            if (maCuDanSession > 0) {
+                Long countCd = em.createQuery("SELECT COUNT(c) FROM CuDan c WHERE c.id = :id", Long.class)
+                        .setParameter("id", maCuDanSession)
+                        .getSingleResult();
+                if (countCd != null && countCd > 0) {
+                    validMaCuDan = maCuDanSession;
+                }
+            }
+            if (validMaCuDan == null) {
+                List<Integer> cdList = em.createQuery(
+                    "SELECT c.id FROM CuDan c WHERE c.maCanHo = :maCanHo AND c.loaiCuDan = 'ChuHo' AND c.trangThai = 'DangO'", 
+                    Integer.class
+                ).setParameter("maCanHo", h.getMaCanHo()).getResultList();
+                if (!cdList.isEmpty()) {
+                    validMaCuDan = cdList.get(0);
+                }
+            }
+
+            GiaoDichThanhToan newGd = new GiaoDichThanhToan();
+            newGd.setMaHoaDon(maHoaDon);
+            newGd.setMaCuDan(validMaCuDan);
+            newGd.setSoTien(soConNo);
+            newGd.setPhuongThuc("QR");
+            newGd.setTrangThai("ChoXacNhan");
+            newGd.setThoiGianTao(LocalDateTime.now());
+            newGd.setThoiGianXacNhan(null);
+
+            em.persist(newGd);
+
+            // Mã tham chiếu VietQR dạng: PB0101T82026-12
+            String refCode = String.format("PB%sT%d%d-%d", soPhongClean, h.getThang(), h.getNam(), newGd.getId());
+            newGd.setMaGiaoDichNganHang(refCode);
+            em.merge(newGd);
+
+            tx.commit();
+
+            String qrUrl = util.QRConfig.buildQRUrl(soConNo, refCode);
+            res.put("maGiaoDich", newGd.getId());
+            res.put("soTien", soConNo);
+            res.put("noiDungChuyenKhoan", refCode);
+            res.put("qrUrl", qrUrl);
+            res.put("isOld", false);
+            return res;
+
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            res.put("loi", "Lỗi tạo mã QR thanh toán: " + e.getMessage());
+            return res;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Map<String, Object> layGiaoDichQRDangCho(int maHoaDon, int maCanHoSession) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            HoaDon h = em.find(HoaDon.class, maHoaDon);
+            if (h == null || h.getMaCanHo() == null || h.getMaCanHo().intValue() != maCanHoSession) {
+                return null;
+            }
+
+            List<GiaoDichThanhToan> pendingList = em.createQuery(
+                "SELECT g FROM GiaoDichThanhToan g WHERE g.maHoaDon = :mhd AND g.phuongThuc = 'QR' AND g.trangThai = 'ChoXacNhan' ORDER BY g.id DESC",
+                GiaoDichThanhToan.class
+            ).setParameter("mhd", maHoaDon).getResultList();
+
+            if (pendingList.isEmpty()) return null;
+
+            GiaoDichThanhToan oldGd = pendingList.get(0);
+            String qrUrl = util.QRConfig.buildQRUrl(oldGd.getSoTien(), oldGd.getMaGiaoDichNganHang());
+
+            Map<String, Object> res = new HashMap<>();
+            res.put("maGiaoDich", oldGd.getId());
+            res.put("soTien", oldGd.getSoTien());
+            res.put("noiDungChuyenKhoan", oldGd.getMaGiaoDichNganHang());
+            res.put("qrUrl", qrUrl);
+            return res;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         } finally {
             em.close();
         }
