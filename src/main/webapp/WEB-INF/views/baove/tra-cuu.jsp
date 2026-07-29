@@ -1,0 +1,350 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page import="util.DisplayUtil" %>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra Cứu Xe & Thẻ Từ — PolyBuilding Bảo Vệ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bv-bg: #F4EFE4;
+            --bv-primary: #1E3B34;
+            --bv-gold: #B98A46;
+            --bv-card-bg: #FFFFFF;
+            --bv-text: #2D3748;
+            --bv-border: #EAE3D2;
+        }
+
+        body {
+            background-color: var(--bv-bg);
+            color: var(--bv-text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--bv-primary);
+            color: #FFFFFF;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--bv-gold);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-user {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .sidebar-user .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bv-gold);
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .sidebar-user .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block;
+        }
+
+        .sidebar-user .role {
+            font-size: 0.75rem;
+            color: #A0AEC0;
+        }
+
+        .sidebar-nav {
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: #E2E8F0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: #FFF;
+        }
+
+        .nav-item.active {
+            background-color: var(--bv-gold);
+            color: #FFF;
+            font-weight: 600;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background-color: rgba(255,255,255,0.1);
+            margin: 10px 0;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background-color: #FFFFFF;
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--bv-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--bv-primary);
+            font-weight: 700;
+        }
+
+        .top-header .sub {
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .content-body {
+            padding: 25px 30px;
+        }
+
+        .card-custom {
+            background: var(--bv-card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--bv-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+        }
+
+        .card-custom .card-header-custom {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--bv-border);
+            font-weight: 700;
+            color: var(--bv-primary);
+            background: rgba(30, 59, 52, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vehicle-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            border: 2px solid var(--bv-border);
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.2s;
+        }
+
+        .vehicle-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .vehicle-card.alert-active {
+            border-color: #DC3545;
+            background: #FFF8F8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <jsp:include page="/WEB-INF/views/baove/common/sidebar.jsp" />
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <jsp:include page="/WEB-INF/views/baove/common/header.jsp" />
+
+        <div class="content-body">
+            
+            <!-- Ô TÌM KIẾM LỚN -->
+            <div class="card-custom">
+                <div class="card-header-custom">
+                    <span>🔍 TRA CỨU NHANH BÃI XRA / CỔNG AN NINH</span>
+                </div>
+                <div class="card-body p-4">
+                    <form action="${pageContext.request.contextPath}/baove/tra-cuu" method="get">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white border-end-0">🔍</span>
+                            <input type="text" name="tuKhoa" class="form-control border-start-0 ps-0" placeholder="Nhập biển số xe (VD: 30A-123.45), số thẻ (VD: THE-0101-01) hoặc số phòng..." value="${tuKhoa}" autofocus required>
+                            <button type="submit" class="btn btn-success px-4 fw-bold">Tra Cứu Phương Tiện</button>
+                        </div>
+                        <div class="form-text mt-2 text-muted">
+                            💡 <i>Mẹo: Hệ thống tự động so sánh thông minh (bỏ qua dấu chấm, dấu gạch ngang và khoảng trắng trong biển số xe).</i>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- KẾT QUẢ TRA CỨU -->
+            <c:if test="${not empty tuKhoa}">
+                <div class="mb-3">
+                    <h5 class="fw-bold text-primary">
+                        📌 Kết quả tra cứu cho từ khóa: "<span class="text-danger"><c:out value="${tuKhoa}"/></span>"
+                    </h5>
+                </div>
+
+                <c:choose>
+                    <c:when test="${not empty ketQuaList}">
+                        <div class="row">
+                            <c:forEach var="v" items="${ketQuaList}">
+                                <div class="col-md-6">
+                                    <c:choose>
+                                        <c:when test="${v[7] == 'ChuaGanThe'}">
+                                            <!-- TRẠNG THÁI 1: CHƯA GẮN THẺ TỪ (maThe IS NULL) -->
+                                            <div class="vehicle-card border-warning bg-warning bg-opacity-10">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h3 class="fw-bold mb-1 text-dark">
+                                                            ${DisplayUtil.getLoaiXeIcon(v[2])} <c:out value="${v[1]}"/>
+                                                        </h3>
+                                                        <span class="badge bg-secondary me-1">Căn <c:out value="${v[3]}"/></span>
+                                                        <span class="badge bg-light text-dark border">${DisplayUtil.getLoaiXeText(v[2])}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="badge bg-warning text-dark fs-6">🟡 Chưa gắn thẻ từ</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-2 text-muted small">
+                                                    <div class="col-6">
+                                                        👤 <b>Chủ hộ:</b> <c:out value="${v[4]}" default="—"/>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        🪪 <b>Mã thẻ gắn:</b> <span class="text-muted">— (Chưa đăng ký thẻ)</span>
+                                                    </div>
+                                                </div>
+                                                <!-- ĐÃ ẨN HOÀN TOÀN DÒNG HẠN THỀ VÀ TÌNH TRẠNG HẠN -->
+                                            </div>
+                                        </c:when>
+
+                                        <c:when test="${v[7] == 'TheKhongHieuLuc'}">
+                                            <!-- TRẠNG THÁI 2: THẺ KHÔNG CÒN HIỆU LỰC (tạm khóa, thu hồi hoặc hết hạn) -->
+                                            <div class="vehicle-card alert-active">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h3 class="fw-bold mb-1 text-dark">
+                                                            ${DisplayUtil.getLoaiXeIcon(v[2])} <c:out value="${v[1]}"/>
+                                                        </h3>
+                                                        <span class="badge bg-secondary me-1">Căn <c:out value="${v[3]}"/></span>
+                                                        <span class="badge bg-light text-dark border">${DisplayUtil.getLoaiXeText(v[2])}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="badge bg-danger fs-6">🔴 Thẻ không hiệu lực</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-2 mb-3 text-muted small">
+                                                    <div class="col-6">
+                                                        👤 <b>Chủ hộ:</b> <c:out value="${v[4]}" default="—"/>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        🪪 <b>Mã thẻ gắn:</b> <span class="fw-bold text-dark"><c:out value="${v[5]}"/></span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        📅 <b>Hạn thẻ:</b> <c:out value="${v[8]}"/>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        ⌛ <b>Tình trạng:</b> <span class="text-danger fw-bold"><c:out value="${v[9]}"/></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- CẢNH BÁO ĐỎ NỔI BẬT KHÔNG THỂ BỎ QUA -->
+                                                <div class="alert alert-danger mb-0 py-2 fw-bold text-center border-2" role="alert">
+                                                    🚨 CẢNH BÁO: THẺ KHÔNG CÒN HIỆU LỰC — LIÊN HỆ LỄ TÂN!
+                                                    <div class="small fw-normal mt-1">(Lý do: <c:out value="${v[9]}"/>)</div>
+                                                </div>
+                                            </div>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <!-- TRẠNG THÁI 3: THẺ HỢP LỆ (ĐangSuDung, ngayHetHan >= hôm nay hoặc NULL) -->
+                                            <div class="vehicle-card border-success">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h3 class="fw-bold mb-1 text-dark">
+                                                            ${DisplayUtil.getLoaiXeIcon(v[2])} <c:out value="${v[1]}"/>
+                                                        </h3>
+                                                        <span class="badge bg-secondary me-1">Căn <c:out value="${v[3]}"/></span>
+                                                        <span class="badge bg-light text-dark border">${DisplayUtil.getLoaiXeText(v[2])}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="badge bg-success fs-6">🟢 Thẻ hợp lệ</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-2 text-muted small">
+                                                    <div class="col-6">
+                                                        👤 <b>Chủ hộ:</b> <c:out value="${v[4]}" default="—"/>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        🪪 <b>Mã thẻ gắn:</b> <span class="fw-bold text-primary"><c:out value="${v[5]}"/></span>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        📅 <b>Hạn thẻ:</b> <c:out value="${v[8]}"/>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        ⌛ <b>Tình trạng hạn:</b> <span class="text-success fw-bold">🟢 Còn hạn</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="alert alert-warning py-4 text-center fs-5" role="alert">
+                            ⚠️ Không tìm thấy phương tiện hoặc thẻ nào khớp với từ khóa "<c:out value="${tuKhoa}"/>".
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Read-only screen for Security Guard
+        });
+    </script>
+</body>
+</html>

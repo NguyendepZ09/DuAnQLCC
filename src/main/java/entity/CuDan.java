@@ -35,6 +35,12 @@ public class CuDan {
     @Column(name = "trangThai", length = 50)
     private String trangThai;
 
+    @Column(name = "cccd", length = 20)
+    private String cccd;
+
+    @Column(name = "ngayChuyenDen")
+    private java.time.LocalDate ngayChuyenDen;
+
     public CuDan() {
     }
 
@@ -100,5 +106,21 @@ public class CuDan {
 
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public String getCccd() {
+        return cccd;
+    }
+
+    public void setCccd(String cccd) {
+        this.cccd = cccd;
+    }
+
+    public java.time.LocalDate getNgayChuyenDen() {
+        return ngayChuyenDen;
+    }
+
+    public void setNgayChuyenDen(java.time.LocalDate ngayChuyenDen) {
+        this.ngayChuyenDen = ngayChuyenDen;
     }
 }

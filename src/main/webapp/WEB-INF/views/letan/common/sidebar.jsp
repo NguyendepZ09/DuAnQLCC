@@ -19,11 +19,14 @@
         <a href="${pageContext.request.contextPath}/letan/su-co" class="nav-item ${activeMenu == 'su-co' ? 'active' : ''}">
             🛠️ <span>Tiếp nhận & Điều phối sự cố</span>
         </a>
-        <a href="${pageContext.request.contextPath}/letan/dang-phat-trien" class="nav-item ${activeMenu == 'cu-dan' ? 'active' : ''}">
-            👥 <span>Quản lý cư dân & Khách thuê</span>
+        <a href="${pageContext.request.contextPath}/letan/the-tu" class="nav-item ${activeMenu == 'the-tu' ? 'active' : ''}">
+            🪪 <span>Thẻ từ cư dân</span>
         </a>
-        <a href="${pageContext.request.contextPath}/letan/dang-phat-trien" class="nav-item ${activeMenu == 'the-tu' ? 'active' : ''}">
-            🪪 <span>Quản lý thẻ từ</span>
+        <a href="${pageContext.request.contextPath}/letan/quan-ly-xe" class="nav-item ${activeMenu == 'quan-ly-xe' ? 'active' : ''}">
+            🚗 <span>Quản lý xe</span>
+        </a>
+        <a href="${pageContext.request.contextPath}/letan/cu-dan" class="nav-item ${activeMenu == 'cu-dan' ? 'active' : ''}">
+            👥 <span>Quản lý cư dân & Khách thuê</span>
         </a>
         
         <div class="nav-divider"></div>

@@ -205,7 +205,7 @@ public class DisplayUtil {
         }
     }
 
-    // --- BỔ SUNG CÁC HÀM CHO ROLE BẢO VỆ ---
+    // --- BỔ SUNG CÁC HÀM CHO ROLE BẢO VỆ & QUẢN LÝ THẺ TỪ / XE ---
 
     public static String getCaTrucText(String code) {
         if (code == null) return "";
@@ -237,6 +237,16 @@ public class DisplayUtil {
         }
     }
 
+    public static String getTrangThaiTheBadgeClass(String code) {
+        if (code == null) return "bg-secondary";
+        switch (code) {
+            case "DangSuDung": return "bg-success";
+            case "TamKhoa": return "bg-warning text-dark";
+            case "DaThuHoi": return "bg-secondary";
+            default: return "bg-secondary";
+        }
+    }
+
     public static String getLoaiXeText(String code) {
         if (code == null) return "";
         switch (code) {
@@ -244,6 +254,16 @@ public class DisplayUtil {
             case "XeMay": return "Xe máy";
             case "XeDap": return "Xe đạp";
             default: return code;
+        }
+    }
+
+    public static String getLoaiXeIcon(String code) {
+        if (code == null) return "🚗";
+        switch (code) {
+            case "OTo": return "🚗";
+            case "XeMay": return "🏍️";
+            case "XeDap": return "🚲";
+            default: return "🚗";
         }
     }
 
@@ -272,5 +292,44 @@ public class DisplayUtil {
     public static String formatTienDouble(Double tien) {
         if (tien == null) return "0đ";
         return formatTien(BigDecimal.valueOf(tien));
+    }
+
+    // --- BỔ SUNG CHO ROLE LỄ TÂN (NHÓM F3) ---
+
+    public static String getLoaiCuDanText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "ChuHo": return "Chủ hộ";
+            case "KhachThue": return "Khách thuê";
+            default: return code;
+        }
+    }
+
+    public static String getLoaiCuDanBadgeClass(String code) {
+        if (code == null) return "bg-secondary";
+        switch (code) {
+            case "ChuHo": return "bg-primary";
+            case "KhachThue": return "bg-info text-dark";
+            default: return "bg-secondary";
+        }
+    }
+
+    public static String getTrangThaiCuDanText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "DangO": return "Đang ở";
+            case "DaChuyenDi": return "Đã chuyển đi";
+            default: return code;
+        }
+    }
+
+    public static String getTrangThaiCanHoText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "DangO": return "Đang ở";
+            case "TrongChoThue": return "Trống chờ thuê";
+            case "BaoTri": return "Bảo trì";
+            default: return code;
+        }
     }
 }

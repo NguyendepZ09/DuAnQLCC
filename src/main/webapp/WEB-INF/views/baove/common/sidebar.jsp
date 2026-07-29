@@ -25,6 +25,9 @@
         <a href="${pageContext.request.contextPath}/baove/ca-truc" class="nav-item ${activeMenu == 'ca-truc' ? 'active' : ''}">
             🤝 <span>Ca Trực & Bàn Giao</span>
         </a>
+        <a href="${pageContext.request.contextPath}/baove/tra-cuu" class="nav-item ${activeMenu == 'tra-cuu' ? 'active' : ''}">
+            🔍 <span>Tra Cứu Xe & Thẻ</span>
+        </a>
         
         <div class="nav-divider"></div>
         <a href="${pageContext.request.contextPath}/logout" class="nav-item text-danger">

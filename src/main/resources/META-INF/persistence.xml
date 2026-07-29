@@ -28,6 +28,7 @@
         <class>entity.NhatKyTuanTra</class>
         <class>entity.QuanLyXe</class>
         <class>entity.TheTu</class>
+        <class>entity.TheTuChucNang</class>
         <class>entity.DanhMucTienIch</class>
         <class>entity.DatLichTienIch</class>
         <class>entity.DanhMucBoPhan</class>

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Chức Năng Đang Phát Triển — Lễ Tân</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-letan.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
         body { background-color: #F8FAFC; font-family: 'Be Vietnam Pro', sans-serif; }

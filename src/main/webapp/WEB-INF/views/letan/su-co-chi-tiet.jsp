@@ -7,29 +7,13 @@
     <meta charset="UTF-8">
     <title>Chi Tiết Phản Ánh #${phanAnh.id} — Lễ Tân Polybuilding</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-letan.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     <style>
-        body { background-color: #F8FAFC; font-family: 'Be Vietnam Pro', sans-serif; }
-        .app-layout { display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background: #0F766E; color: #FFF; padding: 24px; flex-shrink: 0; }
-        .sidebar-brand { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; color: #F59E0B; margin-bottom: 30px; display: flex; align-items: center; gap: 8px; }
-        .sidebar-brand .mark { width: 10px; height: 10px; background: #F59E0B; transform: rotate(45deg); display: inline-block; }
-        .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 24px; }
-        .sidebar-user .avatar { width: 38px; height: 38px; background: #0D9488; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #FFF; }
-        .sidebar-user .name { font-size: 0.9rem; font-weight: 600; display: block; color: #FFF; }
-        .sidebar-user .role { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 6px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.75); text-decoration: none; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: #0D9488; color: #FFF; }
-        .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; }
-        .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-x: hidden; }
-        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
-        .top-header h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; color: #0F766E; margin: 0; }
-        .top-header .sub { font-size: 0.82rem; color: #64748B; }
-        .content-body { padding: 32px; }
-        .card-custom { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #E2E8F0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 24px; }
-
-        .timeline { border-left: 3px solid #0D9488; padding-left: 20px; margin-left: 10px; }
+        body { background-color: var(--lt-bg, #F4EFE4); font-family: 'Be Vietnam Pro', sans-serif; }
+        .btn-teal { background-color: #1E3B34 !important; border-color: #1E3B34 !important; color: #FFF !important; }
+        .btn-teal:hover { background-color: #152A25 !important; border-color: #152A25 !important; }
+        .timeline { border-left: 3px solid #1E3B34; padding-left: 20px; margin-left: 10px; }
         .timeline-item { position: relative; margin-bottom: 20px; }
         .timeline-item::before { content: ''; position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; background: #0D9488; border-radius: 50%; }
     </style>
