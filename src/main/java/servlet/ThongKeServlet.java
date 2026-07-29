@@ -23,9 +23,10 @@ public class ThongKeServlet extends HttpServlet {
         
         try {
             Map<String, Double> taiChinhMap = thongKeDAO.getTongDoanhThuByTrangThai();
-            double daThanhToan = taiChinhMap.getOrDefault("Đã thanh toán", 0.0);
-            double chuaThanhToan = taiChinhMap.getOrDefault("Chưa thanh toán", 0.0);
-            double tongDoanhThu = daThanhToan + chuaThanhToan;
+            double daThanhToan = taiChinhMap.getOrDefault("DaThanhToan", 0.0);
+            double chuaThanhToan = taiChinhMap.getOrDefault("ChuaThanhToan", 0.0);
+            double quaHan = taiChinhMap.getOrDefault("QuaHan", 0.0);
+            double tongDoanhThu = daThanhToan + chuaThanhToan + quaHan;
             double tyLeThu = (tongDoanhThu > 0) ? (daThanhToan / tongDoanhThu) * 100 : 0;
 
             Map<String, Long> suCoMap = thongKeDAO.getThongKeSuCo();

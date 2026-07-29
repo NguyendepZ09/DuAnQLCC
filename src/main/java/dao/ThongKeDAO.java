@@ -13,8 +13,9 @@ public class ThongKeDAO {
 
     public Map<String, Double> getTongDoanhThuByTrangThai() {
         Map<String, Double> resultMap = new HashMap<>();
-        resultMap.put("Đã thanh toán", 0.0);
-        resultMap.put("Chưa thanh toán", 0.0);
+        resultMap.put("ChuaThanhToan", 0.0);
+        resultMap.put("DaThanhToan", 0.0);
+        resultMap.put("QuaHan", 0.0);
 
         EntityManager em = JPAUtil.getEntityManager();
         try {
@@ -23,9 +24,13 @@ public class ThongKeDAO {
             for (Object[] row : list) {
                 String status = (String) row[0];
                 Number total = (Number) row[1];
-                if (status != null && total != null) {
-                    resultMap.put(status.trim(), total.doubleValue());
+                double amt = total != null ? total.doubleValue() : 0.0;
+                if (status == null || status.trim().isEmpty()) {
+                    status = "ChuaThanhToan";
+                } else {
+                    status = status.trim();
                 }
+                resultMap.put(status, resultMap.getOrDefault(status, 0.0) + amt);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +80,7 @@ public class ThongKeDAO {
     public String getTopNhanVienXuatSac() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            String jpql = "SELECT n.hoTen, COUNT(l.id) FROM LichSuXuLySuCo l, NhanVien n WHERE l.maNhanVien = n.id GROUP BY n.hoTen ORDER BY COUNT(l.id) DESC";
+            String jpql = "SELECT n.hoTen, COUNT(l.id) FROM LichSuXuLySuCo l, NhanVien n WHERE l.maNhanVien = n.id GROUP BY n.id, n.hoTen ORDER BY COUNT(l.id) DESC";
             List<Object[]> list = em.createQuery(jpql, Object[].class).setMaxResults(1).getResultList();
             if (!list.isEmpty()) {
                 Object[] top = list.get(0);

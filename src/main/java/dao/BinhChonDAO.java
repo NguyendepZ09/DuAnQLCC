@@ -45,6 +45,11 @@ public class BinhChonDAO {
         try {
             tx.begin();
 
+            if (bc.getTongCanHoLucMo() == null) {
+                Number activeAppts = (Number) em.createNativeQuery("SELECT COUNT(*) FROM dbo.canHo WHERE trangThai = N'DangO'").getSingleResult();
+                bc.setTongCanHoLucMo(activeAppts != null ? activeAppts.intValue() : 0);
+            }
+
             em.persist(bc);
             em.flush(); // flush ngay de bat loi CHECK constraint truoc khi insert phuong an
 
@@ -105,7 +110,7 @@ public class BinhChonDAO {
     /**
      * Lay thong ke tham gia cho 1 cuoc binh chon:
      * - canDaBau: COUNT(DISTINCT maCanHo) FROM phieuBau WHERE maBinhChon = ?
-     * - tongCan: COUNT(*) FROM canHo WHERE trangThai = 'DangO'
+     * - tongCan: ISNULL(b.tongCanHoLucMo, (SELECT COUNT(*) FROM canHo WHERE trangThai = 'DangO'))
      * - tyLeThamGia: (canDaBau * 100.0 / tongCan)
      */
     public java.util.Map<String, Object> getParticipationStats(int maBinhChon) {
@@ -114,7 +119,8 @@ public class BinhChonDAO {
             java.util.Map<String, Object> stats = new java.util.HashMap<>();
             String sql = "SELECT " +
                          "(SELECT COUNT(DISTINCT maCanHo) FROM dbo.phieuBau WHERE maBinhChon = :maBinhChon) AS canDaBau, " +
-                         "(SELECT COUNT(*) FROM dbo.canHo WHERE trangThai = N'DangO') AS tongCan";
+                         "ISNULL(b.tongCanHoLucMo, (SELECT COUNT(*) FROM dbo.canHo WHERE trangThai = N'DangO')) AS tongCan " +
+                         "FROM dbo.binhChon b WHERE b.id = :maBinhChon";
             Object[] row = (Object[]) em.createNativeQuery(sql)
                     .setParameter("maBinhChon", maBinhChon)
                     .getSingleResult();

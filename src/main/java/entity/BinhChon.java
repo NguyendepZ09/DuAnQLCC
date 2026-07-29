@@ -36,7 +36,10 @@ public class BinhChon {
     @Column(name = "tyLeTucSo", nullable = false)
     private Double tyLeTucSo; // REQUIRED — caller phai set
 
-    @Column(name = "ketQua", length = 200)
+    @Column(name = "tongCanHoLucMo")
+    private Integer tongCanHoLucMo;
+
+    @Column(name = "ketQua", length = 500)
     private String ketQua;
 
     public BinhChon() {}
@@ -71,6 +74,9 @@ public class BinhChon {
 
     public Double getTyLeTucSo() { return tyLeTucSo; }
     public void setTyLeTucSo(Double tyLeTucSo) { this.tyLeTucSo = tyLeTucSo; }
+
+    public Integer getTongCanHoLucMo() { return tongCanHoLucMo; }
+    public void setTongCanHoLucMo(Integer tongCanHoLucMo) { this.tongCanHoLucMo = tongCanHoLucMo; }
 
     public String getKetQua() { return ketQua; }
     public void setKetQua(String ketQua) { this.ketQua = ketQua; }
