@@ -26,10 +26,16 @@ public class ThongBaoDAO {
     }
 
     public List<ThongBao> findForCuDan(int page, int pageSize) {
+        return findForCuDan(null, page, pageSize);
+    }
+
+    public List<ThongBao> findForCuDan(Integer maCanHo, int page, int pageSize) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             TypedQuery<ThongBao> query = em.createQuery(
-                "SELECT t FROM ThongBao t WHERE t.doiTuong IN ('CuDan', 'TatCa') ORDER BY t.ngayTao DESC", ThongBao.class);
+                "SELECT t FROM ThongBao t WHERE t.doiTuong IN ('CuDan', 'TatCa') " +
+                "OR (t.doiTuong = 'CanHo' AND t.maCanHo = :mch) ORDER BY t.ngayTao DESC", ThongBao.class);
+            query.setParameter("mch", maCanHo);
             query.setFirstResult((page - 1) * pageSize);
             query.setMaxResults(pageSize);
             return query.getResultList();
@@ -42,10 +48,17 @@ public class ThongBaoDAO {
     }
 
     public long countForCuDan() {
+        return countForCuDan(null);
+    }
+
+    public long countForCuDan(Integer maCanHo) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.createQuery(
-                "SELECT COUNT(t) FROM ThongBao t WHERE t.doiTuong IN ('CuDan', 'TatCa')", Long.class).getSingleResult();
+                "SELECT COUNT(t) FROM ThongBao t WHERE t.doiTuong IN ('CuDan', 'TatCa') " +
+                "OR (t.doiTuong = 'CanHo' AND t.maCanHo = :mch)", Long.class)
+                    .setParameter("mch", maCanHo)
+                    .getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
             return 0L;

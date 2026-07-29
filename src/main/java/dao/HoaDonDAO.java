@@ -244,6 +244,122 @@ public class HoaDonDAO {
         }
     }
 
+    public List<Object[]> findCanHoConNo(int thang, int nam) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String sql = "SELECT " +
+                    "  c.id AS maCanHo, " +
+                    "  c.soPhong, " +
+                    "  ISNULL(cd.hoTen, N'Chưa có chủ hộ') AS tenChuHo, " +
+                    "  h.tongTien, " +
+                    "  ISNULL(SUM(CASE WHEN g.trangThai = 'ThanhCong' THEN g.soTien ELSE 0 END), 0) AS daThu, " +
+                    "  (h.tongTien - ISNULL(SUM(CASE WHEN g.trangThai = 'ThanhCong' THEN g.soTien ELSE 0 END), 0)) AS conNo " +
+                    "FROM dbo.hoaDon h " +
+                    "JOIN dbo.canHo c ON c.id = h.maCanHo " +
+                    "LEFT JOIN dbo.cuDan cd ON cd.maCanHo = c.id AND cd.loaiCuDan = 'ChuHo' AND cd.trangThai = 'DangO' " +
+                    "LEFT JOIN dbo.giaoDichThanhToan g ON g.maHoaDon = h.id " +
+                    "WHERE h.thang = :thang AND h.nam = :nam " +
+                    "GROUP BY c.id, c.soPhong, cd.hoTen, h.tongTien " +
+                    "HAVING (h.tongTien - ISNULL(SUM(CASE WHEN g.trangThai = 'ThanhCong' THEN g.soTien ELSE 0 END), 0)) > 0.01 " +
+                    "ORDER BY c.soPhong ASC";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> list = em.createNativeQuery(sql)
+                    .setParameter("thang", thang)
+                    .setParameter("nam", nam)
+                    .getResultList();
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        } finally {
+            em.close();
+        }
+    }
+
+    public String guiNhacPhi(int thang, int nam, int maNhanVien) {
+        List<Object[]> dsConNo = findCanHoConNo(thang, nam);
+        if (dsConNo.isEmpty()) {
+            return "Không có căn hộ nào còn nợ phí trong kỳ T" + thang + "/" + nam + ".";
+        }
+
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        int sentCount = 0;
+        int skippedCount = 0;
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        java.time.LocalDateTime sevenDaysAgo = now.minusDays(7);
+        java.util.Date sevenDaysAgoDate = java.sql.Timestamp.valueOf(sevenDaysAgo);
+
+        try {
+            tx.begin();
+
+            for (Object[] r : dsConNo) {
+                int maCanHo = ((Number) r[0]).intValue();
+                String soPhong = (String) r[1];
+                double tongTien = ((Number) r[3]).doubleValue();
+                double daThu = ((Number) r[4]).doubleValue();
+                double conNo = ((Number) r[5]).doubleValue();
+
+                // Anti-duplicate check within 7 days for same apartment and same period
+                String checkSql = "SELECT COUNT(t.id) FROM dbo.thongBao t " +
+                        "WHERE t.doiTuong = 'CanHo' AND t.maCanHo = :maCanHo " +
+                        "  AND t.loaiThongBao = 'NhacPhi' " +
+                        "  AND t.tieuDe LIKE :tieuDeKey " +
+                        "  AND t.ngayTao >= :sevenDaysAgo";
+
+                Number numExist = (Number) em.createNativeQuery(checkSql)
+                        .setParameter("maCanHo", maCanHo)
+                        .setParameter("tieuDeKey", "%Nhắc phí tháng " + thang + "/" + nam + "%")
+                        .setParameter("sevenDaysAgo", sevenDaysAgoDate)
+                        .getSingleResult();
+
+                if (numExist != null && numExist.intValue() > 0) {
+                    skippedCount++;
+                    continue;
+                }
+
+                // Create new ThongBao record
+                entity.ThongBao tb = new entity.ThongBao();
+                tb.setMaNhanVien(maNhanVien);
+                tb.setDoiTuong("CanHo");
+                tb.setMaCanHo(maCanHo);
+                tb.setLoaiThongBao("NhacPhi");
+                tb.setTieuDe("Nhắc phí tháng " + thang + "/" + nam);
+
+                String noiDung = "Kính gửi cư dân căn hộ " + soPhong + ",\n\n" +
+                        "Ban Quản lý xin thông báo nhắc phí dịch vụ kỳ Tháng " + thang + "/" + nam + ":\n" +
+                        "• Tổng tiền hóa đơn: " + util.DisplayUtil.formatTienDouble(tongTien) + "\n" +
+                        "• Đã thanh toán: " + util.DisplayUtil.formatTienDouble(daThu) + "\n" +
+                        "• Số tiền còn nợ: " + util.DisplayUtil.formatTienDouble(conNo) + "\n\n" +
+                        "Rất mong Quý cư dân hoàn tất thanh toán để đảm bảo duy trì các dịch vụ tiện ích.";
+
+                tb.setNoiDung(noiDung);
+                tb.setNgayTao(new java.util.Date());
+
+                em.persist(tb);
+                sentCount++;
+            }
+
+            tx.commit();
+
+            StringBuilder msg = new StringBuilder();
+            msg.append("Đã gửi thành công ").append(sentCount).append(" thông báo nhắc phí cho kỳ T").append(thang).append("/").append(nam).append(".");
+            if (skippedCount > 0) {
+                msg.append(" (Bỏ qua ").append(skippedCount).append(" căn hộ do đã được gửi nhắc phí trong vòng 7 ngày qua).");
+            }
+            return msg.toString();
+
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return "Lỗi khi gửi thông báo nhắc phí: " + extractRootMessage(e);
+        } finally {
+            em.close();
+        }
+    }
+
     private String extractRootMessage(Throwable e) {
         Throwable cause = e;
         while (cause.getCause() != null) {

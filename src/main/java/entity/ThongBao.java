@@ -35,6 +35,9 @@ public class ThongBao {
     @Column(name = "doiTuong", length = 255)
     private String doiTuong = "TatCa";
 
+    @Column(name = "maCanHo")
+    private Integer maCanHo;
+
     public ThongBao() {}
 
     public Integer getId() { return id; }
@@ -62,4 +65,7 @@ public class ThongBao {
 
     public String getDoiTuong() { return doiTuong; }
     public void setDoiTuong(String doiTuong) { this.doiTuong = doiTuong; }
+
+    public Integer getMaCanHo() { return maCanHo; }
+    public void setMaCanHo(Integer maCanHo) { this.maCanHo = maCanHo; }
 }

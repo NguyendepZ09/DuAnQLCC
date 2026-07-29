@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet({"/ketoan/hoa-don", "/ketoan/hoa-don/chi-tiet", "/ketoan/hoa-don/xuat"})
+@WebServlet({"/ketoan/hoa-don", "/ketoan/hoa-don/chi-tiet", "/ketoan/hoa-don/xuat", "/ketoan/hoa-don/nhac-phi"})
 public class KeToanHoaDonServlet extends HttpServlet {
 
     private final HoaDonDAO hoaDonDAO = new HoaDonDAO();
@@ -36,6 +36,8 @@ public class KeToanHoaDonServlet extends HttpServlet {
 
         if (uri.endsWith("/xuat")) {
             xuatHoaDon(req, resp);
+        } else if (uri.endsWith("/nhac-phi")) {
+            guiNhacPhi(req, resp);
         } else {
             resp.sendRedirect(req.getContextPath() + "/ketoan/hoa-don");
         }
@@ -46,14 +48,21 @@ public class KeToanHoaDonServlet extends HttpServlet {
         Integer nam = getNullableInt(req.getParameter("nam"));
         String trangThai = req.getParameter("trangThai");
 
+        int currentThang = (thang != null) ? thang : java.time.LocalDate.now().getMonthValue();
+        int currentNam = (nam != null) ? nam : java.time.LocalDate.now().getYear();
+
         Map<String, Object> stats = hoaDonDAO.thongKeKy(thang, nam);
         List<Object[]> list = hoaDonDAO.findHoaDonTheoKy(thang, nam, trangThai);
+        List<Object[]> dsConNo = hoaDonDAO.findCanHoConNo(currentThang, currentNam);
 
         req.setAttribute("thang", thang);
         req.setAttribute("nam", nam);
+        req.setAttribute("currentThang", currentThang);
+        req.setAttribute("currentNam", currentNam);
         req.setAttribute("trangThai", (trangThai != null && !trangThai.isBlank()) ? trangThai : "ALL");
         req.setAttribute("stats", stats);
         req.setAttribute("hoaDonList", list);
+        req.setAttribute("dsConNo", dsConNo);
         req.setAttribute("activeMenu", "hoa-don");
 
         req.getRequestDispatcher("/WEB-INF/views/ketoan/hoa-don.jsp").forward(req, resp);
@@ -105,6 +114,28 @@ public class KeToanHoaDonServlet extends HttpServlet {
             String errMsg = URLEncoder.encode("Xuất hóa đơn thất bại: " + err, StandardCharsets.UTF_8);
             resp.sendRedirect(req.getContextPath() + "/ketoan/hoa-don?thang=" + thang + "&nam=" + nam + "&error=" + errMsg);
         }
+    }
+
+    private void guiNhacPhi(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int thang = 0;
+        int nam = 0;
+        try {
+            thang = Integer.parseInt(req.getParameter("thang"));
+            nam = Integer.parseInt(req.getParameter("nam"));
+        } catch (Exception e) {
+            resp.sendRedirect(req.getContextPath() + "/ketoan/hoa-don?error=" + URLEncoder.encode("Vui lòng chọn Tháng và Năm hợp lệ để gửi nhắc phí.", StandardCharsets.UTF_8));
+            return;
+        }
+
+        int maNhanVien = 1; // Default employee ID
+        Object nvObj = req.getSession().getAttribute("nhanVienId");
+        if (nvObj instanceof Number) {
+            maNhanVien = ((Number) nvObj).intValue();
+        }
+
+        String resultMsg = hoaDonDAO.guiNhacPhi(thang, nam, maNhanVien);
+        String msg = URLEncoder.encode(resultMsg, StandardCharsets.UTF_8);
+        resp.sendRedirect(req.getContextPath() + "/ketoan/hoa-don?thang=" + thang + "&nam=" + nam + "&msg=" + msg);
     }
 
     private Integer getNullableInt(String param) {

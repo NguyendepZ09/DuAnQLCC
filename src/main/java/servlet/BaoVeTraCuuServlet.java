@@ -1,5 +1,6 @@
 package servlet;
 
+import dao.CanHoDAO;
 import dao.QuanLyXeDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import java.util.List;
 public class BaoVeTraCuuServlet extends HttpServlet {
 
     private final QuanLyXeDAO quanLyXeDAO = new QuanLyXeDAO();
+    private final CanHoDAO canHoDAO = new CanHoDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -27,14 +29,18 @@ public class BaoVeTraCuuServlet extends HttpServlet {
 
         String tuKhoa = req.getParameter("tuKhoa");
         List<Object[]> ketQuaList = null;
+        java.util.Map<String, Object> canHoInfo = null;
 
         if (tuKhoa != null && !tuKhoa.trim().isEmpty()) {
-            ketQuaList = quanLyXeDAO.traCuuTheoBienSo(tuKhoa.trim());
+            String kw = tuKhoa.trim();
+            ketQuaList = quanLyXeDAO.traCuuTheoBienSo(kw);
+            canHoInfo = canHoDAO.traCuuCanHoChoBaoVe(kw);
         }
 
         req.setAttribute("activeMenu", "tra-cuu");
         req.setAttribute("tuKhoa", tuKhoa != null ? tuKhoa.trim() : "");
         req.setAttribute("ketQuaList", ketQuaList);
+        req.setAttribute("canHoInfo", canHoInfo);
 
         req.getRequestDispatcher("/WEB-INF/views/baove/tra-cuu.jsp").forward(req, resp);
     }

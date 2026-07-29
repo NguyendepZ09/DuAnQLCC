@@ -332,4 +332,15 @@ public class DisplayUtil {
             default: return code;
         }
     }
+
+    public static String getBoPhanText(String code) {
+        if (code == null) return "";
+        switch (code) {
+            case "LeTan": return "Lễ tân";
+            case "KeToan": return "Kế toán";
+            case "KyThuat": return "Kỹ thuật";
+            case "BaoVe": return "Bảo vệ";
+            default: return code;
+        }
+    }
 }

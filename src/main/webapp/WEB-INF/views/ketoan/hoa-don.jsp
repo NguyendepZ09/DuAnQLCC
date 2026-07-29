@@ -243,10 +243,87 @@
                             <option value="${y}" ${y == (nam != null ? nam : 2026) ? 'selected' : ''}>Năm ${y}</option>
                         </c:forEach>
                     </select>
-                    <button type="submit" class="btn btn-gold text-nowrap">
+                    <button type="submit" class="btn btn-gold text-nowrap me-2">
                         🚀 Xuất Hóa Đơn
                     </button>
+                    <button type="button" class="btn btn-danger text-nowrap fw-bold" data-bs-toggle="modal" data-bs-target="#modalNhacPhi">
+                        📩 Gửi Nhắc Phí
+                    </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Modal Xác Nhận Gửi Nhắc Phí -->
+        <div class="modal fade" id="modalNhacPhi" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form action="${pageContext.request.contextPath}/ketoan/hoa-don/nhac-phi" method="post">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title fw-bold text-white">📩 Xác Nhận Gửi Thông Báo Nhắc Phí</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-2 text-dark">Hệ thống sẽ tự động tạo và gửi thông báo nhắc phí đến tài khoản cư dân của <strong>tất cả các căn hộ còn nợ phí</strong> trong kỳ thu phí dưới đây:</p>
+                            <div class="row g-2 mb-3 align-items-center bg-light p-2 rounded border">
+                                <div class="col-auto"><strong>Chọn kỳ nhắc phí:</strong></div>
+                                <div class="col-auto">
+                                    <select name="thang" class="form-select form-select-sm">
+                                        <c:forEach var="m" begin="1" end="12">
+                                            <option value="${m}" ${m == currentThang ? 'selected' : ''}>Tháng ${m}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <select name="nam" class="form-select form-select-sm">
+                                        <c:forEach var="y" begin="2025" end="2027">
+                                            <option value="${y}" ${y == currentNam ? 'selected' : ''}>Năm ${y}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold text-danger mb-2">📋 Danh Sách Xem Trước Các Căn Hộ Sẽ Nhận Nhắc Phí:</h6>
+                            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                <table class="table table-sm table-bordered align-middle m-0">
+                                    <thead class="table-secondary">
+                                        <tr>
+                                            <th>Căn Hộ</th>
+                                            <th>Chủ Hộ</th>
+                                            <th class="text-end">Tổng Tiền HĐ</th>
+                                            <th class="text-end">Đã Thanh Toán</th>
+                                            <th class="text-end">Còn Nợ Phải Gửi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:choose>
+                                            <c:when test="${not empty dsConNo}">
+                                                <c:forEach var="r" items="${dsConNo}">
+                                                    <tr>
+                                                        <td class="fw-bold text-primary">Căn ${r[1]}</td>
+                                                        <td>${r[2]}</td>
+                                                        <td class="text-end">${DisplayUtil.formatTienDouble(r[3])}</td>
+                                                        <td class="text-end text-success">${DisplayUtil.formatTienDouble(r[4])}</td>
+                                                        <td class="text-end fw-bold text-danger">${DisplayUtil.formatTienDouble(r[5])}</td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted py-3">Hiện không có căn hộ nào còn nợ phí trong kỳ này.</td>
+                                                </tr>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <small class="text-muted mt-2 d-block">* Các căn hộ đã nhận thông báo nhắc phí cho kỳ này trong vòng 7 ngày gần nhất sẽ tự động được bỏ qua để tránh gửi lặp lại.</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-danger fw-bold">🚀 Xác Nhận Gửi Nhắc Phí</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 

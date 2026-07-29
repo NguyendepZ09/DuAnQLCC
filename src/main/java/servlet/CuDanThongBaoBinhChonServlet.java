@@ -69,7 +69,7 @@ public class CuDanThongBaoBinhChonServlet extends HttpServlet {
             } catch (NumberFormatException ignored) {}
         }
 
-        List<ThongBao> rawNotices = thongBaoDAO.findForCuDan(page, pageSize);
+        List<ThongBao> rawNotices = thongBaoDAO.findForCuDan(maCanHo, page, pageSize);
         List<Map<String, Object>> danhSachThongBao = new ArrayList<>();
         for (ThongBao tb : rawNotices) {
             Map<String, Object> map = new HashMap<>();
@@ -82,7 +82,7 @@ public class CuDanThongBaoBinhChonServlet extends HttpServlet {
             danhSachThongBao.add(map);
         }
 
-        long totalNotices = thongBaoDAO.countForCuDan();
+        long totalNotices = thongBaoDAO.countForCuDan(maCanHo);
         int totalPages = (int) Math.ceil((double) totalNotices / pageSize);
         if (totalPages < 1) totalPages = 1;
 

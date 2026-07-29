@@ -117,4 +117,70 @@ public class CanHoDAO {
         }
         return result;
     }
+
+    public Map<String, Object> traCuuCanHoChoBaoVe(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) return null;
+
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            String kw = keyword.trim().toUpperCase();
+
+            // Search by exact room number or LIKE
+            String sqlCanHo = "SELECT c.id, c.soPhong, c.soTang, c.dienTich, c.trangThai " +
+                    "FROM dbo.canHo c " +
+                    "WHERE UPPER(c.soPhong) = :kw OR UPPER(c.soPhong) = :kwP OR UPPER(c.soPhong) LIKE :kwLike";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> list = em.createNativeQuery(sqlCanHo)
+                    .setParameter("kw", kw)
+                    .setParameter("kwP", "P" + kw)
+                    .setParameter("kwLike", "%" + kw + "%")
+                    .setMaxResults(1)
+                    .getResultList();
+
+            if (list.isEmpty()) return null;
+
+            Object[] row = list.get(0);
+            int canHoId = ((Number) row[0]).intValue();
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", canHoId);
+            result.put("soPhong", row[1]);
+            result.put("tang", row[2]);
+            result.put("dienTich", row[3]);
+            result.put("trangThai", row[4]);
+
+            // ONLY fetch resident names and types (NO CCCD, NO phone numbers for security privacy)
+            String sqlCuDan = "SELECT cd.hoTen, cd.loaiCuDan " +
+                    "FROM dbo.cuDan cd " +
+                    "WHERE cd.maCanHo = :mch AND cd.trangThai = 'DangO' " +
+                    "ORDER BY CASE WHEN cd.loaiCuDan = 'ChuHo' THEN 0 ELSE 1 END, cd.id ASC";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> dsCuDan = em.createNativeQuery(sqlCuDan)
+                    .setParameter("mch", canHoId)
+                    .getResultList();
+
+            result.put("dsCuDan", dsCuDan);
+
+            // Registered vehicles count
+            Number countXe = (Number) em.createNativeQuery("SELECT COUNT(x.id) FROM dbo.quanLyXe x WHERE x.maCanHo = :mch")
+                    .setParameter("mch", canHoId)
+                    .getSingleResult();
+            result.put("soXeDangKy", countXe != null ? countXe.intValue() : 0);
+
+            // Active RFID cards count
+            Number countThe = (Number) em.createNativeQuery("SELECT COUNT(t.id) FROM dbo.theTu t WHERE t.maCanHo = :mch AND t.trangThai = 'DangSuDung'")
+                    .setParameter("mch", canHoId)
+                    .getSingleResult();
+            result.put("soTheDangHoatDong", countThe != null ? countThe.intValue() : 0);
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

@@ -63,11 +63,13 @@
                             <c:forEach var="tb" items="${danhSachThongBao}">
                                 <c:set var="isRead" value="${readNoticeIds.contains(tb.id)}" />
                                 <c:set var="isKhanCap" value="${tb.loaiThongBao == 'KhanCap'}" />
+                                <c:set var="isNhacPhi" value="${tb.loaiThongBao == 'NhacPhi'}" />
 
-                                <div class="card-custom ${!isRead ? 'notice-unread' : ''} ${isKhanCap ? 'notice-khancap' : ''}">
+                                <div class="card-custom ${!isRead ? 'notice-unread' : ''} ${isKhanCap ? 'notice-khancap' : ''} ${isNhacPhi ? 'border-danger border-start border-4' : ''}">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h5 class="fw-bold m-0 ${isKhanCap ? 'text-danger' : 'text-dark'}">
+                                        <h5 class="fw-bold m-0 ${isKhanCap || isNhacPhi ? 'text-danger' : 'text-dark'}">
                                             <c:if test="${isKhanCap}">🚨 [KHẨN CẤP] </c:if>
+                                            <c:if test="${isNhacPhi}"><span class="badge bg-danger me-1">📩 THÔNG BÁO NHẮC PHÍ</span> </c:if>
                                             <c:if test="${tb.loaiThongBao == 'BaoTri'}">🔧 [BẢO TRÌ] </c:if>
                                             ${tb.tieuDe}
                                         </h5>

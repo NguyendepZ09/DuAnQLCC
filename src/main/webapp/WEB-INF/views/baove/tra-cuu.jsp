@@ -195,17 +195,17 @@
             <!-- Ô TÌM KIẾM LỚN -->
             <div class="card-custom">
                 <div class="card-header-custom">
-                    <span>🔍 TRA CỨU NHANH BÃI XRA / CỔNG AN NINH</span>
+                    <span>🔍 TRA CỨU NHANH BÃI XE / CỔNG AN NINH / CĂN HỘ</span>
                 </div>
                 <div class="card-body p-4">
                     <form action="${pageContext.request.contextPath}/baove/tra-cuu" method="get">
                         <div class="input-group input-group-lg">
                             <span class="input-group-text bg-white border-end-0">🔍</span>
                             <input type="text" name="tuKhoa" class="form-control border-start-0 ps-0" placeholder="Nhập biển số xe (VD: 30A-123.45), số thẻ (VD: THE-0101-01) hoặc số phòng..." value="${tuKhoa}" autofocus required>
-                            <button type="submit" class="btn btn-success px-4 fw-bold">Tra Cứu Phương Tiện</button>
+                            <button type="submit" class="btn btn-success px-4 fw-bold">Tra Cứu Thông Tin</button>
                         </div>
                         <div class="form-text mt-2 text-muted">
-                            💡 <i>Mẹo: Hệ thống tự động so sánh thông minh (bỏ qua dấu chấm, dấu gạch ngang và khoảng trắng trong biển số xe).</i>
+                            💡 <i>Gợi ý: Tìm theo biển số xe, số thẻ từ hoặc số phòng (VD: 30A-123.45, THE-0101-01, hoặc 101).</i>
                         </div>
                     </form>
                 </div>
@@ -219,6 +219,75 @@
                     </h5>
                 </div>
 
+                <!-- 1. CARD THÔNG TIN CĂN HỘ (NẾU TÌM THEO SỐ PHÒNG) -->
+                <c:if test="${not empty canHoInfo}">
+                    <div class="card-custom border-primary mb-4 shadow-sm">
+                        <div class="card-header-custom bg-primary text-white d-flex justify-content-between align-items-center" style="background-color: #1E3B34 !important;">
+                            <span class="fs-5 fw-bold text-white">🏢 THÔNG TIN CĂN HỘ P.<c:out value="${canHoInfo.soPhong}"/></span>
+                            <span class="badge bg-warning text-dark fs-6">Tầng <c:out value="${canHoInfo.tang}"/></span>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3"><strong>Mã số phòng:</strong> <span class="fw-bold text-primary fs-5">P.<c:out value="${canHoInfo.soPhong}"/></span></div>
+                                <div class="col-md-3"><strong>Vị trí tầng:</strong> Tầng <c:out value="${canHoInfo.tang}"/></div>
+                                <div class="col-md-3"><strong>Diện tích:</strong> <c:out value="${canHoInfo.dienTich}"/> m²</div>
+                                <div class="col-md-3"><strong>Trạng thái căn:</strong> <span class="badge bg-info text-dark">${DisplayUtil.getTrangThaiCanHoText(canHoInfo.trangThai)}</span></div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded border">
+                                        <span class="fw-bold text-dark d-block mb-1">🚗 Số xe đăng ký:</span>
+                                        <span class="fs-5 fw-bold text-success"><c:out value="${canHoInfo.soXeDangKy}"/> xe</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded border">
+                                        <span class="fw-bold text-dark d-block mb-1">🪪 Thẻ từ đang hoạt động:</span>
+                                        <span class="fs-5 fw-bold text-primary"><c:out value="${canHoInfo.soTheDangHoatDong}"/> thẻ</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PRIVACY COMPLIANT RESIDENT LIST (NO CCCD, NO PHONE NUMBERS) -->
+                            <div class="p-3 bg-light rounded border">
+                                <h6 class="fw-bold text-dark mb-2">👥 Danh Sách Cư Dân Đang Ở (Kiểm Soát Ra Vào Cổng)</h6>
+                                <c:choose>
+                                    <c:when test="${not empty canHoInfo.dsCuDan}">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered align-middle m-0 bg-white">
+                                                <thead class="table-secondary">
+                                                    <tr>
+                                                        <th>Họ & Tên Cư Dân</th>
+                                                        <th>Tư Cách / Loại Cư Dân</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach var="cd" items="${canHoInfo.dsCuDan}">
+                                                        <tr>
+                                                            <td class="fw-bold text-dark">👤 <c:out value="${cd[0]}"/></td>
+                                                            <td>
+                                                                <span class="badge ${DisplayUtil.getLoaiCuDanBadgeClass(cd[1])}">
+                                                                    ${DisplayUtil.getLoaiCuDanText(cd[1])}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="text-muted italic">Căn hộ hiện chưa có cư dân đăng ký ở.</span>
+                                    </c:otherwise>
+                                </c:choose>
+                                <small class="text-muted d-block mt-2">🔒 <i>Bảo vệ chỉ được phép tra cứu tên và tư cách ở (Chủ hộ/Khách thuê) để phục vụ kiểm soát ra vào. CCCD & SĐT đã được ẩn theo chính sách bảo mật thông tin cư dân.</i></small>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
+                <!-- 2. KẾT QUẢ XE VÀ THẺ TỪ -->
                 <c:choose>
                     <c:when test="${not empty ketQuaList}">
                         <div class="row">
@@ -249,7 +318,6 @@
                                                         🪪 <b>Mã thẻ gắn:</b> <span class="text-muted">— (Chưa đăng ký thẻ)</span>
                                                     </div>
                                                 </div>
-                                                <!-- ĐÃ ẨN HOÀN TOÀN DÒNG HẠN THỀ VÀ TÌNH TRẠNG HẠN -->
                                             </div>
                                         </c:when>
 
@@ -284,7 +352,6 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- CẢNH BÁO ĐỎ NỔI BẬT KHÔNG THỂ BỎ QUA -->
                                                 <div class="alert alert-danger mb-0 py-2 fw-bold text-center border-2" role="alert">
                                                     🚨 CẢNH BÁO: THẺ KHÔNG CÒN HIỆU LỰC — LIÊN HỆ LỄ TÂN!
                                                     <div class="small fw-normal mt-1">(Lý do: <c:out value="${v[9]}"/>)</div>
@@ -330,9 +397,11 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <div class="alert alert-warning py-4 text-center fs-5" role="alert">
-                            ⚠️ Không tìm thấy phương tiện hoặc thẻ nào khớp với từ khóa "<c:out value="${tuKhoa}"/>".
-                        </div>
+                        <c:if test="${empty canHoInfo}">
+                            <div class="alert alert-warning py-4 text-center fs-5" role="alert">
+                                ⚠️ Không tìm thấy phương tiện, thẻ hoặc số phòng nào khớp với từ khóa "<c:out value="${tuKhoa}"/>".
+                            </div>
+                        </c:if>
                     </c:otherwise>
                 </c:choose>
             </c:if>
