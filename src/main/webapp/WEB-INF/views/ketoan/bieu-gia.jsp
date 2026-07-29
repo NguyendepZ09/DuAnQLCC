@@ -222,9 +222,18 @@
                     <tbody>
                     <c:choose>
                         <c:when test="${not empty allPrices}">
+                            <c:set var="prevLoai" value="" />
                             <c:forEach var="b" items="${allPrices}">
+                                <c:if test="${b.loaiDichVu != prevLoai}">
+                                    <c:set var="prevLoai" value="${b.loaiDichVu}" />
+                                    <tr style="background-color: #EAE3D2;">
+                                        <td colspan="9" class="fw-bold py-2 px-3 text-dark fs-6">
+                                            📌 Biểu Giá: ${DisplayUtil.getLoaiDichVuText(b.loaiDichVu)}
+                                        </td>
+                                    </tr>
+                                </c:if>
                                 <tr>
-                                    <td class="fw-bold text-primary">
+                                    <td class="fw-bold text-primary ps-4">
                                         ${DisplayUtil.getLoaiDichVuText(b.loaiDichVu)}
                                     </td>
                                     <td class="text-center fw-semibold">${b.bacTu}</td>

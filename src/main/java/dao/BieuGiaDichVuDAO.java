@@ -19,7 +19,16 @@ public class BieuGiaDichVuDAO {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.createQuery(
-                "SELECT b FROM BieuGiaDichVu b ORDER BY b.loaiDichVu ASC, b.hieuLucTu DESC, b.bacTu ASC", 
+                "SELECT b FROM BieuGiaDichVu b " +
+                "ORDER BY CASE b.loaiDichVu " +
+                "           WHEN 'Dien' THEN 1 " +
+                "           WHEN 'Nuoc' THEN 2 " +
+                "           WHEN 'PhiQuanLy' THEN 3 " +
+                "           WHEN 'GuiXeOTo' THEN 4 " +
+                "           WHEN 'GuiXeMay' THEN 5 " +
+                "           ELSE 6 END ASC, " +
+                "         b.hieuLucTu DESC, " +
+                "         b.bacTu ASC", 
                 BieuGiaDichVu.class
             ).getResultList();
         } catch (Exception e) {
@@ -69,12 +78,13 @@ public class BieuGiaDichVuDAO {
     }
 
     /**
-     * Lấy danh sách các cảnh báo hở bậc (gap) cho JSP hiển thị banner vàng.
+     * Lấy danh sách các cảnh báo hở bậc và chênh lệch số lượng bậc cho JSP hiển thị banner vàng.
      */
     public List<String> checkTierGaps() {
         List<BieuGiaDichVu> all = findAllSorted();
-        Map<String, Map<LocalDate, List<BieuGiaDichVu>>> grouped = new LinkedHashMap<>();
+        Map<String, LocalDate> activeDates = findActiveHieuLucDates();
 
+        Map<String, Map<LocalDate, List<BieuGiaDichVu>>> grouped = new LinkedHashMap<>();
         for (BieuGiaDichVu b : all) {
             grouped.computeIfAbsent(b.getLoaiDichVu(), k -> new LinkedHashMap<>())
                    .computeIfAbsent(b.getHieuLucTu(), k -> new ArrayList<>())
@@ -82,28 +92,47 @@ public class BieuGiaDichVuDAO {
         }
 
         List<String> warnings = new ArrayList<>();
+        java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         for (Map.Entry<String, Map<LocalDate, List<BieuGiaDichVu>>> entryLoai : grouped.entrySet()) {
             String loai = entryLoai.getKey();
-            if ("PhiQuanLy".equals(loai) || "GuiXeOTo".equals(loai) || "GuiXeMay".equals(loai)) {
-                continue;
+            String loaiText = util.DisplayUtil.getLoaiDichVuText(loai);
+            LocalDate activeDate = activeDates.get(loai);
+
+            // Fetch tier count of currently active date set
+            int activeTierCount = 0;
+            if (activeDate != null && entryLoai.getValue().containsKey(activeDate)) {
+                activeTierCount = entryLoai.getValue().get(activeDate).size();
             }
 
             for (Map.Entry<LocalDate, List<BieuGiaDichVu>> entryDate : entryLoai.getValue().entrySet()) {
                 LocalDate date = entryDate.getKey();
+                String dateFmt = date.format(dtf);
                 List<BieuGiaDichVu> tiers = entryDate.getValue();
                 tiers.sort(Comparator.comparing(BieuGiaDichVu::getBacTu));
 
-                if (!tiers.isEmpty()) {
-                    if (tiers.get(0).getBacTu().compareTo(BigDecimal.ZERO) != 0) {
-                        warnings.add("Cảnh báo hở bậc [" + loai + " - Hiệu lực " + date + "]: Bậc đầu tiên chưa bắt đầu từ 0 (đang là " + tiers.get(0).getBacTu() + ").");
+                // 1. Check Tier Count Mismatch against Active Date Set
+                if (activeDate != null && !date.equals(activeDate) && activeTierCount > 0) {
+                    int currCount = tiers.size();
+                    if (currCount != activeTierCount) {
+                        warnings.add("Cảnh báo chênh lệch số bậc [" + loaiText + " - Hiệu lực " + dateFmt + "]: Bộ giá mới có " + currCount + " bậc, trong khi bộ đang áp dụng có " + activeTierCount + " bậc. Kiểm tra lại xem đã nhập đủ bậc chưa.");
                     }
-                    for (int i = 0; i < tiers.size() - 1; i++) {
-                        BigDecimal currDen = tiers.get(i).getBacDen();
-                        BigDecimal nextTu = tiers.get(i + 1).getBacTu();
-                        if (currDen == null) {
-                            warnings.add("Cảnh báo hở bậc [" + loai + " - Hiệu lực " + date + "]: Bậc thứ " + (i + 1) + " đã để 'trở lên' (NULL) nhưng vẫn còn bậc phía sau.");
-                        } else if (currDen.compareTo(nextTu) != 0) {
-                            warnings.add("Cảnh báo hở bậc [" + loai + " - Hiệu lực " + date + "]: Khoảng giữa bậc " + currDen + " và " + nextTu + " bị hở.");
+                }
+
+                // 2. Check Tier Continuity & Gaps within set (only for tiered services)
+                if (!Set.of("PhiQuanLy", "GuiXeOTo", "GuiXeMay").contains(loai)) {
+                    if (!tiers.isEmpty()) {
+                        if (tiers.get(0).getBacTu().compareTo(BigDecimal.ZERO) != 0) {
+                            warnings.add("Cảnh báo hở bậc [" + loaiText + " - Hiệu lực " + dateFmt + "]: Bậc đầu tiên chưa bắt đầu từ 0 (đang là " + tiers.get(0).getBacTu() + ").");
+                        }
+                        for (int i = 0; i < tiers.size() - 1; i++) {
+                            BigDecimal currDen = tiers.get(i).getBacDen();
+                            BigDecimal nextTu = tiers.get(i + 1).getBacTu();
+                            if (currDen == null) {
+                                warnings.add("Cảnh báo hở bậc [" + loaiText + " - Hiệu lực " + dateFmt + "]: Bậc thứ " + (i + 1) + " đã để 'trở lên' (NULL) nhưng vẫn còn bậc phía sau.");
+                            } else if (currDen.compareTo(nextTu) != 0) {
+                                warnings.add("Cảnh báo hở bậc [" + loaiText + " - Hiệu lực " + dateFmt + "]: Khoảng giữa bậc " + currDen + " và " + nextTu + " bị hở.");
+                            }
                         }
                     }
                 }

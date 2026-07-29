@@ -25,7 +25,9 @@ public class SoDoServlet extends HttpServlet {
         
         try {
             Map<Integer, List<CanHo>> mapTangCanHo = canHoDAO.findAllMappedByTang();
+            Map<Integer, String> tinhTrangMap = canHoDAO.getTinhTrangMap();
             request.setAttribute("mapTangCanHo", mapTangCanHo);
+            request.setAttribute("tinhTrangMap", tinhTrangMap);
         } catch (Exception e) {
             System.err.println("Lỗi trong SoDoServlet (doGet): " + e.getMessage());
             e.printStackTrace();

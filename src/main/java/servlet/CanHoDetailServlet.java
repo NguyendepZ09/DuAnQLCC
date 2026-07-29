@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +46,8 @@ public class CanHoDetailServlet extends HttpServlet {
             }
 
             CuDan cd = (CuDan) detail.get("cuDan");
+            @SuppressWarnings("unchecked")
+            List<CuDan> dsCuDan = (List<CuDan>) detail.get("dsCuDan");
             HoaDon hd = (HoaDon) detail.get("hoaDon");
 
             StringBuilder sb = new StringBuilder();
@@ -55,8 +58,25 @@ public class CanHoDetailServlet extends HttpServlet {
             sb.append("\"tang\":").append(ch.getTang() != null ? ch.getTang() : 1).append(",");
             sb.append("\"dienTich\":").append(ch.getDienTich() != null ? ch.getDienTich() : 75.0).append(",");
             sb.append("\"trangThai\":\"").append(escapeJson(ch.getTrangThai())).append("\",");
+
+            sb.append("\"dsCuDan\":[");
+            if (dsCuDan != null) {
+                for (int i = 0; i < dsCuDan.size(); i++) {
+                    CuDan c = dsCuDan.get(i);
+                    if (i > 0) sb.append(",");
+                    sb.append("{");
+                    sb.append("\"id\":").append(c.getId()).append(",");
+                    sb.append("\"hoTen\":\"").append(escapeJson(c.getHoTen())).append("\",");
+                    sb.append("\"soDienThoai\":\"").append(escapeJson(c.getSoDienThoai())).append("\",");
+                    sb.append("\"loaiCuDan\":\"").append(escapeJson(c.getLoaiCuDan())).append("\",");
+                    sb.append("\"loaiCuDanText\":\"").append(escapeJson(util.DisplayUtil.getLoaiCuDanText(c.getLoaiCuDan()))).append("\",");
+                    sb.append("\"loaiCuDanBadgeClass\":\"").append(escapeJson(util.DisplayUtil.getLoaiCuDanBadgeClass(c.getLoaiCuDan()))).append("\"");
+                    sb.append("}");
+                }
+            }
+            sb.append("],");
             
-            sb.append("\"chuHoTen\":\"").append(cd != null && cd.getHoTen() != null ? escapeJson(cd.getHoTen()) : "Chưa có chủ hộ").append("\",");
+            sb.append("\"chuHoTen\":\"").append(cd != null && cd.getHoTen() != null ? escapeJson(cd.getHoTen()) : "Chưa có cư dân").append("\",");
             sb.append("\"chuHoSdt\":\"").append(cd != null && cd.getSoDienThoai() != null ? escapeJson(cd.getSoDienThoai()) : "N/A").append("\",");
             sb.append("\"chuHoEmail\":\"").append(cd != null && cd.getEmail() != null ? escapeJson(cd.getEmail()) : "N/A").append("\",");
 

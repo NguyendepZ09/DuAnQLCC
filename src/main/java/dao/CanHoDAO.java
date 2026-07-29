@@ -41,6 +41,46 @@ public class CanHoDAO {
         return mapTang;
     }
 
+    public Map<Integer, String> getTinhTrangMap() {
+        EntityManager em = JPAUtil.getEntityManager();
+        Map<Integer, String> map = new HashMap<>();
+        try {
+            String sql = "SELECT c.id, c.trangThai, " +
+                    "       SUM(CASE WHEN cd.trangThai = 'DangO' AND cd.loaiCuDan = 'ChuHo' THEN 1 ELSE 0 END) AS countChuHo, " +
+                    "       SUM(CASE WHEN cd.trangThai = 'DangO' AND cd.loaiCuDan = 'KhachThue' THEN 1 ELSE 0 END) AS countKhachThue " +
+                    "FROM dbo.canHo c " +
+                    "LEFT JOIN dbo.cuDan cd ON cd.maCanHo = c.id " +
+                    "GROUP BY c.id, c.trangThai";
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> list = em.createNativeQuery(sql).getResultList();
+            for (Object[] r : list) {
+                int id = ((Number) r[0]).intValue();
+                String ttCanHo = (String) r[1];
+                int countChuHo = r[2] != null ? ((Number) r[2]).intValue() : 0;
+                int countKhachThue = r[3] != null ? ((Number) r[3]).intValue() : 0;
+
+                String tinhTrang;
+                if ("BaoTri".equalsIgnoreCase(ttCanHo)) {
+                    tinhTrang = "BaoTri";
+                } else if (countKhachThue > 0) {
+                    tinhTrang = "KhachThueO";
+                } else if (countChuHo > 0) {
+                    tinhTrang = "ChuHoO";
+                } else {
+                    tinhTrang = "Trong";
+                }
+                map.put(id, tinhTrang);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return map;
+    }
+
+    @SuppressWarnings("unchecked")
     public Map<String, Object> findDetailById(Integer canHoId) {
         Map<String, Object> result = new HashMap<>();
         EntityManager em = JPAUtil.getEntityManager();
@@ -50,15 +90,15 @@ public class CanHoDAO {
 
             result.put("canHo", ch);
 
-            try {
-                CuDan cd = em.createQuery("SELECT c FROM CuDan c WHERE c.maCanHo = :mch", CuDan.class)
-                             .setParameter("mch", canHoId)
-                             .setMaxResults(1)
-                             .getSingleResult();
-                result.put("cuDan", cd);
-            } catch (NoResultException e) {
-                result.put("cuDan", null);
-            }
+            // Fetch ALL active residents ('DangO'), ordered so ChuHo comes first
+            List<CuDan> dsCuDan = em.createQuery(
+                "SELECT c FROM CuDan c WHERE c.maCanHo = :mch AND c.trangThai = 'DangO' " +
+                "ORDER BY CASE WHEN c.loaiCuDan = 'ChuHo' THEN 0 ELSE 1 END, c.id ASC", 
+                CuDan.class
+            ).setParameter("mch", canHoId).getResultList();
+
+            result.put("dsCuDan", dsCuDan);
+            result.put("cuDan", !dsCuDan.isEmpty() ? dsCuDan.get(0) : null);
 
             try {
                 HoaDon hd = em.createQuery("SELECT h FROM HoaDon h WHERE h.maCanHo = :mch ORDER BY h.id DESC", HoaDon.class)
