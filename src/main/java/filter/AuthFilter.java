@@ -16,7 +16,7 @@ import java.io.IOException;
 public class AuthFilter implements Filter {
 
     private static final String[] WHITELIST = {
-        "/dang-nhap.jsp",
+        "/dang-nhap",
         "/index.jsp",
         "/login",
         "/logout",
@@ -27,10 +27,12 @@ public class AuthFilter implements Filter {
     };
 
     private TaiKhoanDAO taiKhoanDAO;
+    private dao.ThongBaoDAO thongBaoDAO;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         taiKhoanDAO = new TaiKhoanDAO();
+        thongBaoDAO = new dao.ThongBaoDAO();
     }
 
     @Override
@@ -39,6 +41,10 @@ public class AuthFilter implements Filter {
         
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
+
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setDateHeader("Expires", 0);
 
         String uri = req.getRequestURI();
         String contextPath = req.getContextPath();
@@ -49,17 +55,14 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        res.setHeader("Pragma", "no-cache");
-        res.setDateHeader("Expires", 0);
-
         HttpSession session = req.getSession(false);
         Integer idTaiKhoan = (session != null) ? (Integer) session.getAttribute("idTaiKhoan") : null;
         String tenDangNhap = (session != null) ? (String) session.getAttribute("tenDangNhap") : null;
         String vaiTro = (session != null) ? (String) session.getAttribute("vaiTro") : null;
+        Integer maNhanVien = (session != null) ? (Integer) session.getAttribute("maNhanVien") : null;
 
         if (session == null || idTaiKhoan == null || tenDangNhap == null) {
-            res.sendRedirect(contextPath + "/dang-nhap.jsp");
+            res.sendRedirect(contextPath + "/dang-nhap");
             return;
         }
 
@@ -69,8 +72,13 @@ public class AuthFilter implements Filter {
         TaiKhoan tk = taiKhoanDAO.findByTenDangNhap(tenDangNhap);
         if (tk == null || tk.getTrangThaiHoatDong() == null || !"HoatDong".equalsIgnoreCase(tk.getTrangThaiHoatDong())) {
             session.invalidate();
-            res.sendRedirect(contextPath + "/dang-nhap.jsp");
+            res.sendRedirect(contextPath + "/dang-nhap");
             return;
+        }
+
+        if (maNhanVien != null) {
+            if (thongBaoDAO == null) thongBaoDAO = new dao.ThongBaoDAO();
+            req.setAttribute("countThongBaoChuaDoc", thongBaoDAO.countThongBaoChuaDocChoNhanVien(maNhanVien));
         }
 
         if (path.startsWith("/banquanly/")) {

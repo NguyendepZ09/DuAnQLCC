@@ -25,7 +25,7 @@ public class KyThuatLichSuServlet extends HttpServlet {
         
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("idTaiKhoan") == null) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 

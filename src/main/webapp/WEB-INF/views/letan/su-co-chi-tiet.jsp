@@ -4,18 +4,16 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Chi Tiết Phản Ánh #${phanAnh.id} — Lễ Tân Polybuilding</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-letan.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
     <style>
-        body { background-color: var(--lt-bg, #F4EFE4); font-family: 'Be Vietnam Pro', sans-serif; }
+body { background-color: var(--lt-bg, #F4EFE4); font-family: 'Be Vietnam Pro', sans-serif; }
         .btn-teal { background-color: #1E3B34 !important; border-color: #1E3B34 !important; color: #FFF !important; }
         .btn-teal:hover { background-color: #152A25 !important; border-color: #152A25 !important; }
         .timeline { border-left: 3px solid #1E3B34; padding-left: 20px; margin-left: 10px; }
         .timeline-item { position: relative; margin-bottom: 20px; }
-        .timeline-item::before { content: ''; position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; background: #0D9488; border-radius: 50%; }
+        .timeline-item::before { content: ''; position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; background: #1E3B34; border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -54,7 +52,7 @@
 
                         <!-- KHU VỰC THÔNG TIN CĂN HỘ / CƯ DÂN -->
                         <div class="p-3 bg-light rounded border mb-3">
-                            <h6 class="fw-bold text-teal mb-2" style="color: #0F766E;">🏠 Thông tin căn hộ & Cư dân báo sự cố:</h6>
+                            <h6 class="fw-bold text-teal mb-2" style="color: #16302A;">🏠 Thông tin căn hộ & Cư dân báo sự cố:</h6>
                             <div class="row g-2 small">
                                 <div class="col-md-6">
                                     <strong>Số phòng / Mã căn:</strong> ${not empty itemDetail.soPhong ? itemDetail.soPhong : (not empty itemDetail.maCanHoCode ? itemDetail.maCanHoCode : 'Căn #'.concat(phanAnh.maCanHo))}

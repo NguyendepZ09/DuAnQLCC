@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Thông Báo & Bình Chọn — Cư Dân Polybuilding</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-cudan.css">
+
     <style>
-        .notice-unread { border-left: 4px solid #B98A46; background-color: #F4EFE4; }
+.notice-unread { border-left: 4px solid #B98A46; background-color: #F4EFE4; }
         .notice-khancap { border-left: 5px solid #DC2626 !important; background-color: #FEF2F2 !important; }
     </style>
 </head>

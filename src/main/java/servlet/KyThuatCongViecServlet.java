@@ -45,7 +45,7 @@ public class KyThuatCongViecServlet extends HttpServlet {
         
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("idTaiKhoan") == null) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 
@@ -151,7 +151,7 @@ public class KyThuatCongViecServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("idTaiKhoan") == null) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 
@@ -161,7 +161,7 @@ public class KyThuatCongViecServlet extends HttpServlet {
 
         if (!"NV".equalsIgnoreCase(vaiTro) || !"KyThuat".equalsIgnoreCase(boPhanCode) || maNhanVienSession == null) {
             session.setAttribute("errorMessage", "Tài khoản của bạn chưa được xác thực hồ sơ Kỹ thuật.");
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 

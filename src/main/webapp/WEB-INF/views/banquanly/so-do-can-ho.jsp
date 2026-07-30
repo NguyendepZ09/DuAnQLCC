@@ -4,29 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Sơ Đồ 200 Căn Hộ — Ban Quản Lý</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
     <style>
-        body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .app-layout { display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background: #1E3B34; color: #FFF; padding: 24px; flex-shrink: 0; }
-        .sidebar-brand { font-size: 1.15rem; font-weight: 700; color: #B98A46; margin-bottom: 30px; display: flex; align-items: center; gap: 8px; }
-        .sidebar-brand .mark { width: 10px; height: 10px; background: #B98A46; transform: rotate(45deg); display: inline-block; }
-        .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 24px; }
-        .sidebar-user .avatar { width: 38px; height: 38px; background: #B98A46; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
-        .sidebar-user .name { font-size: 0.9rem; font-weight: 600; display: block; }
-        .sidebar-user .role { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 6px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.75); text-decoration: none; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: #B98A46; color: #FFF; }
-        .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; }
-        .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-x: hidden; }
-        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #EAE3D2; display: flex; justify-content: space-between; align-items: center; }
-        .top-header h2 { font-size: 1.4rem; color: #1E3B34; margin: 0; font-weight: 700; }
-        .top-header .sub { font-size: 0.82rem; color: #6C757D; }
-        .content-body { padding: 32px; }
+body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         /* Layout Hàng Tầng (Row-by-Row: Tầng 25 trên cùng, Tầng 1 dưới cùng) */
         .building-container {
@@ -184,8 +166,10 @@
                 </div>
 
                 <div class="p-3 bg-light rounded border">
-                    <h6 class="fw-bold text-danger mb-2">💰 Công Nợ Hóa Đơn Mới Nhất</h6>
-                    <div><strong>Số tiền:</strong> <span id="detailCongNoTien" class="fw-bold text-danger fs-5">0 VNĐ</span></div>
+                    <h6 class="fw-bold text-danger mb-2">💰 Công Nợ Hóa Đơn Tòa Nhà</h6>
+                    <div class="mb-1"><strong>Tổng hóa đơn chưa tất toán:</strong> <span id="detailTongPhaiThu" class="fw-bold text-dark">0 VNĐ</span></div>
+                    <div class="mb-1"><strong>Đã thanh toán:</strong> <span id="detailTongDaThu" class="fw-bold text-success">0 VNĐ</span></div>
+                    <div class="mb-1"><strong>CÒN NỢ:</strong> <span id="detailCongNoTien" class="fw-bold text-danger fs-5">0 VNĐ</span></div>
                     <div><strong>Trạng thái:</strong> <span id="detailCongNoTrangThai" class="badge bg-secondary">---</span></div>
                 </div>
             </div>
@@ -233,12 +217,17 @@
                         containerCd.innerHTML = '<span class="text-muted italic">Căn hộ hiện chưa có cư dân đăng ký ở.</span>';
                     }
 
-                    const moneyFormatted = new Intl.NumberFormat('vi-VN').format(data.congNoTien) + ' VNĐ';
-                    document.getElementById('detailCongNoTien').textContent = moneyFormatted;
+                    const phaiThuFmt = new Intl.NumberFormat('vi-VN').format(data.tongPhaiThu) + ' VNĐ';
+                    const daThuFmt = new Intl.NumberFormat('vi-VN').format(data.tongDaThu) + ' VNĐ';
+                    const conNoFmt = new Intl.NumberFormat('vi-VN').format(data.congNoTien) + ' VNĐ';
+
+                    document.getElementById('detailTongPhaiThu').textContent = phaiThuFmt;
+                    document.getElementById('detailTongDaThu').textContent = daThuFmt;
+                    document.getElementById('detailCongNoTien').textContent = conNoFmt;
                     
                     const badgeElem = document.getElementById('detailCongNoTrangThai');
                     badgeElem.textContent = data.congNoTrangThai;
-                    badgeElem.className = 'badge ' + (data.congNoTrangThai === 'Đã thanh toán' ? 'bg-success' : 'bg-danger');
+                    badgeElem.className = 'badge ' + (data.congNoTien <= 0.01 ? 'bg-success' : 'bg-danger');
 
                     var myModal = new bootstrap.Modal(document.getElementById('canHoDetailModal'));
                     myModal.show();

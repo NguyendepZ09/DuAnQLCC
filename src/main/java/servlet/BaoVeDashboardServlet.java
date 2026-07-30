@@ -21,7 +21,7 @@ public class BaoVeDashboardServlet extends HttpServlet {
         Integer maNhanVien = (session != null) ? (Integer) session.getAttribute("maNhanVien") : null;
 
         if (maNhanVien == null) {
-            resp.sendRedirect(req.getContextPath() + "/dang-nhap.jsp");
+            resp.sendRedirect(req.getContextPath() + "/dang-nhap");
             return;
         }
 

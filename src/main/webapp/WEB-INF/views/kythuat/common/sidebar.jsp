@@ -22,6 +22,12 @@
         <a href="${pageContext.request.contextPath}/kythuat/lich-su" class="nav-item ${activeMenu == 'lich-su' ? 'active' : ''}">
             📜 <span>Lịch sử xử lý của tôi</span>
         </a>
+        <a href="${pageContext.request.contextPath}/kythuat/thong-bao" class="nav-item ${activeMenu == 'thong-bao' ? 'active' : ''}">
+            📢 <span>Thông báo</span>
+            <c:if test="${countThongBaoChuaDoc > 0}">
+                <span class="badge bg-danger rounded-pill ms-auto">${countThongBaoChuaDoc}</span>
+            </c:if>
+        </a>
         <a href="${pageContext.request.contextPath}/kythuat/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
             ⏱️ <span>Chấm công của tôi</span>
         </a>

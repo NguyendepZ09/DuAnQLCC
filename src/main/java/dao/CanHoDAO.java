@@ -188,6 +188,36 @@ public class CanHoDAO {
                 result.put("hoaDon", null);
             }
 
+            // Calculation of exact debt subtracting paid amounts: conNo = tongTien - SUM(ThanhCong soTien)
+            String sqlDebt = "SELECT " +
+                "  ISNULL(SUM(t.tongTien), 0) AS tongPhaiThu, " +
+                "  ISNULL(SUM(t.daThu), 0) AS tongDaThu, " +
+                "  ISNULL(SUM(t.conNo), 0) AS tongConNo " +
+                "FROM (" +
+                "  SELECT " +
+                "    h.id, " +
+                "    h.tongTien, " +
+                "    ISNULL(SUM(CASE WHEN g.trangThai = 'ThanhCong' THEN g.soTien ELSE 0 END), 0) AS daThu, " +
+                "    (h.tongTien - ISNULL(SUM(CASE WHEN g.trangThai = 'ThanhCong' THEN g.soTien ELSE 0 END), 0)) AS conNo " +
+                "  FROM dbo.hoaDon h " +
+                "  LEFT JOIN dbo.giaoDichThanhToan g ON g.maHoaDon = h.id " +
+                "  WHERE h.maCanHo = :mch AND h.trangThaiThanhToan <> 'DaThanhToan' " +
+                "  GROUP BY h.id, h.tongTien " +
+                "  HAVING (h.tongTien - ISNULL(SUM(CASE WHEN g.trangThai = 'ThanhCong' THEN g.soTien ELSE 0 END), 0)) > 0.01 " +
+                ") t";
+
+            List<Object[]> debtRows = em.createNativeQuery(sqlDebt).setParameter("mch", canHoId).getResultList();
+            if (!debtRows.isEmpty()) {
+                Object[] dRow = debtRows.get(0);
+                result.put("tongPhaiThu", dRow[0]);
+                result.put("tongDaThu", dRow[1]);
+                result.put("tongConNo", dRow[2]);
+            } else {
+                result.put("tongPhaiThu", 0.0);
+                result.put("tongDaThu", 0.0);
+                result.put("tongConNo", 0.0);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

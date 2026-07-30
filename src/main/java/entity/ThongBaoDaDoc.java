@@ -17,6 +17,9 @@ public class ThongBaoDaDoc {
     @Column(name = "maCuDan")
     private Integer maCuDan;
 
+    @Column(name = "maNhanVien")
+    private Integer maNhanVien;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "thoiGianDoc")
     private Date thoiGianDoc;
@@ -31,6 +34,9 @@ public class ThongBaoDaDoc {
 
     public Integer getMaCuDan() { return maCuDan; }
     public void setMaCuDan(Integer maCuDan) { this.maCuDan = maCuDan; }
+
+    public Integer getMaNhanVien() { return maNhanVien; }
+    public void setMaNhanVien(Integer maNhanVien) { this.maNhanVien = maNhanVien; }
 
     public Date getThoiGianDoc() { return thoiGianDoc; }
     public void setThoiGianDoc(Date thoiGianDoc) { this.thoiGianDoc = thoiGianDoc; }

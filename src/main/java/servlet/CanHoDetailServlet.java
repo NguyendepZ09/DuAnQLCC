@@ -80,8 +80,15 @@ public class CanHoDetailServlet extends HttpServlet {
             sb.append("\"chuHoSdt\":\"").append(cd != null && cd.getSoDienThoai() != null ? escapeJson(cd.getSoDienThoai()) : "N/A").append("\",");
             sb.append("\"chuHoEmail\":\"").append(cd != null && cd.getEmail() != null ? escapeJson(cd.getEmail()) : "N/A").append("\",");
 
-            sb.append("\"congNoTien\":").append(hd != null && hd.getTongTien() != null ? hd.getTongTien() : 0.0).append(",");
-            sb.append("\"congNoTrangThai\":\"").append(hd != null && hd.getTrangThaiThanhToan() != null ? escapeJson(hd.getTrangThaiThanhToan()) : "Không có công nợ").append("\"");
+            double tongPhaiThu = detail.get("tongPhaiThu") != null ? ((Number) detail.get("tongPhaiThu")).doubleValue() : 0.0;
+            double tongDaThu = detail.get("tongDaThu") != null ? ((Number) detail.get("tongDaThu")).doubleValue() : 0.0;
+            double tongConNo = detail.get("tongConNo") != null ? ((Number) detail.get("tongConNo")).doubleValue() : 0.0;
+            String congNoTrangThai = (tongConNo <= 0.01) ? "Đã thanh toán đủ" : "Còn nợ";
+
+            sb.append("\"tongPhaiThu\":").append(tongPhaiThu).append(",");
+            sb.append("\"tongDaThu\":").append(tongDaThu).append(",");
+            sb.append("\"congNoTien\":").append(tongConNo).append(",");
+            sb.append("\"congNoTrangThai\":\"").append(escapeJson(congNoTrangThai)).append("\"");
             sb.append("}");
 
             out.print(sb.toString());

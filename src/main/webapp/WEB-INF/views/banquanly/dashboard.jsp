@@ -4,30 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Bảng Thống Kê & Hiệu Suất — Ban Quản Lý</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     <style>
-        body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .app-layout { display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background: #1E3B34; color: #FFF; padding: 24px; flex-shrink: 0; }
-        .sidebar-brand { font-size: 1.15rem; font-weight: 700; color: #B98A46; margin-bottom: 30px; display: flex; align-items: center; gap: 8px; }
-        .sidebar-brand .mark { width: 10px; height: 10px; background: #B98A46; transform: rotate(45deg); display: inline-block; }
-        .sidebar-user { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.08); border-radius: 8px; margin-bottom: 24px; }
-        .sidebar-user .avatar { width: 38px; height: 38px; background: #B98A46; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
-        .sidebar-user .name { font-size: 0.9rem; font-weight: 600; display: block; }
-        .sidebar-user .role { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 6px; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: rgba(255,255,255,0.75); text-decoration: none; border-radius: 6px; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: #B98A46; color: #FFF; }
-        .nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 12px 0; }
-        .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow-x: hidden; }
-        .top-header { background: #FFF; padding: 18px 32px; border-bottom: 1px solid #EAE3D2; display: flex; justify-content: space-between; align-items: center; }
-        .top-header h2 { font-size: 1.4rem; color: #1E3B34; margin: 0; font-weight: 700; }
-        .top-header .sub { font-size: 0.82rem; color: #6C757D; }
-        .content-body { padding: 32px; }
+body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .stat-card { background: #FFF; border-radius: 12px; padding: 24px; border: 1px solid #EAE3D2; box-shadow: 0 4px 12px rgba(0,0,0,0.03); height: 100%; }
         .stat-card .title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6C757D; margin-bottom: 12px; }
         .stat-card .value { font-size: 1.6rem; color: #1E3B34; font-weight: 700; margin-bottom: 8px; }

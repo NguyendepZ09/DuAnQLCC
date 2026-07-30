@@ -4,11 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Chi Tiết Hóa Đơn #${hoaDonInfo.hoaDonId} - PolyBuilding Kế Toán</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        :root {
+:root {
             --bg-primary: #1E3B34;
             --bg-accent: #B98A46;
             --bg-cream: #F4EFE4;
@@ -18,105 +18,6 @@
             background-color: var(--bg-cream);
             color: var(--text-dark);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .layout-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 260px;
-            background-color: var(--bg-primary);
-            color: white;
-            padding: 20px 0;
-            flex-shrink: 0;
-        }
-        .sidebar-brand {
-            padding: 0 20px 20px 20px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--bg-accent);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .sidebar-brand .mark {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: var(--bg-accent);
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        .sidebar-user {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .sidebar-user .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--bg-accent);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-        .sidebar-user .name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: block;
-        }
-        .sidebar-user .role {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.7);
-        }
-        .sidebar-nav {
-            padding: 15px 0;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 4px solid var(--bg-accent);
-        }
-        .nav-divider {
-            height: 1px;
-            background-color: rgba(255,255,255,0.1);
-            margin: 15px 0;
-        }
-        .main-content {
-            flex-grow: 1;
-            padding: 25px;
-        }
-        .top-header {
-            background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .top-header h2 {
-            margin: 0;
-            font-size: 1.4rem;
-            color: var(--bg-primary);
-            font-weight: 700;
-        }
-        .top-header .sub {
-            font-size: 0.85rem;
-            color: #6c757d;
         }
         .card-custom {
             background-color: white;

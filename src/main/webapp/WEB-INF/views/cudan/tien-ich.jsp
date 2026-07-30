@@ -4,12 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Đặt Tiện Ích — Cư Dân Polybuilding</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-cudan.css">
+
     <style>
-        .amenity-card {
+.amenity-card {
             border: 1px solid var(--cd-border);
             border-radius: 12px;
             transition: all 0.2s ease-in-out;

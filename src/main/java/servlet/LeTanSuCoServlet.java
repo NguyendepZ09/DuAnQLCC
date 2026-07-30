@@ -50,7 +50,7 @@ public class LeTanSuCoServlet extends HttpServlet {
         
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("idTaiKhoan") == null) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 
@@ -178,7 +178,7 @@ public class LeTanSuCoServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("idTaiKhoan") == null) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 
@@ -189,7 +189,7 @@ public class LeTanSuCoServlet extends HttpServlet {
 
         if (!"NV".equalsIgnoreCase(vaiTro) || !"LeTan".equalsIgnoreCase(boPhanCode) || maNhanVien == null) {
             session.setAttribute("errorMessage", "Tài khoản của bạn chưa được xác thực hồ sơ Lễ tân.");
-            response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
             return;
         }
 

@@ -4,11 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Chấm Công Của Tôi — PolyBuilding Lễ Tân</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        :root {
+:root {
             --primary: #1E3B34;
             --accent: #B98A46;
             --bg-cream: #F4EFE4;
@@ -26,114 +26,20 @@
             min-height: 100vh;
         }
 
-        .sidebar {
-            width: 260px;
-            background-color: var(--primary);
-            color: #FFFFFF;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .sidebar-brand {
-            padding: 20px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--accent);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
 
-        .sidebar-user {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            background-color: rgba(0,0,0,0.1);
-        }
 
-        .sidebar-user .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            color: #FFF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
 
-        .sidebar-user .name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: block;
-        }
 
-        .sidebar-user .role {
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.7);
-        }
 
-        .sidebar-nav {
-            padding: 15px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: all 0.2s;
-        }
 
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-            border-left: 4px solid var(--accent);
-        }
 
-        .nav-divider {
-            height: 1px;
-            background-color: rgba(255,255,255,0.1);
-            margin: 10px 0;
-        }
 
-        .main-wrapper, .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .top-header {
-            background-color: #FFFFFF;
-            padding: 15px 30px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 
-        .top-header h2 {
-            margin: 0;
-            font-size: 1.3rem;
-            color: var(--primary);
-            font-weight: 700;
-        }
 
-        .top-header .sub {
-            font-size: 0.85rem;
-            color: #718096;
-        }
 
-        .content-body {
-            padding: 25px 30px;
-        }
 
         .card-custom {
             background: var(--card-bg);

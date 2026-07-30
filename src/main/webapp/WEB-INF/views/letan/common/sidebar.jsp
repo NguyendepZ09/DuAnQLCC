@@ -31,6 +31,12 @@
         <a href="${pageContext.request.contextPath}/letan/duyet-tien-ich" class="nav-item ${activeMenu == 'duyet-tien-ich' ? 'active' : ''}">
             🏊 <span>Duyệt đặt tiện ích</span>
         </a>
+        <a href="${pageContext.request.contextPath}/letan/thong-bao" class="nav-item ${activeMenu == 'thong-bao' ? 'active' : ''}">
+            📢 <span>Thông báo</span>
+            <c:if test="${countThongBaoChuaDoc > 0}">
+                <span class="badge bg-danger rounded-pill ms-auto">${countThongBaoChuaDoc}</span>
+            </c:if>
+        </a>
         <a href="${pageContext.request.contextPath}/letan/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
             ⏱️ <span>Chấm công của tôi</span>
         </a>

@@ -4,13 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Tiếp Nhận & Điều Phối Sự Cố — Lễ Tân Polybuilding</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-letan.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
     <style>
-        body { background-color: var(--lt-bg, #F4EFE4); }
+body { background-color: var(--lt-bg, #F4EFE4); }
         .btn-teal { background-color: #1E3B34 !important; border-color: #1E3B34 !important; color: #FFF !important; }
         .btn-teal:hover { background-color: #152A25 !important; border-color: #152A25 !important; }
     </style>
@@ -26,7 +24,7 @@
         <div class="content-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="text-dark fw-bold m-0">🛠️ Tiếp Nhận & Điều Phối Sự Cố Toàn Tòa Nhà</h4>
-                <button type="button" class="btn btn-teal text-white fw-bold py-2 px-3" style="background-color: #0D9488;" data-bs-toggle="modal" data-bs-target="#modalCreateHo">
+                <button type="button" class="btn btn-teal text-white fw-bold py-2 px-3" style="background-color: #1E3B34;" data-bs-toggle="modal" data-bs-target="#modalCreateHo">
                     ✍️ Ghi Nhận Sự Cố Hộ Cư Dân
                 </button>
             </div>
@@ -305,7 +303,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form action="${pageContext.request.contextPath}/letan/su-co/create-ho" method="post" enctype="multipart/form-data">
-                <div class="modal-header bg-teal text-white" style="background-color: #0D9488;">
+                <div class="modal-header bg-teal text-white" style="background-color: #1E3B34;">
                     <h5 class="modal-title fw-bold">✍️ Ghi Nhận Sự Cố Hộ Cư Dân (Lễ Tân Nhập Trực Tiếp)</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -356,7 +354,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button type="submit" class="btn btn-teal text-white fw-bold" style="background-color: #0D9488;">📥 Tiếp Nhận Ngay</button>
+                    <button type="submit" class="btn btn-teal text-white fw-bold" style="background-color: #1E3B34;">📥 Tiếp Nhận Ngay</button>
                 </div>
             </form>
         </div>

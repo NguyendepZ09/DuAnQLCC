@@ -1,0 +1,224 @@
+/* ==========================================================================
+   POLYBUILDING - UNIFIED LAYOUT DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  --pb-sidebar:      #1E3B34;
+  --pb-sidebar-dark: #16302A;
+  --pb-accent:        #B98A46;
+  --pb-accent-soft:   rgba(185, 138, 70, 0.18);
+  --pb-bg:            #F4EFE4;
+  --pb-border:        #EAE3D2;
+  --pb-text:          #2A2A2A;
+  --pb-muted:         #6C757D;
+  --pb-sidebar-text:  #E8E2D5;
+  --pb-card-bg:       #FFFFFF;
+}
+
+body {
+  background-color: var(--pb-bg);
+  color: var(--pb-text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Page Layout Containers */
+.app-layout, .layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-wrapper, .main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--pb-bg);
+}
+
+.content-body, .main-body {
+  flex: 1;
+  padding: 24px;
+}
+
+/* Sidebar Component */
+.sidebar {
+  width: 260px;
+  background-color: var(--pb-sidebar);
+  color: #FFFFFF;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar-brand {
+  padding: 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--pb-accent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-brand .mark {
+  width: 10px;
+  height: 10px;
+  background-color: var(--pb-accent);
+  transform: rotate(45deg);
+  display: inline-block;
+}
+
+.sidebar-user {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-user .avatar {
+  width: 38px;
+  height: 38px;
+  background-color: var(--pb-sidebar-dark);
+  color: var(--pb-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid var(--pb-accent);
+}
+
+.sidebar-user .name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  display: block;
+}
+
+.sidebar-user .role {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: block;
+}
+
+.sidebar-nav {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin: 4px 10px;
+  border-radius: 10px;
+  color: var(--pb-sidebar-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background .15s ease, color .15s ease;
+}
+
+.sidebar .nav-item:hover {
+  background: var(--pb-accent-soft);
+  color: #FFFFFF;
+}
+
+.sidebar .nav-item.active {
+  background: var(--pb-accent);
+  color: var(--pb-sidebar);
+  font-weight: 600;
+}
+
+.nav-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 12px 16px;
+}
+
+/* Top Header Component */
+.top-header, .header-navbar {
+  background-color: #FFFFFF;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--pb-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-header .header-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--pb-sidebar);
+  margin: 0;
+}
+
+.top-header .user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+/* Common Card & Table Components */
+.card-custom {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid var(--pb-border);
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 105px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.table-custom {
+  margin: 0;
+}
+
+.table-custom th {
+  background-color: #F8F9FA;
+  color: var(--pb-sidebar);
+  font-weight: 600;
+  border-bottom: 2px solid var(--pb-border);
+}
+
+.table-custom td {
+  vertical-align: middle;
+}
+
+/* Thin Scrollbar 4px */
+html::-webkit-scrollbar, body::-webkit-scrollbar, ::-webkit-scrollbar {
+  width: 4px; height: 4px;
+}
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track, ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb {
+  background: rgba(30, 59, 52, 0.35); border-radius: 99px;
+}
+html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 59, 52, 0.75);
+}
+* { scrollbar-width: thin; scrollbar-color: rgba(30, 59, 52, 0.35) transparent; }

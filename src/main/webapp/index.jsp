@@ -227,7 +227,7 @@
   <header>
     <div class="container">
       <nav>
-        <a href="${pageContext.request.contextPath}/index.jsp" class="logo" id="navLogo">
+        <a href="${pageContext.request.contextPath}/" class="logo" id="navLogo">
           <span class="mark"></span>
           POLYBUILDING
         </a>
@@ -238,7 +238,7 @@
           <li><a href="#amenities">Tiện ích nội khu</a></li>
         </ul>
         <div class="nav-actions">
-          <a href="${pageContext.request.contextPath}/dang-nhap.jsp" class="btn btn-outline" id="navLoginBtn">Đăng nhập ngay</a>
+          <a href="${pageContext.request.contextPath}/dang-nhap" class="btn btn-outline" id="navLoginBtn">Đăng nhập ngay</a>
         </div>
       </nav>
     </div>
@@ -256,7 +256,7 @@
             Giải pháp số hóa toàn diện kết nối Cư dân, Đội ngũ vận hành và Ban quản lý trên duy nhất một nền tảng.
           </p>
           <div class="hero-cta">
-            <a href="${pageContext.request.contextPath}/dang-nhap.jsp" class="btn btn-primary" id="heroLoginCta">
+            <a href="${pageContext.request.contextPath}/dang-nhap" class="btn btn-primary" id="heroLoginCta">
               Đăng nhập cổng thông tin
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 12h14M13 6l6 6-6 6"/>
@@ -659,7 +659,7 @@
       <div class="cta-banner">
         <h2>Trải nghiệm ngay Cổng thông tin Polybuilding</h2>
         <p>Vui lòng đăng nhập với tài khoản được cấp để truy cập đúng tính năng tương ứng với vai trò của bạn.</p>
-        <a href="${pageContext.request.contextPath}/dang-nhap.jsp" class="btn btn-forest" id="ctaBannerBtn">Đăng nhập vào hệ thống ngay</a>
+        <a href="${pageContext.request.contextPath}/dang-nhap" class="btn btn-forest" id="ctaBannerBtn">Đăng nhập vào hệ thống ngay</a>
       </div>
     </div>
   </section>
@@ -669,7 +669,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="${pageContext.request.contextPath}/index.jsp" class="logo">
+          <a href="${pageContext.request.contextPath}/" class="logo">
             <span class="mark"></span>
             POLYBUILDING
           </a>
@@ -694,9 +694,9 @@
         <div class="footer-col">
           <h4>Hệ Thống</h4>
           <ul>
-            <li><a href="${pageContext.request.contextPath}/dang-nhap.jsp">Cổng Đăng Nhập</a></li>
-            <li><a href="${pageContext.request.contextPath}/dang-nhap.jsp">Quét mã thẻ NFC</a></li>
-            <li><a href="${pageContext.request.contextPath}/dang-nhap.jsp">Hỗ trợ kỹ thuật</a></li>
+            <li><a href="${pageContext.request.contextPath}/dang-nhap">Cổng Đăng Nhập</a></li>
+            <li><a href="${pageContext.request.contextPath}/dang-nhap">Quét mã thẻ NFC</a></li>
+            <li><a href="${pageContext.request.contextPath}/dang-nhap">Hỗ trợ kỹ thuật</a></li>
           </ul>
         </div>
       </div>
@@ -704,6 +704,8 @@
         © 2026 Polybuilding — Đồ án Quản Lý Chung Cư
       </div>
     </div>
+  </footer>
+
   <script>
     window.APP_CONTEXT_PATH = "${pageContext.request.contextPath}";
     window.BUILDING_STATS = {
@@ -735,6 +737,5 @@
         }
     }
   </script>
-  </footer>
 </body>
 </html>

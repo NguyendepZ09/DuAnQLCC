@@ -4,12 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Hóa Đơn Của Tôi - PolyBuilding Cư Dân</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-cudan.css">
+
     <style>
-        .stat-card {
+.stat-card {
             border-radius: 12px;
             padding: 20px;
             color: white;

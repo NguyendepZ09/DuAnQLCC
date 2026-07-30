@@ -31,6 +31,12 @@
         <a href="${pageContext.request.contextPath}/ketoan/doi-soat" class="nav-item ${activeMenu == 'doi-soat' ? 'active' : ''}">
             📊 <span>Đối soát sao kê</span>
         </a>
+        <a href="${pageContext.request.contextPath}/ketoan/thong-bao" class="nav-item ${activeMenu == 'thong-bao' ? 'active' : ''}">
+            📢 <span>Thông báo</span>
+            <c:if test="${countThongBaoChuaDoc > 0}">
+                <span class="badge bg-danger rounded-pill ms-auto">${countThongBaoChuaDoc}</span>
+            </c:if>
+        </a>
         <a href="${pageContext.request.contextPath}/ketoan/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
             ⏱️ <span>Chấm công của tôi</span>
         </a>

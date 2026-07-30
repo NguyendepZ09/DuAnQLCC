@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Chức Năng Đang Phát Triển — Bảo Vệ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
     <style>
-        body { background-color: #F4EFE4; font-family: 'Be Vietnam Pro', sans-serif; }
+body { background-color: #F4EFE4; font-family: 'Be Vietnam Pro', sans-serif; }
         .container-box { max-width: 600px; margin: 80px auto; background: #FFF; border-radius: 12px; padding: 48px; border: 1px solid #EAE3D2; box-shadow: 0 4px 12px rgba(0,0,0,0.04); text-align: center; }
     </style>
 </head>

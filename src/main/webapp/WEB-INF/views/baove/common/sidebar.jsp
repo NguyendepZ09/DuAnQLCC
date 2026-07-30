@@ -28,6 +28,12 @@
         <a href="${pageContext.request.contextPath}/baove/tra-cuu" class="nav-item ${activeMenu == 'tra-cuu' ? 'active' : ''}">
             🔍 <span>Tra Cứu Xe & Thẻ</span>
         </a>
+        <a href="${pageContext.request.contextPath}/baove/thong-bao" class="nav-item ${activeMenu == 'thong-bao' ? 'active' : ''}">
+            📢 <span>Thông Báo</span>
+            <c:if test="${countThongBaoChuaDoc > 0}">
+                <span class="badge bg-danger rounded-pill ms-auto">${countThongBaoChuaDoc}</span>
+            </c:if>
+        </a>
         <a href="${pageContext.request.contextPath}/baove/cham-cong" class="nav-item ${activeMenu == 'cham-cong' ? 'active' : ''}">
             ⏱️ <span>Chấm Công Của Tôi</span>
         </a>

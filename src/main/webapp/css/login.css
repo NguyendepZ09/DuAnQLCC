@@ -178,17 +178,17 @@
   background: var(--parchment);
 }
 
-.card {
+.login-card {
   width: 100%;
   max-width: 440px;
 }
 
-.card h2 {
+.login-card h2 {
   font-size: 1.7rem;
   margin-bottom: 8px;
 }
 
-.card p.lede {
+.login-card p.lede {
   font-size: 0.9rem;
   color: var(--ink-light);
   margin-bottom: 24px;
@@ -565,7 +565,7 @@
 
 .qr-frame .grid-mini div {
   aspect-ratio: 1/1;
-  background: #DCE6E0;
+  background: #EAE3D2;
   border-radius: 1px;
 }
 

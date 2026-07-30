@@ -23,7 +23,7 @@ public class CuDanTienIchServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer maCanHo = (Integer) req.getSession().getAttribute("maCanHo");
         if (maCanHo == null) {
-            resp.sendRedirect(req.getContextPath() + "/dang-nhap.jsp");
+            resp.sendRedirect(req.getContextPath() + "/dang-nhap");
             return;
         }
 
@@ -47,7 +47,7 @@ public class CuDanTienIchServlet extends HttpServlet {
         Integer maCanHo = (Integer) req.getSession().getAttribute("maCanHo");
         Integer maCuDan = (Integer) req.getSession().getAttribute("maCuDan");
         if (maCanHo == null) {
-            resp.sendRedirect(req.getContextPath() + "/dang-nhap.jsp");
+            resp.sendRedirect(req.getContextPath() + "/dang-nhap");
             return;
         }
 

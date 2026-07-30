@@ -343,4 +343,26 @@ public class DisplayUtil {
             default: return code;
         }
     }
+
+    public static String getLoaiThongBaoText(String code) {
+        if (code == null) return "Thông thường";
+        switch (code) {
+            case "KhanCap": return "Khẩn cấp";
+            case "BaoTri": return "Bảo trì";
+            case "NhacPhi": return "Nhắc phí";
+            case "ThongThuong": return "Thông thường";
+            default: return code;
+        }
+    }
+
+    public static String getLoaiThongBaoBadgeClass(String code) {
+        if (code == null) return "bg-info text-dark";
+        switch (code) {
+            case "KhanCap": return "bg-danger";
+            case "BaoTri": return "bg-warning text-dark";
+            case "NhacPhi": return "bg-danger";
+            case "ThongThuong": return "bg-info text-dark";
+            default: return "bg-info text-dark";
+        }
+    }
 }

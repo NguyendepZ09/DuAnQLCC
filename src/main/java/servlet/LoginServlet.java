@@ -159,7 +159,7 @@ public class LoginServlet extends HttpServlet {
         return false;
     }
 
-    private String calculateRedirectUrl(String contextPath, String vaiTro, String boPhanCode) {
+    public static String calculateRedirectUrl(String contextPath, String vaiTro, String boPhanCode) {
         if ("CD".equalsIgnoreCase(vaiTro)) {
             return contextPath + "/cudan/thong-bao";
         }
@@ -187,7 +187,7 @@ public class LoginServlet extends HttpServlet {
                         return contextPath + "/banquanly/binh-chon";
                 }
             }
-            return contextPath + "/dang-nhap.jsp";
+            return contextPath + "/dang-nhap";
         }
         return contextPath + "/index.jsp";
     }

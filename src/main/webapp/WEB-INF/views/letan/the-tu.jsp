@@ -4,13 +4,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Quản Lý Thẻ Từ Cư Dân — PolyBuilding Lễ Tân</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-letan.css">
+
     <style>
-        :root {
+:root {
             --lt-bg: #F4EFE4;
             --lt-primary: #1E3B34;
             --lt-gold: #B98A46;
@@ -28,121 +26,21 @@
             min-height: 100vh;
         }
 
-        .sidebar {
-            width: 260px;
-            background-color: var(--lt-primary);
-            color: #FFFFFF;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .sidebar-brand {
-            padding: 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--lt-gold);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
 
-        .sidebar-user {
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            background-color: rgba(0,0,0,0.1);
-        }
 
-        .sidebar-user .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--lt-gold);
-            color: #FFF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
 
-        .sidebar-user .name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: block;
-        }
 
-        .sidebar-user .role {
-            font-size: 0.75rem;
-            color: #A0AEC0;
-        }
 
-        .sidebar-nav {
-            padding: 15px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
 
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-        }
 
-        .nav-item:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: #FFF;
-        }
 
-        .nav-item.active {
-            background-color: var(--lt-gold);
-            color: #FFF;
-            font-weight: 600;
-        }
 
-        .nav-divider {
-            height: 1px;
-            background-color: rgba(255,255,255,0.1);
-            margin: 10px 0;
-        }
 
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
 
-        .top-header {
-            background-color: #FFFFFF;
-            padding: 15px 30px;
-            border-bottom: 1px solid var(--lt-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 
-        .top-header h2 {
-            margin: 0;
-            font-size: 1.3rem;
-            color: var(--lt-primary);
-            font-weight: 700;
-        }
 
-        .top-header .sub {
-            font-size: 0.85rem;
-            color: #718096;
-        }
 
-        .content-body {
-            padding: 25px 30px;
-        }
 
         .stat-card {
             background: var(--lt-card-bg);

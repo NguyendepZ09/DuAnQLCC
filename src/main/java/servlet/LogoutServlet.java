@@ -23,7 +23,7 @@ public class LogoutServlet extends HttpServlet {
             session.invalidate();
         }
 
-        response.sendRedirect(request.getContextPath() + "/dang-nhap.jsp");
+        response.sendRedirect(request.getContextPath() + "/dang-nhap");
     }
 
     @Override

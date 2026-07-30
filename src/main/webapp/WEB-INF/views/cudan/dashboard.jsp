@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <%@ include file="/WEB-INF/views/common/head.jsp" %>
     <title>Trang Cư Dân — Polybuilding</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/role-cudan.css">
+
     <style>
-        /* Special page-specific styles can go here */
+/* Special page-specific styles can go here */
     </style>
 </head>
 <body>
