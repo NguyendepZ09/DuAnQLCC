@@ -13,8 +13,9 @@ import java.time.format.DateTimeParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import util.QRTuanTraUtil;
 
-@WebServlet({"/baove/tuan-tra", "/baove/tuan-tra/ghi"})
+@WebServlet({"/baove/tuan-tra", "/baove/tuan-tra/ghi", "/baove/tuan-tra/quet"})
 public class BaoVeTuanTraServlet extends HttpServlet {
 
     private final BaoVeDAO baoVeDAO = new BaoVeDAO();
@@ -26,6 +27,43 @@ public class BaoVeTuanTraServlet extends HttpServlet {
 
         if (maNhanVien == null) {
             resp.sendRedirect(req.getContextPath() + "/dang-nhap");
+            return;
+        }
+
+        String path = req.getServletPath();
+        if ("/baove/tuan-tra/quet".equals(path)) {
+            String tangStr = req.getParameter("tang");
+            String token = req.getParameter("token");
+
+            int tang = 0;
+            try {
+                if (tangStr != null) {
+                    tang = Integer.parseInt(tangStr.trim());
+                }
+            } catch (NumberFormatException e) {
+                // Ignore parse error, tang remains 0
+            }
+
+            if (tang < 1 || tang > 25) {
+                String errMsg = java.net.URLEncoder.encode("Mã QR không hợp lệ.", "UTF-8");
+                resp.sendRedirect(req.getContextPath() + "/baove/tuan-tra?error=" + errMsg);
+                return;
+            }
+
+            if (!QRTuanTraUtil.kiemTraToken(tang, token)) {
+                String errMsg = java.net.URLEncoder.encode("Mã QR không hợp lệ hoặc đã bị giả mạo.", "UTF-8");
+                resp.sendRedirect(req.getContextPath() + "/baove/tuan-tra?error=" + errMsg);
+                return;
+            }
+
+            String err = baoVeDAO.ghiNhanTuanTra(maNhanVien, tang, null);
+            if (err == null) {
+                String msg = java.net.URLEncoder.encode("Ghi nhận tuần tra Tầng " + tang + " thành công!", "UTF-8");
+                resp.sendRedirect(req.getContextPath() + "/baove/tuan-tra?msg=" + msg);
+            } else {
+                String errMsg = java.net.URLEncoder.encode(err, "UTF-8");
+                resp.sendRedirect(req.getContextPath() + "/baove/tuan-tra?error=" + errMsg);
+            }
             return;
         }
 
