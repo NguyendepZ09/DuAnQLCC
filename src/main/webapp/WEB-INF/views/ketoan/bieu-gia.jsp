@@ -152,12 +152,12 @@
                                     </td>
                                     <td class="text-center fw-semibold">${b.hieuLucTu}</td>
                                     <td class="text-center">
-                                        <c:set var="activeDate" value="${activeDates[b.loaiDichVu]}" />
+                                        <c:set var="st" value="${trangThaiMap[b.id]}" />
                                         <c:choose>
-                                            <c:when test="${not empty activeDate && b.hieuLucTu.equals(activeDate)}">
+                                            <c:when test="${st == 'DangApDung'}">
                                                 <span class="badge bg-success">Đang áp dụng</span>
                                             </c:when>
-                                            <c:when test="${b.hieuLucTu.isAfter(today)}">
+                                            <c:when test="${st == 'SeApDung'}">
                                                 <span class="badge bg-warning text-dark">Sẽ áp dụng từ ${b.hieuLucTu}</span>
                                             </c:when>
                                             <c:otherwise>
@@ -169,17 +169,30 @@
                                         <small class="text-muted"><c:out value="${b.nguonGia}" default="—" /></small>
                                     </td>
                                     <td class="text-center text-nowrap">
-                                        <button class="btn btn-sm btn-outline-primary me-1"
-                                                onclick="openEditModal(${b.id}, '${b.loaiDichVu}', '${b.bacTu}', '${b.bacDen != null ? b.bacDen : ''}', '${b.donGia}', '${b.hieuLucTu}', '${b.nguonGia != null ? b.nguonGia : ''}')">
-                                            ✏️ Sửa
-                                        </button>
-                                        <form action="${pageContext.request.contextPath}/ketoan/bieu-gia/xoa" method="post" class="d-inline"
-                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa dòng biểu giá này?');">
-                                            <input type="hidden" name="id" value="${b.id}">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                🗑️ Xóa
-                                            </button>
-                                        </form>
+                                        <c:choose>
+                                            <c:when test="${b.loaiDichVu == 'Dien' || b.loaiDichVu == 'Nuoc'}">
+                                                <span class="badge bg-secondary">🔒 Theo quy định Nhà nước</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="button" class="btn btn-sm btn-outline-primary me-1 btn-edit-bieugia"
+                                                        data-id="${b.id}"
+                                                        data-loai="${b.loaiDichVu}"
+                                                        data-bactu="${b.bacTu}"
+                                                        data-bacden="${b.bacDen != null ? b.bacDen : ''}"
+                                                        data-dongia="${b.donGia}"
+                                                        data-hieuluctu="${b.hieuLucTu}"
+                                                        data-nguongia="${b.nguonGia != null ? b.nguonGia : ''}">
+                                                    ✏️ Sửa
+                                                </button>
+                                                <form action="${pageContext.request.contextPath}/ketoan/bieu-gia/xoa" method="post" class="d-inline"
+                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa dòng biểu giá này?');">
+                                                    <input type="hidden" name="id" value="${b.id}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        🗑️ Xóa
+                                                    </button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -261,6 +274,20 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         bieuGiaModal = new bootstrap.Modal(document.getElementById('modalBieuGia'));
+
+        document.addEventListener('click', function(e) {
+            const editBtn = e.target.closest('.btn-edit-bieugia');
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                const loai = editBtn.dataset.loai;
+                const bacTu = editBtn.dataset.bactu;
+                const bacDen = editBtn.dataset.bacden;
+                const donGia = editBtn.dataset.dongia;
+                const hieuLuc = editBtn.dataset.hieuluctu;
+                const nguonGia = editBtn.dataset.nguongia;
+                openEditModal(id, loai, bacTu, bacDen, donGia, hieuLuc, nguonGia);
+            }
+        });
     });
 
     function onLoaiChanged() {
@@ -302,7 +329,9 @@
         document.getElementById('bgId').value = id;
         document.getElementById('bgLoai').value = loai;
         document.getElementById('bgBacTu').value = bacTu;
+        document.getElementById('bgBacTu').readOnly = (loai === 'PhiQuanLy' || loai === 'GuiXeOTo' || loai === 'GuiXeMay');
         document.getElementById('bgBacDen').value = bacDen;
+        document.getElementById('bgBacDen').readOnly = (loai === 'PhiQuanLy' || loai === 'GuiXeOTo' || loai === 'GuiXeMay');
         document.getElementById('bgDonGia').value = donGia;
         document.getElementById('bgHieuLuc').value = hieuLuc;
         document.getElementById('bgNguonGia').value = nguonGia;
