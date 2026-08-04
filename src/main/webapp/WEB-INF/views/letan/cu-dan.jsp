@@ -202,106 +202,108 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3">Họ và Tên</th>
-                                <th>Căn Hộ</th>
-                                <th>Loại Cư Dân</th>
-                                <th>Số Điện Thoại</th>
-                                <th>CCCD / Định danh</th>
-                                <th>Ngày Chuyển Đến</th>
-                                <th>Tài Khoản App</th>
-                                <th>Thẻ Từ</th>
-                                <th>Trạng Thái</th>
-                                <th class="pe-3">Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:choose>
-                                <c:when test="${not empty cuDanList}">
-                                    <c:forEach var="row" items="${cuDanList}">
-                                        <tr class="${row[7] == 'DaChuyenDi' ? 'row-chuyen-di' : ''}">
-                                            <td class="ps-3 fw-bold text-dark">
-                                                👤 <c:out value="${row[1]}"/>
-                                            </td>
-                                            <td><span class="badge bg-secondary">Căn <c:out value="${row[4]}"/></span></td>
-                                            <td>
-                                                <span class="badge ${DisplayUtil.getLoaiCuDanBadgeClass(row[6])}">
-                                                    ${DisplayUtil.getLoaiCuDanText(row[6])}
-                                                </span>
-                                            </td>
-                                            <td><c:out value="${row[2]}" default="—"/></td>
-                                            <td><code><c:out value="${row[3]}" default="—"/></code></td>
-                                            <td><c:out value="${row[8]}"/></td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${row[9] == true}">
-                                                        <span class="badge bg-success">Đã cấp</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="badge bg-light text-muted border">Chưa cấp</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${row[10] > 0}">
-                                                        <span class="badge bg-primary">🪪 ${row[10]} thẻ</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="badge bg-light text-muted border">Chưa có thẻ</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${row[7] == 'DangO'}">
-                                                        <span class="badge bg-success">🟢 Đang ở</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="badge bg-danger">🔴 Đã chuyển đi</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td class="pe-3">
-                                                <c:choose>
-                                                    <c:when test="${row[7] == 'DaChuyenDi'}">
-                                                        <span class="text-muted small">🔒 Đã chuyển đi</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="btn-group btn-group-sm">
-                                                            <button type="button" class="btn btn-outline-primary btn-edit-cudan"
-                                                                    data-id="${row[0]}"
-                                                                    data-hoten="${row[1]}"
-                                                                    data-sdt="${row[2]}"
-                                                                    data-cccd="${row[3]}"
-                                                                    data-sophong="${row[4]}"
-                                                                    data-canho="${row[5]}"
-                                                                    data-loai="${row[6]}"
-                                                                    data-ngaychuyenden="${row[8]}">
-                                                                ✏️ Sửa
-                                                            </button>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Họ và Tên</th>
+                                    <th>Căn Hộ</th>
+                                    <th>Loại Cư Dân</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>CCCD / Định danh</th>
+                                    <th>Ngày Chuyển Đến</th>
+                                    <th>Tài Khoản App</th>
+                                    <th>Thẻ Từ</th>
+                                    <th>Trạng Thái</th>
+                                    <th class="pe-3">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty cuDanList}">
+                                        <c:forEach var="row" items="${cuDanList}">
+                                            <tr class="${row[7] == 'DaChuyenDi' ? 'row-chuyen-di' : ''}">
+                                                <td class="ps-3 fw-bold text-dark">
+                                                    👤 <c:out value="${row[1]}"/>
+                                                </td>
+                                                <td><span class="badge bg-secondary">Căn <c:out value="${row[4]}"/></span></td>
+                                                <td>
+                                                    <span class="badge ${DisplayUtil.getLoaiCuDanBadgeClass(row[6])}">
+                                                        ${DisplayUtil.getLoaiCuDanText(row[6])}
+                                                    </span>
+                                                </td>
+                                                <td><c:out value="${row[2]}" default="—"/></td>
+                                                <td><code><c:out value="${row[3]}" default="—"/></code></td>
+                                                <td><c:out value="${row[8]}"/></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${row[9] == true}">
+                                                            <span class="badge bg-success">Đã cấp</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-light text-muted border">Chưa cấp</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${row[10] > 0}">
+                                                            <span class="badge bg-primary">🪪 ${row[10]} thẻ</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-light text-muted border">Chưa có thẻ</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${row[7] == 'DangO'}">
+                                                            <span class="badge bg-success">🟢 Đang ở</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-danger">🔴 Đã chuyển đi</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td class="pe-3">
+                                                    <c:choose>
+                                                        <c:when test="${row[7] == 'DaChuyenDi'}">
+                                                            <span class="text-muted small">🔒 Đã chuyển đi</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <button type="button" class="btn btn-outline-primary btn-edit-cudan"
+                                                                        data-id="${row[0]}"
+                                                                        data-hoten="${row[1]}"
+                                                                        data-sdt="${row[2]}"
+                                                                        data-cccd="${row[3]}"
+                                                                        data-sophong="${row[4]}"
+                                                                        data-canho="${row[5]}"
+                                                                        data-loai="${row[6]}"
+                                                                        data-ngaychuyenden="${row[8]}">
+                                                                    ✏️ Sửa
+                                                                </button>
 
-                                                            <form action="${pageContext.request.contextPath}/letan/cu-dan/chuyen-di" method="post" class="d-inline form-chuyen-di">
-                                                                <input type="hidden" name="id" value="${row[0]}">
-                                                                <button type="submit" class="btn btn-outline-danger">🚪 Chuyển đi</button>
-                                                            </form>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
+                                                                <form action="${pageContext.request.contextPath}/letan/cu-dan/chuyen-di" method="post" class="d-inline form-chuyen-di">
+                                                                    <input type="hidden" name="id" value="${row[0]}">
+                                                                    <button type="submit" class="btn btn-outline-danger">🚪 Chuyển đi</button>
+                                                                </form>
+                                                            </div>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
+                                            <td colspan="10" class="text-center text-muted py-4">Không tìm thấy cư dân nào.</td>
                                         </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">Không tìm thấy cư dân nào.</td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </tbody>
-                    </table>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

@@ -168,53 +168,55 @@
                     </form>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3">STT</th>
-                                <th>Tầng Tuần Tra</th>
-                                <th>Thời Gian Quét</th>
-                                <th>Ảnh Minh Chứng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:choose>
-                                <c:when test="${not empty tuanTraList}">
-                                    <c:forEach var="row" items="${tuanTraList}" varStatus="loop">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">STT</th>
+                                    <th>Tầng Tuần Tra</th>
+                                    <th>Thời Gian Quét</th>
+                                    <th>Ảnh Minh Chứng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty tuanTraList}">
+                                        <c:forEach var="row" items="${tuanTraList}" varStatus="loop">
+                                            <tr>
+                                                <td class="ps-3 fw-bold">${loop.count}</td>
+                                                <td>
+                                                    <span class="badge bg-primary fs-6">Tầng <c:out value="${row[1]}"/></span>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[2]}">
+                                                            <c:out value="${DisplayUtil.formatDate(row[2])}"/>
+                                                        </c:when>
+                                                        <c:otherwise>—</c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[3]}">
+                                                            <span class="text-muted small">📷 <c:out value="${row[3]}"/></span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="text-muted">—</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
                                         <tr>
-                                            <td class="ps-3 fw-bold">${loop.count}</td>
-                                            <td>
-                                                <span class="badge bg-primary fs-6">Tầng <c:out value="${row[1]}"/></span>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[2]}">
-                                                        <c:out value="${DisplayUtil.formatDate(row[2])}"/>
-                                                    </c:when>
-                                                    <c:otherwise>—</c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[3]}">
-                                                        <span class="text-muted small">📷 <c:out value="${row[3]}"/></span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted">—</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
+                                            <td colspan="4" class="text-center text-muted py-4">Không có lượt tuần tra nào trong ngày <c:out value="${ngayChon}"/>.</td>
                                         </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted py-4">Không có lượt tuần tra nào trong ngày <c:out value="${ngayChon}"/>.</td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </tbody>
-                    </table>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

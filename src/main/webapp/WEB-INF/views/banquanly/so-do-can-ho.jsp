@@ -113,27 +113,29 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
             </div>
 
             <!-- Building Layout (Row by Row: Floor 25 at Top down to Floor 1) -->
-            <div class="building-container">
-                <c:forEach var="entry" items="${mapTangCanHo}">
-                    <div class="floor-row">
-                        <div class="floor-label">Tầng ${entry.key}</div>
-                        <div class="apts-row">
-                            <c:forEach var="ch" items="${entry.value}">
-                                <c:set var="tt" value="${tinhTrangMap[ch.id]}" />
-                                <c:set var="cellClass" value="${tt == 'KhachThueO' ? 'khach-thue' : (tt == 'ChuHoO' ? 'chu-ho' : (tt == 'BaoTri' ? 'bao-tri' : 'trong'))}" />
-                                <c:set var="statusText" value="${tt == 'KhachThueO' ? 'Có khách thuê đang ở' : (tt == 'ChuHoO' ? 'Chủ hộ đang ở' : (tt == 'BaoTri' ? 'Đang bảo trì' : 'Căn hộ trống'))}" />
+            <div class="table-responsive">
+                <div class="building-container">
+                    <c:forEach var="entry" items="${mapTangCanHo}">
+                        <div class="floor-row">
+                            <div class="floor-label">Tầng ${entry.key}</div>
+                            <div class="apts-row">
+                                <c:forEach var="ch" items="${entry.value}">
+                                    <c:set var="tt" value="${tinhTrangMap[ch.id]}" />
+                                    <c:set var="cellClass" value="${tt == 'KhachThueO' ? 'khach-thue' : (tt == 'ChuHoO' ? 'chu-ho' : (tt == 'BaoTri' ? 'bao-tri' : 'trong'))}" />
+                                    <c:set var="statusText" value="${tt == 'KhachThueO' ? 'Có khách thuê đang ở' : (tt == 'ChuHoO' ? 'Chủ hộ đang ở' : (tt == 'BaoTri' ? 'Đang bảo trì' : 'Căn hộ trống'))}" />
 
-                                <div class="apt-cell ${cellClass}"
-                                     data-bs-toggle="tooltip"
-                                     data-bs-html="true"
-                                     title="<strong>Căn ${ch.soPhong}</strong><br>Diện tích: ${ch.dienTich}m²<br>Trạng thái: ${statusText}"
-                                     onclick="openDetailModal(${ch.id})">
-                                    Căn ${ch.soPhong}
-                                </div>
-                            </c:forEach>
+                                    <div class="apt-cell ${cellClass}"
+                                         data-bs-toggle="tooltip"
+                                         data-bs-html="true"
+                                         title="<strong>Căn ${ch.soPhong}</strong><br>Diện tích: ${ch.dienTich}m²<br>Trạng thái: ${statusText}"
+                                         onclick="openDetailModal(${ch.id})">
+                                        Căn ${ch.soPhong}
+                                    </div>
+                                </c:forEach>
+                            </div>
                         </div>
-                    </div>
-                </c:forEach>
+                    </c:forEach>
+                </div>
             </div>
         </div>
     </div>

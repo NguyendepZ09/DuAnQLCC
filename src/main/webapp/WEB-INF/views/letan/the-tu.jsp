@@ -193,87 +193,118 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3">Số Thẻ</th>
-                                <th>Căn Hộ</th>
-                                <th>Người Sử Dụng</th>
-                                <th>Chức Năng Thẻ</th>
-                                <th>Ngày Cấp</th>
-                                <th>Hết Hạn</th>
-                                <th>Số Xe</th>
-                                <th>Trạng Thái</th>
-                                <th class="pe-3">Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:choose>
-                                <c:when test="${not empty theTuList}">
-                                    <c:forEach var="row" items="${theTuList}">
-                                        <tr>
-                                            <td class="ps-3 fw-bold text-primary">🪪 <c:out value="${row[1]}"/></td>
-                                            <td><span class="badge bg-secondary">Căn <c:out value="${row[2]}"/></span></td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[14]}">
-                                                        👤 <c:out value="${row[3]}"/> 
-                                                        <c:if test="${not empty row[4]}">
-                                                            <small class="text-muted">(<c:out value="${row[4] == 'ChuHo' ? 'Chủ hộ' : 'Khách thuê'}"/>)</small>
-                                                        </c:if>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="badge bg-light text-dark border">🏠 Thẻ dùng chung của căn hộ</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[8]}">
-                                                        <c:forEach var="cn" items="${row[8].split(',')}">
-                                                            <span class="badge bg-info text-dark mb-1 me-1">${DisplayUtil.getChucNangTheText(cn)}</span>
-                                                        </c:forEach>
-                                                    </c:when>
-                                                    <c:otherwise><span class="text-muted">—</span></c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td><c:out value="${row[11]}"/></td>
-                                            <td>
-                                                <c:out value="${row[12]}"/>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-light text-dark border">🚗 <c:out value="${row[9]}"/> xe</span>
-                                            </td>
-                                            <td>
-                                                <span class="badge ${DisplayUtil.getTrangThaiTheBadgeClass(row[7])}">
-                                                    ${DisplayUtil.getTrangThaiTheText(row[7])}
-                                                </span>
-                                                <c:if test="${row[10] == true && row[7] == 'DangSuDung'}">
-                                                    <span class="badge bg-danger ms-1">Hết hạn</span>
-                                                </c:if>
-                                            </td>
-                                            <td class="pe-3">
-                                                <c:choose>
-                                                    <c:when test="${row[7] == 'DaThuHoi'}">
-                                                        <span class="text-muted small">🔒 Đã thu hồi</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="btn-group btn-group-sm">
-                                                            <!-- EDIT BUTTON -->
-                                                            <button type="button" class="btn btn-outline-primary btn-edit-card"
-                                                                    data-id="${row[0]}"
-                                                                    data-sothe="${row[1]}"
-                                                                    data-canho="${row[13]}"
-                                                                    data-sophong="${row[2]}"
-                                                                    data-cudan="${row[14]}"
-                                                                    data-hethan="${row[6]}"
-                                                                    data-chucnang="${row[8]}">
-                                                                ✏️ Sửa
-                                                            </button>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Số Thẻ</th>
+                                    <th>Căn Hộ</th>
+                                    <th>Người Sử Dụng</th>
+                                    <th>Chức Năng Thẻ</th>
+                                    <th>Ngày Cấp</th>
+                                    <th>Hết Hạn</th>
+                                    <th>Số Xe</th>
+                                    <th>Trạng Thái</th>
+                                    <th class="pe-3">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty theTuList}">
+                                        <c:forEach var="row" items="${theTuList}">
+                                            <tr>
+                                                <td class="ps-3 fw-bold text-primary">🪪 <c:out value="${row[1]}"/></td>
+                                                <td><span class="badge bg-secondary">Căn <c:out value="${row[2]}"/></span></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[14]}">
+                                                            👤 <c:out value="${row[3]}"/> 
+                                                            <c:if test="${not empty row[4]}">
+                                                                <small class="text-muted">(<c:out value="${row[4] == 'ChuHo' ? 'Chủ hộ' : 'Khách thuê'}"/>)</small>
+                                                            </c:if>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-light text-dark border">🏠 Thẻ dùng chung của căn hộ</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[8]}">
+                                                            <c:forEach var="cn" items="${row[8].split(',')}">
+                                                                <span class="badge bg-info text-dark mb-1 me-1">${DisplayUtil.getChucNangTheText(cn)}</span>
+                                                            </c:forEach>
+                                                        </c:when>
+                                                        <c:otherwise><span class="text-muted">—</span></c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td><c:out value="${row[11]}"/></td>
+                                                <td>
+                                                    <c:out value="${row[12]}"/>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-light text-dark border">🚗 <c:out value="${row[9]}"/> xe</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge ${DisplayUtil.getTrangThaiTheBadgeClass(row[7])}">
+                                                        ${DisplayUtil.getTrangThaiTheText(row[7])}
+                                                    </span>
+                                                    <c:if test="${row[10] == true && row[7] == 'DangSuDung'}">
+                                                        <span class="badge bg-danger ms-1">Hết hạn</span>
+                                                    </c:if>
+                                                </td>
+                                                <td class="pe-3">
+                                                    <c:choose>
+                                                        <c:when test="${row[7] == 'DaThuHoi'}">
+                                                            <span class="text-muted small">🔒 Đã thu hồi</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <!-- EDIT BUTTON -->
+                                                                <button type="button" class="btn btn-outline-primary btn-edit-card"
+                                                                        data-id="${row[0]}"
+                                                                        data-sothe="${row[1]}"
+                                                                        data-canho="${row[13]}"
+                                                                        data-sophong="${row[2]}"
+                                                                        data-cudan="${row[14]}"
+                                                                        data-hethan="${row[6]}"
+                                                                        data-chucnang="${row[8]}">
+                                                                    ✏️ Sửa
+                                                                </button>
 
-                                                            <!-- TOGGLE LOCK BUTTON -->
-                                                            <c:choose>
-                                                                <c:when test="${row[7] == 'DangSuDung'}">
+                                                                <!-- TOGGLE LOCK BUTTON -->
+                                                                <c:choose>
+                                                                    <c:when test="${row[7] == 'DangSuDung'}">
+                                                                        <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline">
+                                                                            <input type="hidden" name="id" value="${row[0]}">
+                                                                            <input type="hidden" name="trangThaiMoi" value="TamKhoa">
+                                                                            <button type="submit" class="btn btn-outline-warning">🟡 Khoá</button>
+                                                                        </form>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline">
+                                                                            <input type="hidden" name="id" value="${row[0]}">
+                                                                            <input type="hidden" name="trangThaiMoi" value="DangSuDung">
+                                                                            <button type="submit" class="btn btn-outline-success">🟢 Mở</button>
+                                                                        </form>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+
+                                                                <!-- REVOKE BUTTON -->
+                                                                <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline form-revoke-card">
+                                                                    <input type="hidden" name="id" value="${row[0]}">
+                                                                    <input type="hidden" name="trangThaiMoi" value="DaThuHoi">
+                                                                    <button type="submit" class="btn btn-outline-danger">🔴 Thu hồi</button>
+                                                                </form>
+                                                            </div>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
                                                                     <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline">
                                                                         <input type="hidden" name="id" value="${row[0]}">
                                                                         <input type="hidden" name="trangThaiMoi" value="TamKhoa">

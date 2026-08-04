@@ -96,78 +96,80 @@
                     </button>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3">STT</th>
-                                <th>Ngày Trực</th>
-                                <th>Ca Trực</th>
-                                <th>Nội Dung Nhật Ký</th>
-                                <th>Trạng Thái Bàn Giao</th>
-                                <th>Người Nhận Ca</th>
-                                <th class="pe-3">Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:choose>
-                                <c:when test="${not empty caTrucCuaToiList}">
-                                    <c:forEach var="row" items="${caTrucCuaToiList}" varStatus="loop">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">STT</th>
+                                    <th>Ngày Trực</th>
+                                    <th>Ca Trực</th>
+                                    <th>Nội Dung Nhật Ký</th>
+                                    <th>Trạng Thái Bàn Giao</th>
+                                    <th>Người Nhận Ca</th>
+                                    <th class="pe-3">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty caTrucCuaToiList}">
+                                        <c:forEach var="row" items="${caTrucCuaToiList}" varStatus="loop">
+                                            <tr>
+                                                <td class="ps-3 fw-bold">${loop.count}</td>
+                                                <td><c:out value="${row[9]}"/></td>
+                                                <td>
+                                                    <span class="badge ${DisplayUtil.getCaTrucBadgeClass(row[1])}">
+                                                        ${DisplayUtil.getCaTrucText(row[1])}
+                                                    </span>
+                                                </td>
+                                                <td><c:out value="${row[3]}"/></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${row[8] == true}">
+                                                            <span class="badge bg-warning text-dark">Chưa bàn giao</span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="badge bg-success">Đã bàn giao</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[6]}">
+                                                            👤 <c:out value="${row[6]}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="text-muted">—</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td class="pe-3">
+                                                    <c:choose>
+                                                        <c:when test="${row[8] == true}">
+                                                            <button type="button" 
+                                                                    class="btn btn-sm btn-outline-primary btn-ban-giao"
+                                                                    data-id="${row[0]}"
+                                                                    data-catruc="${DisplayUtil.getCaTrucText(row[1])}"
+                                                                    data-ngay="${row[9]}">
+                                                                🤝 Bàn Giao Ca
+                                                            </button>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="text-muted small">✓ Đã hoàn tất</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
                                         <tr>
-                                            <td class="ps-3 fw-bold">${loop.count}</td>
-                                            <td><c:out value="${row[9]}"/></td>
-                                            <td>
-                                                <span class="badge ${DisplayUtil.getCaTrucBadgeClass(row[1])}">
-                                                    ${DisplayUtil.getCaTrucText(row[1])}
-                                                </span>
-                                            </td>
-                                            <td><c:out value="${row[3]}"/></td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${row[8] == true}">
-                                                        <span class="badge bg-warning text-dark">Chưa bàn giao</span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="badge bg-success">Đã bàn giao</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[6]}">
-                                                        👤 <c:out value="${row[6]}"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted">—</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td class="pe-3">
-                                                <c:choose>
-                                                    <c:when test="${row[8] == true}">
-                                                        <button type="button" 
-                                                                class="btn btn-sm btn-outline-primary btn-ban-giao"
-                                                                data-id="${row[0]}"
-                                                                data-catruc="${DisplayUtil.getCaTrucText(row[1])}"
-                                                                data-ngay="${row[9]}">
-                                                            🤝 Bàn Giao Ca
-                                                        </button>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted small">✓ Đã hoàn tất</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
+                                            <td colspan="7" class="text-center text-muted py-4">Bạn chưa ghi nhật ký ca trực nào trong 30 ngày gần đây.</td>
                                         </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">Bạn chưa ghi nhật ký ca trực nào trong 30 ngày gần đây.</td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </tbody>
-                    </table>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -177,54 +179,56 @@
                     <span>🤝 KHỐI B — Danh Sách Ca Trực Được Bàn Giao Cho Tôi</span>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3">STT</th>
-                                <th>Bảo Vệ Giao Ca</th>
-                                <th>Ngày Trực</th>
-                                <th>Ca Trực</th>
-                                <th>Nội Dung Nhật Ký</th>
-                                <th>Lưu Ý Bàn Giao</th>
-                                <th>Thời Gian Bàn Giao</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:choose>
-                                <c:when test="${not empty caChoNhanList}">
-                                    <c:forEach var="row" items="${caChoNhanList}" varStatus="loop">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">STT</th>
+                                    <th>Bảo Vệ Giao Ca</th>
+                                    <th>Ngày Trực</th>
+                                    <th>Ca Trực</th>
+                                    <th>Nội Dung Nhật Ký</th>
+                                    <th>Lưu Ý Bàn Giao</th>
+                                    <th>Thời Gian Bàn Giao</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty caChoNhanList}">
+                                        <c:forEach var="row" items="${caChoNhanList}" varStatus="loop">
+                                            <tr>
+                                                <td class="ps-3 fw-bold">${loop.count}</td>
+                                                <td class="fw-semibold">👤 <c:out value="${row[2]}"/></td>
+                                                <td><c:out value="${row[8]}"/></td>
+                                                <td>
+                                                    <span class="badge ${DisplayUtil.getCaTrucBadgeClass(row[3])}">
+                                                        ${DisplayUtil.getCaTrucText(row[3])}
+                                                    </span>
+                                                </td>
+                                                <td><c:out value="${row[5]}"/></td>
+                                                <td class="text-primary fw-semibold">
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[6]}">
+                                                            📌 <c:out value="${row[6]}"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="text-muted font-normal">—</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td><c:out value="${row[9]}"/></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
                                         <tr>
-                                            <td class="ps-3 fw-bold">${loop.count}</td>
-                                            <td class="fw-semibold">👤 <c:out value="${row[2]}"/></td>
-                                            <td><c:out value="${row[8]}"/></td>
-                                            <td>
-                                                <span class="badge ${DisplayUtil.getCaTrucBadgeClass(row[3])}">
-                                                    ${DisplayUtil.getCaTrucText(row[3])}
-                                                </span>
-                                            </td>
-                                            <td><c:out value="${row[5]}"/></td>
-                                            <td class="text-primary fw-semibold">
-                                                <c:choose>
-                                                    <c:when test="${not empty row[6]}">
-                                                        📌 <c:out value="${row[6]}"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted font-normal">—</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td><c:out value="${row[9]}"/></td>
+                                            <td colspan="7" class="text-center text-muted py-4">Chưa có ca trực nào được bàn giao cho bạn.</td>
                                         </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">Chưa có ca trực nào được bàn giao cho bạn.</td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </tbody>
-                    </table>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

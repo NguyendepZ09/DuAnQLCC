@@ -222,3 +222,104 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover, ::-web
   background: rgba(30, 59, 52, 0.75);
 }
 * { scrollbar-width: thin; scrollbar-color: rgba(30, 59, 52, 0.35) transparent; }
+
+/* Sidebar Toggle Button (Hidden on Desktop) */
+.sidebar-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--pb-sidebar-text, #E8E2D5);
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE MEDIA QUERY (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-layout, .layout-wrapper {
+    flex-direction: column !important;
+    min-height: 0 !important;
+  }
+
+  .sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    position: sticky !important;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .sidebar.open {
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  }
+
+  .sidebar-brand {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+  }
+
+  .sidebar-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide sidebar navigation menu by default on mobile */
+  .sidebar .sidebar-nav,
+  .sidebar .sidebar-user,
+  .sidebar .nav-list,
+  .sidebar nav,
+  .sidebar > ul,
+  .sidebar > div:not(.sidebar-brand) {
+    display: none !important;
+  }
+
+  /* Show navigation menu when sidebar has .open class */
+  .sidebar.open .sidebar-nav,
+  .sidebar.open .sidebar-user,
+  .sidebar.open .nav-list,
+  .sidebar.open nav,
+  .sidebar.open > ul,
+  .sidebar.open > div:not(.sidebar-brand) {
+    display: block !important;
+    background: var(--pb-sidebar-dark, #16302A);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .main-wrapper, .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 12px !important;
+  }
+
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    width: 100% !important;
+  }
+
+  .building-container {
+    min-width: 560px !important;
+  }
+
+  button, .btn, a.btn, input, select {
+    min-height: 44px;
+    font-size: 16px !important;
+  }
+}
+

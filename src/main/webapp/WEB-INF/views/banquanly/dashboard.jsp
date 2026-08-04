@@ -123,37 +123,39 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
                 <div class="col-md-6">
                     <div class="stat-card">
                         <h6 class="fw-bold text-dark mb-3">📋 Tổng Kết Trạng Thái Phản Ánh Sự Cố</h6>
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Trạng Thái</th>
-                                    <th>Số Lượng Phản Ánh</th>
-                                    <th>Mô Tả Xử Lý</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span class="badge bg-warning text-dark">Chờ tiếp nhận</span></td>
-                                    <td><strong>${suCoDetailed.MoiTiepNhan}</strong> ca</td>
-                                    <td><span class="text-muted small">Đang chờ Lễ tân tiếp nhận</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-info text-dark">Đang xử lý</span></td>
-                                    <td><strong>${suCoDetailed.DangXuLy}</strong> ca</td>
-                                    <td><span class="text-muted small">Kỹ thuật viên đang khắc phục</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-success">Đã hoàn thành</span></td>
-                                    <td><strong>${suCoDetailed.HoanThanh}</strong> ca</td>
-                                    <td><span class="text-muted small">Đã nghiệm thu xong</span></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="badge bg-secondary">Đã hủy</span></td>
-                                    <td><strong>${suCoDetailed.DaHuy}</strong> ca</td>
-                                    <td><span class="text-muted small">Phản ánh bị hủy / trùng</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Trạng Thái</th>
+                                        <th>Số Lượng Phản Ánh</th>
+                                        <th>Mô Tả Xử Lý</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-warning text-dark">Chờ tiếp nhận</span></td>
+                                        <td><strong>${suCoDetailed.MoiTiepNhan}</strong> ca</td>
+                                        <td><span class="text-muted small">Đang chờ Lễ tân tiếp nhận</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-info text-dark">Đang xử lý</span></td>
+                                        <td><strong>${suCoDetailed.DangXuLy}</strong> ca</td>
+                                        <td><span class="text-muted small">Kỹ thuật viên đang khắc phục</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-success">Đã hoàn thành</span></td>
+                                        <td><strong>${suCoDetailed.HoanThanh}</strong> ca</td>
+                                        <td><span class="text-muted small">Đã nghiệm thu xong</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-secondary">Đã hủy</span></td>
+                                        <td><strong>${suCoDetailed.DaHuy}</strong> ca</td>
+                                        <td><span class="text-muted small">Phản ánh bị hủy / trùng</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

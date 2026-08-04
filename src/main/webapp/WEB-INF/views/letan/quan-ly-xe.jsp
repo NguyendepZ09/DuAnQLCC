@@ -118,82 +118,84 @@
                 </div>
 
                 <div class="card-body p-0">
-                    <table class="table table-hover align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-3">Biển Số Xe</th>
-                                <th>Loại Xe</th>
-                                <th>Căn Hộ</th>
-                                <th>Chủ Hộ</th>
-                                <th>Thẻ Từ Gắn Kèm</th>
-                                <th>Trạng Thái Thẻ</th>
-                                <th class="pe-3">Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:choose>
-                                <c:when test="${not empty xeList}">
-                                    <c:forEach var="row" items="${xeList}">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle m-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Biển Số Xe</th>
+                                    <th>Loại Xe</th>
+                                    <th>Căn Hộ</th>
+                                    <th>Chủ Hộ</th>
+                                    <th>Thẻ Từ Gắn Kèm</th>
+                                    <th>Trạng Thái Thẻ</th>
+                                    <th class="pe-3">Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty xeList}">
+                                        <c:forEach var="row" items="${xeList}">
+                                            <tr>
+                                                <td class="ps-3 fw-bold text-dark fs-6">
+                                                    ${DisplayUtil.getLoaiXeIcon(row[2])} <c:out value="${row[1]}"/>
+                                                </td>
+                                                <td><span class="badge bg-light text-dark border">${DisplayUtil.getLoaiXeText(row[2])}</span></td>
+                                                <td><span class="badge bg-secondary">Căn <c:out value="${row[3]}"/></span></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[5]}">👤 <c:out value="${row[5]}"/></c:when>
+                                                        <c:otherwise><span class="text-muted">—</span></c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[4]}">
+                                                            <span class="fw-semibold text-primary">🪪 <c:out value="${row[4]}"/></span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="text-muted small">Chưa gắn thẻ</span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty row[6]}">
+                                                            <span class="badge ${DisplayUtil.getTrangThaiTheBadgeClass(row[6])}">
+                                                                ${DisplayUtil.getTrangThaiTheText(row[6])}
+                                                            </span>
+                                                        </c:when>
+                                                        <c:otherwise><span class="text-muted">—</span></c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td class="pe-3">
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button type="button" class="btn btn-outline-primary btn-edit-xe"
+                                                                data-id="${row[0]}"
+                                                                data-bienso="${row[1]}"
+                                                                data-loaixe="${row[2]}"
+                                                                data-canho="${row[7]}"
+                                                                data-sophong="${row[3]}"
+                                                                data-mathe="${row[8]}">
+                                                            ✏️ Sửa
+                                                        </button>
+                                                        <form action="${pageContext.request.contextPath}/letan/quan-ly-xe/xoa" method="post" class="d-inline form-delete-xe">
+                                                            <input type="hidden" name="id" value="${row[0]}">
+                                                            <button type="submit" class="btn btn-outline-danger">🗑️ Xóa</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
                                         <tr>
-                                            <td class="ps-3 fw-bold text-dark fs-6">
-                                                ${DisplayUtil.getLoaiXeIcon(row[2])} <c:out value="${row[1]}"/>
-                                            </td>
-                                            <td><span class="badge bg-light text-dark border">${DisplayUtil.getLoaiXeText(row[2])}</span></td>
-                                            <td><span class="badge bg-secondary">Căn <c:out value="${row[3]}"/></span></td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[5]}">👤 <c:out value="${row[5]}"/></c:when>
-                                                    <c:otherwise><span class="text-muted">—</span></c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[4]}">
-                                                        <span class="fw-semibold text-primary">🪪 <c:out value="${row[4]}"/></span>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <span class="text-muted small">Chưa gắn thẻ</span>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${not empty row[6]}">
-                                                        <span class="badge ${DisplayUtil.getTrangThaiTheBadgeClass(row[6])}">
-                                                            ${DisplayUtil.getTrangThaiTheText(row[6])}
-                                                        </span>
-                                                    </c:when>
-                                                    <c:otherwise><span class="text-muted">—</span></c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td class="pe-3">
-                                                <div class="btn-group btn-group-sm">
-                                                    <button type="button" class="btn btn-outline-primary btn-edit-xe"
-                                                            data-id="${row[0]}"
-                                                            data-bienso="${row[1]}"
-                                                            data-loaixe="${row[2]}"
-                                                            data-canho="${row[7]}"
-                                                            data-sophong="${row[3]}"
-                                                            data-mathe="${row[8]}">
-                                                        ✏️ Sửa
-                                                    </button>
-                                                    <form action="${pageContext.request.contextPath}/letan/quan-ly-xe/xoa" method="post" class="d-inline form-delete-xe">
-                                                        <input type="hidden" name="id" value="${row[0]}">
-                                                        <button type="submit" class="btn btn-outline-danger">🗑️ Xóa</button>
-                                                    </form>
-                                                </div>
-                                            </td>
+                                            <td colspan="7" class="text-center text-muted py-4">Không tìm thấy phương tiện nào.</td>
                                         </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">Không tìm thấy phương tiện nào.</td>
-                                    </tr>
-                                </c:otherwise>
-                            </c:choose>
-                        </tbody>
-                    </table>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
