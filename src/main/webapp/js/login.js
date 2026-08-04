@@ -173,28 +173,12 @@ function initDemoAccountFiller() {
   });
 }
 
-/* QR Scanner Simulation */
+/* QR / NFC Scanner Guidance */
 function initQRScannerSimulation() {
   const qrGrid = document.getElementById('qrGrid');
-  const btnSimulateQr = document.getElementById('btnSimulateQr');
 
   if (qrGrid) {
     qrGrid.innerHTML = Array.from({ length: 36 }).map(() => '<div></div>').join('');
-  }
-
-  if (btnSimulateQr) {
-    btnSimulateQr.addEventListener('click', () => {
-      btnSimulateQr.textContent = 'Đang quét mã NFC/QR...';
-      btnSimulateQr.disabled = true;
-
-      setTimeout(() => {
-        btnSimulateQr.textContent = 'Quét thử mã thẻ cư dân';
-        btnSimulateQr.disabled = false;
-
-        const config = roleConfig[currentRole] || roleConfig['cudan'];
-        showBannerSuccess(`Xác thực thành công thẻ NFC (${config.demoUser})! Đang chuyển hướng...`);
-      }, 1200);
-    });
   }
 }
 

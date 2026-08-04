@@ -15,6 +15,16 @@ import java.util.Map;
  */
 public class CuDanDAO {
 
+    public CuDan findById(Integer id) {
+        if (id == null) return null;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(CuDan.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
     public CuDan findByMaTaiKhoan(Integer maTaiKhoan) {
         if (maTaiKhoan == null) return null;
         EntityManager em = JPAUtil.getEntityManager();

@@ -17,6 +17,16 @@ import java.util.List;
  */
 public class TaiKhoanDAO {
 
+    public TaiKhoan findById(Integer id) {
+        if (id == null) return null;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(TaiKhoan.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
     public TaiKhoan findByTenDangNhap(String tenDangNhap) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

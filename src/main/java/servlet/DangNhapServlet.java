@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Servlet kiem tra Session va tra ve trang dang nhap hoac dieu huong ve Dashboard neu da dang nhap.
+ * Servlet kiểm tra Session và trả về trang đăng nhập hoặc điều hướng về Dashboard nếu đã đăng nhập.
  */
 @WebServlet("/dang-nhap")
 public class DangNhapServlet extends HttpServlet {
@@ -21,7 +21,10 @@ public class DangNhapServlet extends HttpServlet {
         String vaiTro = (session != null) ? (String) session.getAttribute("vaiTro") : null;
         String boPhanCode = (session != null) ? (String) session.getAttribute("boPhanCode") : null;
 
-        if (session != null && idTaiKhoan != null && vaiTro != null) {
+        String errorParam = req.getParameter("error");
+        boolean hasError = (errorParam != null && !errorParam.trim().isEmpty());
+
+        if (!hasError && session != null && idTaiKhoan != null && vaiTro != null) {
             String redirectUrl = LoginServlet.calculateRedirectUrl(req.getContextPath(), vaiTro, boPhanCode);
             resp.sendRedirect(redirectUrl);
             return;

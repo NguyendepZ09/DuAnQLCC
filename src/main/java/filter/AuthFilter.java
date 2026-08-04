@@ -17,6 +17,7 @@ public class AuthFilter implements Filter {
 
     private static final String[] WHITELIST = {
         "/dang-nhap",
+        "/dang-nhap-the",
         "/index.jsp",
         "/login",
         "/logout",

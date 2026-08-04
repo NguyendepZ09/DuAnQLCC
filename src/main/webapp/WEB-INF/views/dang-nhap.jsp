@@ -149,8 +149,7 @@
           <div class="scan-line"></div>
         </div>
         <h3>Đưa thẻ cư dân vào khung quét</h3>
-        <p>Hệ thống tự động đọc mã chip NFC / QR Code trên thẻ cư dân để đăng nhập trực tiếp mà không cần mật khẩu.</p>
-        <button type="button" class="btn-simulate-qr" id="btnSimulateQr">Quét thử mã thẻ cư dân</button>
+        <p class="help-note" style="text-align: center; margin-top: 14px; color: #1E3B34; font-weight: 600;">Chạm thẻ cư dân vào mặt sau điện thoại để đăng nhập.</p>
       </div>
 
       <div class="divider">hoặc</div>

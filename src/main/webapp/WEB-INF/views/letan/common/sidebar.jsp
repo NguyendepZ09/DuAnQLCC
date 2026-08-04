@@ -22,6 +22,9 @@
         <a href="${pageContext.request.contextPath}/letan/the-tu" class="nav-item ${activeMenu == 'the-tu' ? 'active' : ''}">
             🪪 <span>Thẻ từ cư dân</span>
         </a>
+        <a href="${pageContext.request.contextPath}/letan/nfc-the" class="nav-item ${activeMenu == 'nfc-the' ? 'active' : ''}">
+            📱 <span>Ghi thẻ NFC</span>
+        </a>
         <a href="${pageContext.request.contextPath}/letan/quan-ly-xe" class="nav-item ${activeMenu == 'quan-ly-xe' ? 'active' : ''}">
             🚗 <span>Quản lý xe</span>
         </a>

@@ -12,6 +12,23 @@ import java.util.*;
 
 public class TheTuDAO {
 
+    public TheTu findBySoThe(String soThe) {
+        if (soThe == null || soThe.trim().isEmpty()) return null;
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            jakarta.persistence.TypedQuery<TheTu> query = em.createQuery(
+                "SELECT t FROM TheTu t WHERE t.soThe = :soThe", TheTu.class);
+            query.setParameter("soThe", soThe.trim());
+            List<TheTu> list = query.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     private static final Set<String> CHUC_NANG_VALID = new HashSet<>(Arrays.asList(
             "CuaChinh", "ThangMay", "BaiXeOTo", "BaiXeMay", "HoBoi", "PhongGym"
     ));
