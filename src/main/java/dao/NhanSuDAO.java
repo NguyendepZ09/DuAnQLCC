@@ -314,4 +314,46 @@ public class NhanSuDAO {
 
         return stats;
     }
+
+    public ChamCong findChamCongHomNay(int maNhanVien) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            jakarta.persistence.TypedQuery<ChamCong> query = em.createQuery(
+                "SELECT c FROM ChamCong c WHERE c.maNhanVien = :mnv AND c.ngayLam = :today ORDER BY c.id DESC",
+                ChamCong.class
+            );
+            query.setParameter("mnv", maNhanVien);
+            query.setParameter("today", LocalDate.now());
+            query.setMaxResults(1);
+            List<ChamCong> list = query.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    public String saveChamCong(ChamCong cc) {
+        if (cc == null) return "Dữ liệu chấm công không hợp lệ.";
+        EntityManager em = JPAUtil.getEntityManager();
+        jakarta.persistence.EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            if (cc.getId() == null) {
+                em.persist(cc);
+            } else {
+                em.merge(cc);
+            }
+            tx.commit();
+            return null;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return "Lỗi chấm công: " + e.getMessage();
+        } finally {
+            em.close();
+        }
+    }
 }

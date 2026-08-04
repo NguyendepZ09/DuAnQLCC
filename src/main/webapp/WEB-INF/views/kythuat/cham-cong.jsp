@@ -93,6 +93,57 @@
 
     <div class="content-body">
 
+        <!-- Dải Thông Báo msg/error -->
+        <c:if test="${not empty param.msg}">
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                ✅ <c:out value="${param.msg}" />
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </c:if>
+        <c:if test="${not empty param.error}">
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                ❌ <strong>Lỗi:</strong> <c:out value="${param.error}" />
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </c:if>
+
+        <!-- Thẻ Card Thực Hiện Chấm Công Hôm Nay -->
+        <div class="card-custom mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h5 class="fw-bold text-dark m-0 mb-1">📌 Chấm Công Ca Làm Việc Hôm Nay</h5>
+                    <div class="text-muted small">
+                        Trạng thái: <span class="fw-bold text-primary"><c:out value="${trangThaiHomNayText}" default="Chưa chấm công" /></span>
+                        <c:if test="${not empty tongGioHomNayText}">
+                            <span class="badge bg-success ms-2">⏱️ Total: ${tongGioHomNayText}</span>
+                        </c:if>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <!-- Form Chấm Công Vào -->
+                    <form action="${pageContext.request.contextPath}/kythuat/cham-cong/ghi" method="post" class="d-flex align-items-center gap-2">
+                        <input type="hidden" name="hanhDong" value="vao">
+                        <select name="caLam" class="form-select form-select-sm" <c:if test="${daChamVao}">disabled</c:if>>
+                            <option value="Sang" <c:if test="${caLamHomNay == 'Sang'}">selected</c:if>>Ca Sáng (07:00 - 15:00)</option>
+                            <option value="Chieu" <c:if test="${caLamHomNay == 'Chieu'}">selected</c:if>>Ca Chiều (15:00 - 23:00)</option>
+                            <option value="Dem" <c:if test="${caLamHomNay == 'Dem'}">selected</c:if>>Ca Đêm (23:00 - 07:00)</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success text-nowrap px-3" <c:if test="${daChamVao}">disabled</c:if>>
+                            📥 Chấm Công Vào
+                        </button>
+                    </form>
+
+                    <!-- Form Chấm Công Ra -->
+                    <form action="${pageContext.request.contextPath}/kythuat/cham-cong/ghi" method="post" class="d-inline">
+                        <input type="hidden" name="hanhDong" value="ra">
+                        <button type="submit" class="btn btn-sm btn-warning text-dark fw-semibold text-nowrap px-3" <c:if test="${!daChamVao || daChamRa}">disabled</c:if>>
+                            📤 Chấm Công Ra
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- 4 Thẻ Thống Kê Chấm Công Cá Nhân -->
         <div class="row g-3 mb-4">
             <div class="col-md-3">
