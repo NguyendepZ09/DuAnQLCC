@@ -304,36 +304,6 @@
                                         </c:forEach>
                                     </c:when>
                                     <c:otherwise>
-                                        <tr>
-                                                                    <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline">
-                                                                        <input type="hidden" name="id" value="${row[0]}">
-                                                                        <input type="hidden" name="trangThaiMoi" value="TamKhoa">
-                                                                        <button type="submit" class="btn btn-outline-warning">🟡 Khoá</button>
-                                                                    </form>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline">
-                                                                        <input type="hidden" name="id" value="${row[0]}">
-                                                                        <input type="hidden" name="trangThaiMoi" value="DangSuDung">
-                                                                        <button type="submit" class="btn btn-outline-success">🟢 Mở</button>
-                                                                    </form>
-                                                                </c:otherwise>
-                                                            </c:choose>
-
-                                                            <!-- REVOKE BUTTON -->
-                                                            <form action="${pageContext.request.contextPath}/letan/the-tu/doi-trang-thai" method="post" class="d-inline form-revoke-card">
-                                                                <input type="hidden" name="id" value="${row[0]}">
-                                                                <input type="hidden" name="trangThaiMoi" value="DaThuHoi">
-                                                                <button type="submit" class="btn btn-outline-danger">🔴 Thu hồi</button>
-                                                            </form>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </c:when>
-                                <c:otherwise>
                                     <tr>
                                         <td colspan="9" class="text-center text-muted py-4">Không tìm thấy thẻ từ nào.</td>
                                     </tr>

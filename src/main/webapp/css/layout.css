@@ -323,3 +323,65 @@ html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover, ::-web
   }
 }
 
+/* ==========================================================================
+   POLYBUILDING CUSTOM BUTTON SYSTEM
+   ========================================================================== */
+.btn-pb-primary {
+  background-color: #1E3B34 !important;
+  color: #FFFCF6 !important;
+  border: 1px solid #1E3B34 !important;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 38px;
+}
+.btn-pb-primary:hover, .btn-pb-primary:focus {
+  background-color: #16302A !important;
+  border-color: #16302A !important;
+  color: #FFFCF6 !important;
+}
+
+.btn-pb-accent {
+  background-color: #B98A46 !important;
+  color: #FFFCF6 !important;
+  border: 1px solid #B98A46 !important;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 38px;
+}
+.btn-pb-accent:hover, .btn-pb-accent:focus {
+  background-color: #A07436 !important;
+  border-color: #A07436 !important;
+  color: #FFFCF6 !important;
+}
+
+.btn-pb-outline {
+  background-color: transparent !important;
+  border: 1px solid #1E3B34 !important;
+  color: #1E3B34 !important;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 38px;
+}
+.btn-pb-outline:hover, .btn-pb-outline:focus {
+  background-color: #EAE3D2 !important;
+  color: #1E3B34 !important;
+}
+
+.btn-pb-danger {
+  background-color: transparent !important;
+  border: 1px solid #B4573F !important;
+  color: #B4573F !important;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 38px;
+}
+.btn-pb-danger:hover, .btn-pb-danger:focus {
+  background-color: #F9EAE6 !important;
+  color: #B4573F !important;
+}
+
+

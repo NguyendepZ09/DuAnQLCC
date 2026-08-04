@@ -24,7 +24,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
         <div class="content-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="text-dark fw-bold m-0">🛠️ Tiếp Nhận & Điều Phối Sự Cố Toàn Tòa Nhà</h4>
-                <button type="button" class="btn btn-teal text-white fw-bold py-2 px-3" style="background-color: #1E3B34;" data-bs-toggle="modal" data-bs-target="#modalCreateHo">
+                <button type="button" class="btn btn-pb-primary text-white fw-bold py-2 px-3" data-bs-toggle="modal" data-bs-target="#modalCreateHo">
                     ✍️ Ghi Nhận Sự Cố Hộ Cư Dân
                 </button>
             </div>
@@ -93,7 +93,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                     </div>
 
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-sm btn-dark w-100 fw-bold">🔍 Lọc Dữ Liệu</button>
+                        <button type="submit" class="btn btn-sm btn-pb-primary w-100 fw-bold">🔍 Lọc Dữ Liệu</button>
                     </div>
                 </form>
             </div>
@@ -160,7 +160,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center gap-1">
-                                                    <a href="${pageContext.request.contextPath}/letan/su-co/detail?id=${item.id}" class="btn btn-sm btn-outline-primary fw-semibold" title="Xem chi tiết">
+                                                    <a href="${pageContext.request.contextPath}/letan/su-co/detail?id=${item.id}" class="btn btn-sm btn-pb-outline fw-semibold" title="Xem chi tiết">
                                                         👁️
                                                     </a>
 
@@ -168,20 +168,20 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                                                     <c:if test="${item.trangThai == 'MoiTiepNhan'}">
                                                         <form action="${pageContext.request.contextPath}/letan/su-co/tiep-nhan" method="post" class="d-inline">
                                                             <input type="hidden" name="id" value="${item.id}">
-                                                            <button type="submit" class="btn btn-sm btn-success fw-bold">📥 Tiếp nhận</button>
+                                                            <button type="submit" class="btn btn-sm btn-pb-primary fw-bold">📥 Tiếp nhận</button>
                                                         </form>
                                                     </c:if>
 
                                                     <!-- 2. NUT GIAO VIEC (DaTiepNhan hoac DangXuLy) -->
                                                     <c:if test="${item.trangThai == 'DaTiepNhan' || item.trangThai == 'DangXuLy'}">
-                                                        <button type="button" class="btn btn-sm btn-warning fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#modalGiaoViec_${item.id}">
+                                                        <button type="button" class="btn btn-sm btn-pb-accent fw-bold" data-bs-toggle="modal" data-bs-target="#modalGiaoViec_${item.id}">
                                                             👨‍🔧 Giao việc
                                                         </button>
                                                     </c:if>
 
                                                     <!-- 3. NUT HUY PHAN ANH -->
                                                     <c:if test="${item.trangThai != 'HoanThanh' && item.trangThai != 'Huy'}">
-                                                        <button type="button" class="btn btn-sm btn-outline-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHuy_${item.id}">
+                                                        <button type="button" class="btn btn-sm btn-pb-danger fw-semibold" data-bs-toggle="modal" data-bs-target="#modalHuy_${item.id}">
                                                             🛑 Hủy
                                                         </button>
                                                     </c:if>
@@ -237,7 +237,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                                            <button type="submit" class="btn btn-warning fw-bold text-dark">🚀 Xác Nhận Giao Việc</button>
+                                                            <button type="submit" class="btn btn-pb-accent fw-bold">🚀 Xác Nhận Giao Việc</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -250,9 +250,9 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                                                 <div class="modal-content">
                                                     <form action="${pageContext.request.contextPath}/letan/su-co/huy" method="post">
                                                         <input type="hidden" name="id" value="${item.id}">
-                                                        <div class="modal-header bg-danger text-white">
+                                                        <div class="modal-header">
                                                             <h5 class="modal-title fw-bold">🛑 Hủy Phản Ánh Sự Cố #${item.id}</h5>
-                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <p class="mb-2"><strong>Sự cố:</strong> ${item.tieuDe}</p>
@@ -263,7 +263,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                                                            <button type="submit" class="btn btn-danger fw-bold">🛑 Xác Nhận Hủy Phản Ánh</button>
+                                                            <button type="submit" class="btn btn-pb-danger fw-bold">🛑 Xác Nhận Hủy Phản Ánh</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -303,7 +303,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form action="${pageContext.request.contextPath}/letan/su-co/create-ho" method="post" enctype="multipart/form-data">
-                <div class="modal-header bg-teal text-white" style="background-color: #1E3B34;">
+                <div class="modal-header bg-teal text-white">
                     <h5 class="modal-title fw-bold">✍️ Ghi Nhận Sự Cố Hộ Cư Dân (Lễ Tân Nhập Trực Tiếp)</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -354,7 +354,7 @@ body { background-color: var(--lt-bg, #F4EFE4); }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
-                    <button type="submit" class="btn btn-teal text-white fw-bold" style="background-color: #1E3B34;">📥 Tiếp Nhận Ngay</button>
+                    <button type="submit" class="btn btn-pb-primary text-white fw-bold">📥 Tiếp Nhận Ngay</button>
                 </div>
             </form>
         </div>
