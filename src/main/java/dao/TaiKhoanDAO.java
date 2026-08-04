@@ -114,28 +114,55 @@ public class TaiKhoanDAO {
             String vaiTro = tk.getVaiTro();
             String boPhanCode = tk.getBoPhanCode();
 
-            // 1. Generate maTaiKhoan structured (cd_01, cd_02... for CD; nv_letan01, nv_bql01... for NV/BQL)
+            // 1. Generate maTaiKhoan structured with 4-digit padding (cd_0001, nv_bv0001, bql_0001...)
             String prefix;
             if ("CD".equalsIgnoreCase(vaiTro)) {
                 prefix = "cd_";
             } else if ("BQL".equalsIgnoreCase(vaiTro)) {
-                prefix = "nv_bql";
+                prefix = "bql_";
             } else {
-                prefix = "nv_" + (boPhanCode != null ? boPhanCode.toLowerCase() : "lt");
+                String sub = "lt";
+                if (boPhanCode != null) {
+                    String bp = boPhanCode.toLowerCase();
+                    if (bp.contains("baove") || bp.equals("bv")) sub = "bv";
+                    else if (bp.contains("letan") || bp.equals("lt")) sub = "lt";
+                    else if (bp.contains("ketoan") || bp.equals("kt")) sub = "kt";
+                    else if (bp.contains("kythuat") || bp.equals("ktht") || bp.equals("nvkt")) sub = "ktht";
+                    else sub = bp;
+                }
+                prefix = "nv_" + sub;
             }
 
-            Long countRole = em.createQuery("SELECT COUNT(t) FROM TaiKhoan t WHERE t.vaiTro = :vr", Long.class)
-                               .setParameter("vr", vaiTro)
-                               .getSingleResult();
-            long nextSeq = countRole + 1;
-            String candidateCode = prefix + String.format("%02d", nextSeq);
+            // Find maximum existing numeric sequence for this prefix
+            List<String> existingCodes = em.createQuery(
+                "SELECT t.maTaiKhoan FROM TaiKhoan t WHERE t.maTaiKhoan LIKE :pattern", String.class)
+                .setParameter("pattern", prefix + "%")
+                .getResultList();
 
-            // Ensure uniqueness of maTaiKhoan in DB
+            long maxSeq = 0;
+            for (String code : existingCodes) {
+                if (code != null && code.startsWith(prefix)) {
+                    String numStr = code.substring(prefix.length());
+                    try {
+                        long seq = Long.parseLong(numStr);
+                        if (seq > maxSeq) {
+                            maxSeq = seq;
+                        }
+                    } catch (NumberFormatException ignored) {
+                        // Skip unparseable legacy codes
+                    }
+                }
+            }
+
+            long nextSeq = maxSeq + 1;
+            String candidateCode = prefix + String.format("%04d", nextSeq);
+
+            // Ensure uniqueness of maTaiKhoan in DB as safety layer
             while (em.createQuery("SELECT COUNT(t) FROM TaiKhoan t WHERE t.maTaiKhoan = :mc", Long.class)
                      .setParameter("mc", candidateCode)
                      .getSingleResult() > 0) {
                 nextSeq++;
-                candidateCode = prefix + String.format("%02d", nextSeq);
+                candidateCode = prefix + String.format("%04d", nextSeq);
             }
 
             tk.setMaTaiKhoan(candidateCode);
