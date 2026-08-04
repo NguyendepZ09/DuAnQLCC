@@ -87,6 +87,20 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
         <jsp:include page="/WEB-INF/views/banquanly/common/header.jsp" />
 
         <div class="content-body">
+            <c:if test="${not empty param.msg || not empty msg}">
+                <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                    ✅ <c:out value="${not empty param.msg ? param.msg : msg}" />
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
+            <c:if test="${not empty param.error || not empty error}">
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    ❌ <strong>Lỗi:</strong> <c:out value="${not empty param.error ? param.error : error}" />
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </c:if>
+
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="text-dark fw-bold m-0">🏢 Sơ Đồ Trực Quan Tòa Nhà 200 Căn Hộ (Tầng 25 ➔ Tầng 1)</h4>
                 <span class="text-muted small">* Di chuột xem thông tin nhanh, Nhấp để xem danh sách cư dân & công nợ</span>
@@ -128,7 +142,7 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
                                          data-bs-toggle="tooltip"
                                          data-bs-html="true"
                                          title="<strong>Căn ${ch.soPhong}</strong><br>Diện tích: ${ch.dienTich}m²<br>Trạng thái: ${statusText}"
-                                         onclick="openDetailModal(${ch.id})">
+                                         data-id="${ch.id}">
                                         Căn ${ch.soPhong}
                                     </div>
                                 </c:forEach>
@@ -150,15 +164,34 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="p-3 bg-light rounded border mb-3">
-                    <h6 class="fw-bold text-primary mb-2">🏢 Thông Tin Căn Hộ</h6>
-                    <div class="row">
-                        <div class="col-md-3"><strong>Số phòng:</strong> <span id="detailSoCanHo" class="fw-bold text-primary">---</span></div>
-                        <div class="col-md-3"><strong>Số tầng:</strong> <span id="detailTang">---</span></div>
-                        <div class="col-md-3"><strong>Diện tích:</strong> <span id="detailDienTich">---</span> m²</div>
-                        <div class="col-md-3"><strong>Trạng thái:</strong> <span id="detailTrangThai">---</span></div>
+                <form action="${pageContext.request.contextPath}/banquanly/can-ho/cap-nhat" method="post" id="formCapNhatCanHo">
+                    <input type="hidden" name="id" id="modalCanHoId">
+                    <div class="p-3 bg-light rounded border mb-3">
+                        <h6 class="fw-bold text-primary mb-3">🏢 Thông Tin & Chỉnh Sửa Căn Hộ</h6>
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small text-muted mb-1">Số phòng:</label>
+                                <div><span id="detailSoCanHo" class="fw-bold text-primary fs-6">---</span></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small text-muted mb-1">Số tầng:</label>
+                                <div><span id="detailTang" class="fw-semibold">---</span></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small text-dark mb-1">Diện tích (m²):</label>
+                                <input type="number" step="0.01" min="1" name="dienTich" id="modalDienTich" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold small text-dark mb-1">Trạng thái:</label>
+                                <select name="trangThai" id="modalTrangThai" class="form-select form-select-sm">
+                                    <option value="DangO">Đang ở</option>
+                                    <option value="TrongChoThue">Trống chờ thuê</option>
+                                    <option value="BaoTri">Bảo trì</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </form>
 
                 <div class="p-3 bg-light rounded border mb-3">
                     <h6 class="fw-bold text-success mb-2">👥 Danh Sách Cư Dân Đang Ở (Chủ Hộ & Khách Thuê)</h6>
@@ -177,6 +210,9 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="submit" form="formCapNhatCanHo" class="btn btn-primary fw-semibold" style="background-color: var(--pb-sidebar, #1E3B34); border-color: var(--pb-sidebar, #1E3B34);">
+                    💾 Lưu Thay Đổi
+                </button>
             </div>
         </div>
     </div>
@@ -189,6 +225,13 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
         tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
+
+        document.addEventListener("click", function(e) {
+            const cell = e.target.closest(".apt-cell");
+            if (cell && cell.dataset.id) {
+                openDetailModal(cell.dataset.id);
+            }
+        });
     });
 
     function openDetailModal(canHoId) {
@@ -199,8 +242,10 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
                     document.getElementById('modalSoCanHo').textContent = 'Chi Tiết Căn Hộ ' + data.soCanHo;
                     document.getElementById('detailSoCanHo').textContent = data.soCanHo;
                     document.getElementById('detailTang').textContent = 'Tầng ' + data.tang;
-                    document.getElementById('detailDienTich').textContent = data.dienTich;
-                    document.getElementById('detailTrangThai').textContent = data.trangThai;
+
+                    document.getElementById('modalCanHoId').value = data.id;
+                    document.getElementById('modalDienTich').value = data.dienTich;
+                    document.getElementById('modalTrangThai').value = data.trangThai;
 
                     // Render Resident List
                     const containerCd = document.getElementById('detailDsCuDan');

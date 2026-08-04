@@ -291,4 +291,29 @@ public class CanHoDAO {
             em.close();
         }
     }
+
+    public String updateCanHo(CanHo canHo) {
+        if (canHo == null || canHo.getId() == null) return "Thông tin căn hộ không hợp lệ.";
+        EntityManager em = JPAUtil.getEntityManager();
+        jakarta.persistence.EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            CanHo existing = em.find(CanHo.class, canHo.getId());
+            if (existing == null) {
+                tx.rollback();
+                return "Không tìm thấy căn hộ mã #" + canHo.getId();
+            }
+            existing.setDienTich(canHo.getDienTich());
+            existing.setTrangThai(canHo.getTrangThai());
+            em.merge(existing);
+            tx.commit();
+            return null;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return "Lỗi cập nhật căn hộ: " + e.getMessage();
+        } finally {
+            em.close();
+        }
+    }
 }

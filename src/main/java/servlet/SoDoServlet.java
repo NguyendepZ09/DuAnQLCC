@@ -28,6 +28,15 @@ public class SoDoServlet extends HttpServlet {
             Map<Integer, String> tinhTrangMap = canHoDAO.getTinhTrangMap();
             request.setAttribute("mapTangCanHo", mapTangCanHo);
             request.setAttribute("tinhTrangMap", tinhTrangMap);
+
+            String msg = request.getParameter("msg");
+            String error = request.getParameter("error");
+            if (msg != null && !msg.isBlank()) {
+                request.setAttribute("msg", msg);
+            }
+            if (error != null && !error.isBlank()) {
+                request.setAttribute("error", error);
+            }
         } catch (Exception e) {
             System.err.println("Lỗi trong SoDoServlet (doGet): " + e.getMessage());
             e.printStackTrace();
