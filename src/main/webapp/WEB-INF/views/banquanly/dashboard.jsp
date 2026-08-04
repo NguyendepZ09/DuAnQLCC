@@ -48,22 +48,25 @@ body { background-color: #F4EFE4; font-family: 'Segoe UI', Tahoma, Geneva, Verda
             <div class="row g-4 mb-4">
                 <div class="col-md-3">
                     <div class="stat-card">
-                        <div class="title">Phải Thu (Kỳ T${thangChon}/${namChon})</div>
-                        <div class="value text-dark">${DisplayUtil.formatTienDouble(thongKeKy.tongPhaiThu)}</div>
-                        <span class="badge bg-secondary">Tổng hóa đơn</span>
+                        <div class="title">Doanh thu dịch vụ (phí quản lý + gửi xe)</div>
+                        <div class="value text-primary m-0">${thongKeKy.doanhThuDichVuFormatted}</div>
+                        <div class="small text-muted border-top pt-2 mt-2">
+                            ⚡ <strong>Thu hộ điện nước:</strong> <span class="fw-bold text-dark">${thongKeKy.thuHoDienNuocFormatted}</span>
+                            <div class="text-secondary" style="font-size: 0.72rem; line-height: 1.2;">Nộp lại đơn vị cung cấp, không tính vào doanh thu</div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card">
                         <div class="title">Đã Thu Thực Tế (Giao Dịch)</div>
-                        <div class="value text-success">${DisplayUtil.formatTienDouble(thongKeKy.tongDaThu)}</div>
+                        <div class="value text-success">${thongKeKy.tongDaThuFormatted}</div>
                         <span class="badge bg-success">Đạt ${thongKeKy.tyLeDaThuFormatted}%</span>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="stat-card">
                         <div class="title">Còn Nợ</div>
-                        <div class="value text-danger">${DisplayUtil.formatTienDouble(thongKeKy.tongConNo)}</div>
+                        <div class="value text-danger">${thongKeKy.tongConNoFormatted}</div>
                         <span class="badge bg-danger">Chưa thu hết</span>
                     </div>
                 </div>

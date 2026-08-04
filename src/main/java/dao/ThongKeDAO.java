@@ -97,8 +97,27 @@ public class ThongKeDAO {
                     .setParameter("nam", nam)
                     .getSingleResult();
 
+            String sqlDoanhThuDichVu = "SELECT SUM(ct.thanhTien) FROM dbo.chiTietHoaDon ct " +
+                    "JOIN dbo.hoaDon h ON h.id = ct.maHoaDon " +
+                    "WHERE h.thang = :thang AND h.nam = :nam AND ct.loaiDichVu IN ('PhiQuanLy', 'GuiXeMay', 'GuiXeOTo')";
+            Number numDoanhThuDichVu = (Number) em.createNativeQuery(sqlDoanhThuDichVu)
+                    .setParameter("thang", thang)
+                    .setParameter("nam", nam)
+                    .getSingleResult();
+
+            String sqlThuHoDienNuoc = "SELECT SUM(ct.thanhTien) FROM dbo.chiTietHoaDon ct " +
+                    "JOIN dbo.hoaDon h ON h.id = ct.maHoaDon " +
+                    "WHERE h.thang = :thang AND h.nam = :nam AND ct.loaiDichVu IN ('Dien', 'Nuoc')";
+            Number numThuHoDienNuoc = (Number) em.createNativeQuery(sqlThuHoDienNuoc)
+                    .setParameter("thang", thang)
+                    .setParameter("nam", nam)
+                    .getSingleResult();
+
             double tongPhaiThu = numPhaiThu != null ? numPhaiThu.doubleValue() : 0.0;
             double tongDaThu = numDaThu != null ? numDaThu.doubleValue() : 0.0;
+            double doanhThuDichVu = numDoanhThuDichVu != null ? numDoanhThuDichVu.doubleValue() : 0.0;
+            double thuHoDienNuoc = numThuHoDienNuoc != null ? numThuHoDienNuoc.doubleValue() : 0.0;
+
             double tongConNo = Math.max(0.0, tongPhaiThu - tongDaThu);
             double tyLeDaThu = tongPhaiThu > 0 ? (tongDaThu / tongPhaiThu) * 100.0 : 0.0;
 
@@ -109,6 +128,16 @@ public class ThongKeDAO {
             result.put("tongConNo", tongConNo);
             result.put("tyLeDaThu", tyLeDaThu);
             result.put("tyLeDaThuFormatted", String.format("%.1f", tyLeDaThu));
+
+            result.put("doanhThuDichVu", doanhThuDichVu);
+            result.put("thuHoDienNuoc", thuHoDienNuoc);
+
+            result.put("doanhThuDichVuFormatted", util.DisplayUtil.formatTienDouble(doanhThuDichVu));
+            result.put("thuHoDienNuocFormatted", util.DisplayUtil.formatTienDouble(thuHoDienNuoc));
+            result.put("tongPhaiThuFormatted", util.DisplayUtil.formatTienDouble(tongPhaiThu));
+            result.put("tongDaThuFormatted", util.DisplayUtil.formatTienDouble(tongDaThu));
+            result.put("tongConNoFormatted", util.DisplayUtil.formatTienDouble(tongConNo));
+
             result.put("hasData", tongPhaiThu > 0);
 
         } catch (Exception e) {
@@ -118,6 +147,15 @@ public class ThongKeDAO {
             result.put("tongConNo", 0.0);
             result.put("tyLeDaThu", 0.0);
             result.put("tyLeDaThuFormatted", "0.0");
+            result.put("doanhThuDichVu", 0.0);
+            result.put("thuHoDienNuoc", 0.0);
+
+            result.put("doanhThuDichVuFormatted", "0đ");
+            result.put("thuHoDienNuocFormatted", "0đ");
+            result.put("tongPhaiThuFormatted", "0đ");
+            result.put("tongDaThuFormatted", "0đ");
+            result.put("tongConNoFormatted", "0đ");
+
             result.put("hasData", false);
         } finally {
             em.close();
