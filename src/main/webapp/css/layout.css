@@ -9,10 +9,10 @@
   --pb-accent-soft:   rgba(185, 138, 70, 0.18);
   --pb-bg:            #F4EFE4;
   --pb-border:        #EAE3D2;
-  --pb-text:          #2A2A2A;
+  --pb-text:          #16231F;
   --pb-muted:         #6C757D;
   --pb-sidebar-text:  #E8E2D5;
-  --pb-card-bg:       #FFFFFF;
+  --pb-card-bg:       #FFFCF6;
 }
 
 body {
