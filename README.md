@@ -13,6 +13,7 @@
 * Công cụ: NetBeans / SQL 22 / Visual studio / Intellij IDE 26
 
 ## 📝 Hướng dẫn chạy code 
-1. Clone dự án về máy.
-2. Chạy file SQL trong folder `/database` để tạo bảng.
-3. Mở project Java trong Intellij và config lại server .
+1. Lưu dự án về máy.
+2. Chạy file SQL.
+3. Chỉnh lại mật khẩu và username database 
+4. Mở project Java trong Intellij và mở SQL 22 đã chỉnh trong project.
