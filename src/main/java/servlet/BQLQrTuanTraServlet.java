@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import util.QRTuanTraUtil;
-
 @WebServlet("/banquanly/qr-tuan-tra")
 public class BQLQrTuanTraServlet extends HttpServlet {
 
