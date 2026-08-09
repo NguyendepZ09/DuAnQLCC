@@ -24,7 +24,11 @@ public class BQLQrTuanTraServlet extends HttpServlet {
             return;
         }
 
-        String defaultBaseUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + req.getContextPath();
+        int port = req.getServerPort();
+        String scheme = req.getScheme();
+        String portStr = ((("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443) || port == 80 || port == 443)) ? "" : ":" + port;
+        String defaultBaseUrl = scheme + "://" + req.getServerName() + portStr + req.getContextPath();
+
         String paramBaseUrl = req.getParameter("baseUrl");
 
         String baseUrl = (paramBaseUrl != null && !paramBaseUrl.trim().isEmpty())
